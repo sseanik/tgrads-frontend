@@ -16,7 +16,7 @@ interface attributes {
   Location: any;
 }
 
-const Events: NextPage<{ event: attributes }> = ({ event }) => {
+const Photos: NextPage<{ event: attributes }> = ({ event }) => {
   console.log(event);
   // const imageURL = getStrapiMedia(event.Preview.attributes);
   // console.log(imageURL)
@@ -62,4 +62,4 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export default Events;
+export default Photos;
