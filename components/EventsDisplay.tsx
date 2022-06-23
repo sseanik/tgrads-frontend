@@ -15,7 +15,6 @@ import {
   createStyles,
 } from '@mantine/core';
 import Link from 'next/link';
-import { useState } from 'react';
 
 interface EventsDisplayProps {
   events: any;
@@ -46,11 +45,11 @@ const EventsDisplay = (props: EventsDisplayProps) => {
       },
     },
     cardH: {
-        height: 120,
-        '@media (max-width: 730px)': {
-            height: 85,
-          },
-    }
+      height: 120,
+      '@media (max-width: 730px)': {
+        height: 85,
+      },
+    },
   }));
   const { classes } = useStyles();
 
@@ -65,134 +64,129 @@ const EventsDisplay = (props: EventsDisplayProps) => {
             href={'events/' + event.attributes.Slug}
             key={event.attributes.Slug}
           >
-              <UnstyledButton className={classes.cardW}>
+            <UnstyledButton className={classes.cardW}>
+              <Indicator
+                inline
+                size={
+                  props.upcomingDate(event.attributes.Date) &&
+                  isDateSoon(event.attributes.Date)
+                    ? 20
+                    : 0
+                }
+                offset={12}
+                label={
+                  props.upcomingDate(event.attributes.Date) &&
+                  isDateSoon(event.attributes.Date)
+                    ? 'Soon'
+                    : ''
+                }
+                color='lime'
+              >
                 <Indicator
                   inline
-                  size={
-                    props.upcomingDate(event.attributes.Date) &&
-                    isDateSoon(event.attributes.Date)
-                      ? 20
-                      : 0
-                  }
-                  offset={12}
-                  label={
-                    props.upcomingDate(event.attributes.Date) &&
-                    isDateSoon(event.attributes.Date)
-                      ? 'Soon'
-                      : ''
-                  }
-                  color='lime'
+                  size={20}
+                  offset={30}
+                  label={event.attributes.Cost ?? ''}
+                  color={theme.colorScheme === 'dark' ? 'black' : 'white'}
+                  position='top-start'
+                  radius='sm'
+                  styles={{
+                    indicator: {
+                      marginLeft: '12px',
+                      color: theme.colorScheme === 'dark' ? 'white' : 'black',
+                      padding: 10,
+                      fontWeight: 900,
+                      fontFamily: 'monospace',
+                      boxShadow:
+                        '0 2px 2px rgba(0,0,0,0.16), 0 2px 2px rgba(0,0,0,0.23)',
+                      display: event.attributes.Cost ? '' : 'none',
+                    },
+                  }}
                 >
-                  <Indicator
-                    inline
-                    size={20}
-                    offset={30}
-                    label={event.attributes.Cost ?? ''}
-                    color={theme.colorScheme === 'dark' ? 'black' : 'white'}
-                    position='top-start'
-                    radius='sm'
-                    styles={{
-                      indicator: {
-                        marginLeft: '12px',
-                        color: theme.colorScheme === 'dark' ? 'white' : 'black',
-                        padding: 10,
-                        fontWeight: 900,
-                        fontFamily: 'monospace',
-                        boxShadow:
-                          '0 2px 2px rgba(0,0,0,0.16), 0 2px 2px rgba(0,0,0,0.23)',
-                        display: event.attributes.Cost ? '' : 'none',
-                      },
+                  <Card
+                    shadow='sm'
+                    p='lg'
+                    m={10}
+                    style={{
+                      height: '100%',
                     }}
-                  >
-                    <Card
-                      shadow='sm'
-                      p='lg'
-                      m={10}
-                      style={{
+                    styles={() => ({
+                      root: {
+                        color:
+                          theme.colorScheme === 'dark' ? '#d0cfd4' : '#3c4394',
                         height: '100%',
-                      }}
-                      styles={() => ({
-                        root: {
-                          color:
+                        '&:hover': {
+                          backgroundColor:
                             theme.colorScheme === 'dark'
-                              ? '#d0cfd4'
-                              : '#3c4394',
-                          height: '100%',
-                          '&:hover': {
-                            backgroundColor:
-                              theme.colorScheme === 'dark'
-                                ? '#242936'
-                                : '#f6f8ff',
-                          },
+                              ? '#242936'
+                              : '#f6f8ff',
                         },
-                      })}
-                    >
-                      <Card.Section>
-                        <Image
-                          src={event.attributes.Image.data.attributes.url}
-                          height={160}
-                          alt=''
-                        />
-                      </Card.Section>
+                      },
+                    })}
+                  >
+                    <Card.Section>
+                      <Image
+                        src={event.attributes.Image.data.attributes.url}
+                        height={160}
+                        alt=''
+                      />
+                    </Card.Section>
 
-                      <Grid columns={7}>
-                        <Grid.Col span={1}>
-                          <Center
+                    <Grid columns={7}>
+                      <Grid.Col span={1}>
+                        <Center
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            height: '100%',
+                          }}
+                        >
+                          <div
                             style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              height: '100%',
+                              color: '#666af3',
+                              fontWeight: 600,
+                              marginBottom: '6px',
                             }}
                           >
-                            <div
-                              style={{
-                                color: '#666af3',
-                                fontWeight: 600,
-                                marginBottom: '6px',
-                              }}
-                            >
-                              {convertDateToReadable(
-                                event.attributes.Date,
-                                true
-                              )}
-                            </div>
-                            <div style={{ fontWeight: 700 }}>
-                              {convertDateToReadable(event.attributes.Date)}
-                            </div>
-                          </Center>
-                        </Grid.Col>
-                        <Grid.Col span={6}>
-                          <Group
-                            position='apart'
+                            {convertDateToReadable(event.attributes.Date, true)}
+                          </div>
+                          <div style={{ fontWeight: 700 }}>
+                            {convertDateToReadable(event.attributes.Date)}
+                          </div>
+                        </Center>
+                      </Grid.Col>
+                      <Grid.Col span={6}>
+                        <Group
+                          position='apart'
+                          style={{
+                            marginBottom: 5,
+                            marginTop: theme.spacing.sm,
+                          }}
+                        >
+                          <Text weight={700}>{event.attributes.Title}</Text>
+                        </Group>
+
+                        <ScrollArea
+                          className={classes.cardH}
+                          offsetScrollbars
+                          scrollbarSize={8}
+                        >
+                          <Text
+                            size='sm'
                             style={{
-                              marginBottom: 5,
-                              marginTop: theme.spacing.sm,
+                              color: secondaryColor,
+                              lineHeight: 1.5,
                             }}
                           >
-                            <Text weight={700}>{event.attributes.Title}</Text>
-                          </Group>
-
-                          <ScrollArea
-                            className={classes.cardH}
-                            offsetScrollbars
-                            scrollbarSize={8}
-                          >
-                            <Text
-                              size='sm'
-                              style={{
-                                color: secondaryColor,
-                                lineHeight: 1.5,
-                              }}
-                            >
-                              {event.attributes.Description}
-                            </Text>
-                          </ScrollArea>
-                        </Grid.Col>
-                      </Grid>
-                    </Card>
-                  </Indicator>
+                            {event.attributes.Description}
+                          </Text>
+                        </ScrollArea>
+                      </Grid.Col>
+                    </Grid>
+                  </Card>
                 </Indicator>
-              </UnstyledButton>
+              </Indicator>
+            </UnstyledButton>
           </Link>
         );
       })}

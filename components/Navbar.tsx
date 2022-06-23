@@ -21,7 +21,7 @@ const Navbar = ({ opened }: NavbarProps) => {
         justifyContent: 'space-between',
       }}
     >
-      <NavbarComponent.Section>
+      <NavbarComponent.Section mt={10}>
         {NavItems.map((item) => {
           return <MobileMenuButton key={item.url} {...item} />;
         })}

@@ -9,11 +9,18 @@ import {
   AspectRatio,
   ScrollArea,
   MediaQuery,
+  Box,
 } from '@mantine/core';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import AppShell from '../../components/AppShell';
 import { fetchAPI } from '../../lib/api';
-import { Calendar, Clock, CurrencyDollar, Location } from 'tabler-icons-react';
+import {
+  Calendar,
+  Clock,
+  CurrencyDollar,
+  Location,
+  Map2,
+} from 'tabler-icons-react';
 export interface attributes {
   Title: string;
   Description: string;
@@ -57,12 +64,12 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
 
   const footnoteDark =
     theme.colorScheme === 'dark'
-      ? event.Footnote.replaceAll('black', 'white').replaceAll(
+      ? event.Footnote.replaceAll('black', '#cecfd0').replaceAll(
           'rgb(0, 22, 98)',
           '#7787e4'
         )
       : event.Footnote;
-      
+
   return (
     <AppShell>
       <Card shadow='sm' p='lg'>
@@ -88,12 +95,16 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
             </Text>
           </Grid.Col>
           <Grid.Col sm={6.8} ml='auto'>
-            <div
-              style={{
+            <Box
+              sx={() => ({
                 display: 'flex',
                 flexFlow: 'column',
                 height: 'calc(100vh - 150px)',
-              }}
+
+                '@media (max-width: 768px)': {
+                  height: '100%',
+                },
+              })}
             >
               <div style={{ flex: '0 1 auto' }}>
                 {isEventOver ? (
@@ -138,7 +149,7 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                     : `${days} Days, ${hours} Hours, ${minutes} Minutes`}
                 </Text>
 
-                <Group m={20}>
+                <Group my={20}>
                   <Grid style={{ width: '100%' }}>
                     <Grid.Col
                       span={3}
@@ -157,13 +168,44 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                             border: '2px solid black',
                           }}
                         >
-                          <Location size={36} strokeWidth={2} color={'#fff'} />
+                          {event.GoogleMapsURL ? (
+                            <Map2 size={36} strokeWidth={2} color={'#fff'} />
+                          ) : (
+                            <Location
+                              size={36}
+                              strokeWidth={2}
+                              color={'#fff'}
+                            />
+                          )}
                         </div>
                       </AspectRatio>
-                      <Text mt={10} weight={600} align='center'>
+                      <Text
+                        mt={10}
+                        weight={600}
+                        align='center'
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.md,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.sm,
+                          },
+                        })}
+                        variant={event.GoogleMapsURL ? 'link' : 'text'}
+                        component={event.GoogleMapsURL ? 'a' : 'span'}
+                        href={event.GoogleMapsURL ?? ''}
+                      >
                         {event.Location}
                       </Text>
-                      <Text size='sm'>{event.Suburb}</Text>
+                      <Text
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.sm,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.xs,
+                          },
+                        })}
+                        align='center'
+                      >
+                        {event.Suburb}
+                      </Text>
                     </Grid.Col>
                     <Grid.Col
                       span={3}
@@ -185,10 +227,29 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                           <Calendar size={36} strokeWidth={2} color={'#fff'} />
                         </div>
                       </AspectRatio>
-                      <Text mt={10} weight={600} align='center'>
+                      <Text
+                        mt={10}
+                        weight={600}
+                        align='center'
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.md,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.sm,
+                          },
+                        })}
+                      >
                         {eventTime.toDateString().slice(0, -5)}
                       </Text>
-                      <Text size='sm'>Date</Text>
+                      <Text
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.sm,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.xs,
+                          },
+                        })}
+                      >
+                        Date
+                      </Text>
                     </Grid.Col>
                     <Grid.Col
                       span={3}
@@ -210,10 +271,29 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                           <Clock size={36} strokeWidth={2} color={'#fff'} />
                         </div>
                       </AspectRatio>
-                      <Text mt={10} weight={600} align='center'>
+                      <Text
+                        mt={10}
+                        weight={600}
+                        align='center'
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.md,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.sm,
+                          },
+                        })}
+                      >
                         {event.Time}
                       </Text>
-                      <Text size='sm'>Time</Text>
+                      <Text
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.sm,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.xs,
+                          },
+                        })}
+                      >
+                        Time
+                      </Text>
                     </Grid.Col>
                     <Grid.Col
                       span={3}
@@ -239,10 +319,29 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                           />
                         </div>
                       </AspectRatio>
-                      <Text mt={10} weight={600} align='center'>
+                      <Text
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.md,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.sm,
+                          },
+                        })}
+                        mt={10}
+                        weight={600}
+                        align='center'
+                      >
                         {event.Cost ?? 'BYO'}
                       </Text>
-                      <Text size='sm'>Price</Text>
+                      <Text
+                        sx={(theme) => ({
+                          fontSize: theme.fontSizes.sm,
+                          '@media (max-width: 550px)': {
+                            fontSize: theme.fontSizes.xs,
+                          },
+                        })}
+                      >
+                        Price
+                      </Text>
                     </Grid.Col>
                   </Grid>
                 </Group>
@@ -259,7 +358,7 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
               <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
                 <div dangerouslySetInnerHTML={{ __html: footnoteDark }} />
               </MediaQuery>
-            </div>
+            </Box>
           </Grid.Col>
         </Grid>
       </Card>
