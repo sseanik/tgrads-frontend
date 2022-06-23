@@ -11,10 +11,10 @@ import {
   Center,
   UnstyledButton,
   Button,
+  MediaQuery,
 } from '@mantine/core';
 import Link from 'next/link';
 import { useState } from 'react';
-import { ChevronUp, ChevronDown } from 'tabler-icons-react';
 
 interface EventsDisplayProps {
   events: any;
@@ -24,7 +24,6 @@ interface EventsDisplayProps {
 
 const EventsDisplay = (props: EventsDisplayProps) => {
   const theme = useMantineTheme();
-  const [opened, setOpen] = useState(true);
 
   const secondaryColor =
     theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
@@ -40,42 +39,17 @@ const EventsDisplay = (props: EventsDisplayProps) => {
 
   return (
     <>
-      <Button
-        color='dark'
-        variant='subtle'
-        radius='xs'
-        size='lg'
-        compact
-        rightIcon={opened ? <ChevronDown /> : <ChevronUp />}
-        onClick={() => setOpen((open: boolean) => !open)}
-        styles={() => ({
-          root: {
-            width: '100%',
-            display: 'flex',
-            '&:hover': {
-              backgroundColor:
-                theme.colorScheme === 'dark' ? '#242936' : '#f6f8ff',
-            },
-          },
-        })}
-      >
+      <Text ml={10} size='xl' weight={700} color="gray">
         {props.title}
-      </Button>
-      <Collapse
-        in={opened}
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'flex-start',
-        }}
-      >
-        {props.events.map((event: any) => {
-          return (
-            <Link
-              href={'events/' + event.attributes.Slug}
-              key={event.attributes.Slug}
-            >
-              <UnstyledButton style={{ width: 340 }}>
+      </Text>
+      {props.events.map((event: any) => {
+        return (
+          <Link
+            href={'events/' + event.attributes.Slug}
+            key={event.attributes.Slug}
+          >
+            <MediaQuery largerThan='sm' styles={{ width: '340px !important' }}>
+              <UnstyledButton style={{ width: '100%' }}>
                 <Indicator
                   inline
                   size={
@@ -189,7 +163,10 @@ const EventsDisplay = (props: EventsDisplayProps) => {
                           >
                             <Text
                               size='sm'
-                              style={{ color: secondaryColor, lineHeight: 1.5 }}
+                              style={{
+                                color: secondaryColor,
+                                lineHeight: 1.5,
+                              }}
                             >
                               {event.attributes.Description}
                             </Text>
@@ -200,10 +177,10 @@ const EventsDisplay = (props: EventsDisplayProps) => {
                   </Indicator>
                 </Indicator>
               </UnstyledButton>
-            </Link>
-          );
-        })}
-      </Collapse>
+            </MediaQuery>
+          </Link>
+        );
+      })}
     </>
   );
 };

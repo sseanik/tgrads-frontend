@@ -13,7 +13,7 @@ const AppShell = (props: AppShellProps) => {
 
   return (
     <AppShellComponent
-      zIndex={1000}
+      zIndex={101}
       fixed
       styles={{
         main: {

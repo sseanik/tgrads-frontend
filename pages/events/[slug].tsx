@@ -43,14 +43,26 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
   const theme = useMantineTheme();
 
   const eventTime = new Date(event.Date + ' ' + event.Time);
-  const timeNow = new Date().getTime();
-  let delta = Math.abs(eventTime.getTime() - timeNow) / 1000;
+
+  const timeNow = new Date();
+
+  const isEventOver = timeNow > eventTime;
+
+  let delta = Math.abs(eventTime.getTime() - timeNow.getTime()) / 1000;
   const days = Math.floor(delta / 86400);
   delta -= days * 86400;
   const hours = Math.floor(delta / 3600) % 24;
   delta -= hours * 3600;
   const minutes = Math.floor(delta / 60) % 60;
 
+  const footnoteDark =
+    theme.colorScheme === 'dark'
+      ? event.Footnote.replaceAll('black', 'white').replaceAll(
+          'rgb(0, 22, 98)',
+          '#7787e4'
+        )
+      : event.Footnote;
+      
   return (
     <AppShell>
       <Card shadow='sm' p='lg'>
@@ -84,26 +96,47 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
               }}
             >
               <div style={{ flex: '0 1 auto' }}>
-                <Button
-                  fullWidth
-                  radius='xs'
-                  variant='gradient'
-                  size='lg'
-                  mt={12}
-                  mb={16}
-                  gradient={{
-                    from: theme.colorScheme === 'dark' ? '#d08dff' : '#9546c1',
-                    to: theme.colorScheme === 'dark' ? '#8687ff' : '#5b6cf4',
-                  }}
-                >
-                  RSVP
-                </Button>
-                <Text component='span'>Event starts in: </Text>
-                <Text
-                  component='span'
-                  size='lg'
-                  weight={700}
-                >{`${days} Days, ${hours} Hours, ${minutes} Minutes`}</Text>
+                {isEventOver ? (
+                  <Button
+                    fullWidth
+                    radius='xs'
+                    variant='gradient'
+                    size='lg'
+                    mt={12}
+                    mb={16}
+                    gradient={{
+                      from:
+                        theme.colorScheme === 'dark' ? '#d699e9' : '#9f58ad',
+                      to: theme.colorScheme === 'dark' ? '#d887fa' : '#ef61c2',
+                    }}
+                  >
+                    Go to Photo Gallery
+                  </Button>
+                ) : (
+                  <Button
+                    fullWidth
+                    radius='xs'
+                    variant='gradient'
+                    size='lg'
+                    mt={12}
+                    mb={16}
+                    gradient={{
+                      from:
+                        theme.colorScheme === 'dark' ? '#d08dff' : '#9546c1',
+                      to: theme.colorScheme === 'dark' ? '#8687ff' : '#5b6cf4',
+                    }}
+                  >
+                    RSVP
+                  </Button>
+                )}
+                <Text component='span'>
+                  {isEventOver ? 'Event finished ' : 'Event starts in: '}
+                </Text>
+                <Text component='span' size='lg' weight={700}>
+                  {isEventOver
+                    ? `${days} Days ago`
+                    : `${days} Days, ${hours} Hours, ${minutes} Minutes`}
+                </Text>
 
                 <Group m={20}>
                   <Grid style={{ width: '100%' }}>
@@ -207,7 +240,7 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                         </div>
                       </AspectRatio>
                       <Text mt={10} weight={600} align='center'>
-                        {event.Cost}
+                        {event.Cost ?? 'BYO'}
                       </Text>
                       <Text size='sm'>Price</Text>
                     </Grid.Col>
@@ -215,12 +248,16 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                 </Group>
               </div>
               <MediaQuery smallerThan='sm' styles={{ display: 'none' }}>
-                <ScrollArea style={{ flex: '0 1 auto' }} type='auto'>
-                  <div dangerouslySetInnerHTML={{ __html: event.Footnote }} />
+                <ScrollArea
+                  style={{ flex: '0 1 auto' }}
+                  type='auto'
+                  offsetScrollbars
+                >
+                  <div dangerouslySetInnerHTML={{ __html: footnoteDark }} />
                 </ScrollArea>
               </MediaQuery>
               <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-                <div dangerouslySetInnerHTML={{ __html: event.Footnote }} />
+                <div dangerouslySetInnerHTML={{ __html: footnoteDark }} />
               </MediaQuery>
             </div>
           </Grid.Col>

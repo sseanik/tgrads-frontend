@@ -19,7 +19,13 @@ const Events: NextPage<{ events: event[] }> = ({ events }) => {
     return events
       .filter((event: any) => upcomingDate(event.attributes.Date, upcoming))
       .sort((a: any, b: any) =>
-        new Date(a.attributes.Date) < new Date(b.attributes.Date) ? -1 : 1
+        new Date(a.attributes.Date) < new Date(b.attributes.Date)
+          ? upcoming
+            ? -1
+            : 1
+          : upcoming
+          ? 1
+          : -1
       );
   };
 
@@ -28,8 +34,16 @@ const Events: NextPage<{ events: event[] }> = ({ events }) => {
 
   return (
     <AppShell>
-      <EventsDisplay events={upcomingEvents} upcomingDate={upcomingDate} title="Upcoming Events"/>
-      <EventsDisplay events={pastEvents} upcomingDate={upcomingDate} title="Past Events"/>
+      <EventsDisplay
+        events={upcomingEvents}
+        upcomingDate={upcomingDate}
+        title='Upcoming Events'
+      />
+      <EventsDisplay
+        events={pastEvents}
+        upcomingDate={upcomingDate}
+        title='Past Events'
+      />
     </AppShell>
   );
 };
