@@ -29,7 +29,9 @@ const EventsDisplay = (props: EventsDisplayProps) => {
 
   return (
     <>
-      <Text ml={8} weight={600} size='xl'>{props.title}</Text>
+      <Text ml={8} weight={600} size='xl'>
+        {props.title}
+      </Text>
       <div
         style={{
           display: 'flex',
@@ -42,9 +44,9 @@ const EventsDisplay = (props: EventsDisplayProps) => {
             <div key={event.attributes.Slug} style={{ width: 340 }}>
               <Indicator
                 inline
-                size={props.upcomingDate(event.attributes.Date, true) ? 20 : 0}
+                size={props.upcomingDate(event.attributes.Date) ? 20 : 0}
                 offset={10}
-                label={props.upcomingDate(event.attributes.Date, true) ? 'Soon' : ''}
+                label={props.upcomingDate(event.attributes.Date) ? 'Soon' : ''}
                 color='lime'
               >
                 <Card
