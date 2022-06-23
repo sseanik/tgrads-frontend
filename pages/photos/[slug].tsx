@@ -1,7 +1,7 @@
 import { Title } from '@mantine/core';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import { fetchAPI } from '../../lib/api';
-import Image from '../../components/Image';
+import Image from '../../components/CustomImage';
 
 interface attributes {
   Title: string;
@@ -17,7 +17,6 @@ interface attributes {
 }
 
 const Photos: NextPage<{ event: attributes }> = ({ event }) => {
-  console.log(event);
   // const imageURL = getStrapiMedia(event.Preview.attributes);
   // console.log(imageURL)
   return (
@@ -40,7 +39,6 @@ export const getStaticProps: GetStaticProps = async ({ params }: any) => {
     filters: {
       slug: params.slug,
     },
-    populate: ['Preview', 'DateTime', 'Location'],
   });
 
   return {
@@ -50,7 +48,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: any) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { data } = await fetchAPI('events', { fields: ['slug'] });
+  const { data } = await fetchAPI('photos', { fields: ['slug'] });
 
   const paths = data.map((event: { id: number; attributes: any }) => {
     return { params: { slug: event.attributes.Slug } };

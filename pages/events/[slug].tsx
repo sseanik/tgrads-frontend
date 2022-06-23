@@ -1,9 +1,9 @@
 import { Title } from '@mantine/core';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import { fetchAPI } from '../../lib/api';
-import Image from '../../components/Image';
+import Image from '../../components/CustomImage';
 
-interface attributes {
+export interface attributes {
   Title: string;
   Description: string;
   Footnote: string;
@@ -11,22 +11,22 @@ interface attributes {
   createdAt: string;
   publishedAt: string;
   updatedAt: string;
-  Preview: any;
-  DateTime: any;
+  Image: any;
+  Date: any;
   Location: any;
+  Time: string;
 }
 
 const Events: NextPage<{ event: attributes }> = ({ event }) => {
-  console.log(event);
   // const imageURL = getStrapiMedia(event.Preview.attributes);
   // console.log(imageURL)
   return (
     <div>
       <Title order={1}>{event.Title}</Title>
-      <Image imageObj={event.Preview} alt='' />
+      <Image imageObj={event.Image} alt='' />
       <Title order={2}>{event.Description}</Title>
-      <Title order={3}>Date: {event.DateTime.Date}</Title>
-      <Title order={3}>Time: {event.DateTime.Time}</Title>
+      <Title order={3}>Date: {event.Date}</Title>
+      <Title order={3}>Time: {event.Time}</Title>
       <Title order={3}>
         Location: {event.Location.Place}, {event.Location.Suburb}
       </Title>
@@ -40,7 +40,6 @@ export const getStaticProps: GetStaticProps = async ({ params }: any) => {
     filters: {
       slug: params.slug,
     },
-    populate: ['Preview', 'DateTime', 'Location'],
   });
 
   return {

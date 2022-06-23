@@ -10,7 +10,6 @@ export interface MenuButtonProps {
 
 const MenuButton = (props: MenuButtonProps) => {
   const theme = useMantineTheme();
-  console.log(theme.colorScheme);
 
   return (
     <Link href={props.url}>
