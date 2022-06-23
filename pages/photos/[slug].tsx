@@ -1,7 +1,6 @@
 import { Title } from '@mantine/core';
 import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
 import { fetchAPI } from '../../lib/api';
-import Image from '../../components/CustomImage';
 
 interface attributes {
   Title: string;
@@ -22,7 +21,7 @@ const Photos: NextPage<{ event: attributes }> = ({ event }) => {
   return (
     <div>
       <Title order={1}>{event.Title}</Title>
-      <Image imageObj={event.Preview} alt='' />
+      {/* <Image imageObj={event.Preview} alt='' /> */}
       <Title order={2}>{event.Description}</Title>
       <Title order={3}>Date: {event.DateTime.Date}</Title>
       <Title order={3}>Time: {event.DateTime.Time}</Title>
