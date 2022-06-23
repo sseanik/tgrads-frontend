@@ -27,6 +27,10 @@ const EventsDisplay = (props: EventsDisplayProps) => {
     return new Date(dateStr).toDateString().slice(0, -5);
   };
 
+  const isDateSoon = (dateStr: string) => {
+    return new Date(dateStr).getMonth() - new Date().getMonth() <= 1;
+  };
+
   return (
     <>
       <Text ml={8} weight={600} size='xl'>
@@ -44,9 +48,19 @@ const EventsDisplay = (props: EventsDisplayProps) => {
             <div key={event.attributes.Slug} style={{ width: 340 }}>
               <Indicator
                 inline
-                size={props.upcomingDate(event.attributes.Date) ? 20 : 0}
+                size={
+                  props.upcomingDate(event.attributes.Date) &&
+                  isDateSoon(event.attributes.Date)
+                    ? 20
+                    : 0
+                }
                 offset={10}
-                label={props.upcomingDate(event.attributes.Date) ? 'Soon' : ''}
+                label={
+                  props.upcomingDate(event.attributes.Date) &&
+                  isDateSoon(event.attributes.Date)
+                    ? 'Soon'
+                    : ''
+                }
                 color='lime'
               >
                 <Card
