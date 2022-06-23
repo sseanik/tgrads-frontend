@@ -12,6 +12,7 @@ import {
   UnstyledButton,
   Button,
   MediaQuery,
+  createStyles,
 } from '@mantine/core';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -37,9 +38,25 @@ const EventsDisplay = (props: EventsDisplayProps) => {
     return new Date(dateStr).getMonth() - new Date().getMonth() <= 1;
   };
 
+  const useStyles = createStyles((theme) => ({
+    cardW: {
+      width: '340px',
+      '@media (max-width: 730px)': {
+        width: '100%',
+      },
+    },
+    cardH: {
+        height: 120,
+        '@media (max-width: 730px)': {
+            height: 85,
+          },
+    }
+  }));
+  const { classes } = useStyles();
+
   return (
     <>
-      <Text ml={10} size='xl' weight={700} color="gray">
+      <Text ml={10} size='xl' weight={700} color='gray'>
         {props.title}
       </Text>
       {props.events.map((event: any) => {
@@ -48,8 +65,7 @@ const EventsDisplay = (props: EventsDisplayProps) => {
             href={'events/' + event.attributes.Slug}
             key={event.attributes.Slug}
           >
-            <MediaQuery largerThan='sm' styles={{ width: '340px !important' }}>
-              <UnstyledButton style={{ width: '100%' }}>
+              <UnstyledButton className={classes.cardW}>
                 <Indicator
                   inline
                   size={
@@ -157,7 +173,7 @@ const EventsDisplay = (props: EventsDisplayProps) => {
                           </Group>
 
                           <ScrollArea
-                            style={{ height: 120 }}
+                            className={classes.cardH}
                             offsetScrollbars
                             scrollbarSize={8}
                           >
@@ -177,7 +193,6 @@ const EventsDisplay = (props: EventsDisplayProps) => {
                   </Indicator>
                 </Indicator>
               </UnstyledButton>
-            </MediaQuery>
           </Link>
         );
       })}
