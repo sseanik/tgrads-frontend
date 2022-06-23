@@ -12,7 +12,7 @@ const MenuButton = (props: MenuButtonProps) => {
   const theme = useMantineTheme();
 
   return (
-    <Link href={props.url}>
+    <Link href={"/" + props.url} replace={true}>
       <Tooltip
         label={props.text}
         color='indigo'

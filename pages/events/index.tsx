@@ -2,17 +2,6 @@ import { GetStaticProps, NextPage } from 'next';
 import AppShell from '../../components/AppShell';
 import { fetchAPI } from '../../lib/api';
 import { attributes } from './[slug]';
-import {
-  Card,
-  Image,
-  Text,
-  Badge,
-  Button,
-  Group,
-  useMantineTheme,
-  ScrollArea,
-  Indicator,
-} from '@mantine/core';
 import EventsDisplay from '../../components/EventsDisplay';
 
 interface event {

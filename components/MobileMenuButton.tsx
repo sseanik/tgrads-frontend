@@ -6,7 +6,7 @@ const MobileMenuButton = (props: MenuButtonProps) => {
   const theme = useMantineTheme();
 
   return (
-    <Link href={props.url}>
+    <Link href={"/" + props.url}>
       <Button
         styles={() => ({
           root: {

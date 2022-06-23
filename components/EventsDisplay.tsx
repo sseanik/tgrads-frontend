@@ -1,6 +1,5 @@
 import {
-  Badge,
-  Button,
+  Collapse,
   Card,
   Group,
   Indicator,
@@ -8,8 +7,14 @@ import {
   Image,
   Text,
   useMantineTheme,
-  Title,
+  Grid,
+  Center,
+  UnstyledButton,
+  Button,
 } from '@mantine/core';
+import Link from 'next/link';
+import { useState } from 'react';
+import { ChevronUp, ChevronDown } from 'tabler-icons-react';
 
 interface EventsDisplayProps {
   events: any;
@@ -19,12 +24,14 @@ interface EventsDisplayProps {
 
 const EventsDisplay = (props: EventsDisplayProps) => {
   const theme = useMantineTheme();
+  const [opened, setOpen] = useState(true);
 
   const secondaryColor =
     theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
 
-  const convertDateToReadable = (dateStr: string) => {
-    return new Date(dateStr).toDateString().slice(0, -5);
+  const convertDateToReadable = (dateStr: string, month = false) => {
+    const dateWords = new Date(dateStr).toDateString().slice(0, -5).split(' ');
+    return month ? dateWords[1] : dateWords[2];
   };
 
   const isDateSoon = (dateStr: string) => {
@@ -33,10 +40,29 @@ const EventsDisplay = (props: EventsDisplayProps) => {
 
   return (
     <>
-      <Text ml={8} weight={600} size='xl'>
+      <Button
+        color='dark'
+        variant='subtle'
+        radius='xs'
+        size='lg'
+        compact
+        rightIcon={opened ? <ChevronDown /> : <ChevronUp />}
+        onClick={() => setOpen((open: boolean) => !open)}
+        styles={() => ({
+          root: {
+            width: '100%',
+            display: 'flex',
+            '&:hover': {
+              backgroundColor:
+                theme.colorScheme === 'dark' ? '#242936' : '#f6f8ff',
+            },
+          },
+        })}
+      >
         {props.title}
-      </Text>
-      <div
+      </Button>
+      <Collapse
+        in={opened}
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -45,87 +71,139 @@ const EventsDisplay = (props: EventsDisplayProps) => {
       >
         {props.events.map((event: any) => {
           return (
-            <div key={event.attributes.Slug} style={{ width: 340 }}>
-              <Indicator
-                inline
-                size={
-                  props.upcomingDate(event.attributes.Date) &&
-                  isDateSoon(event.attributes.Date)
-                    ? 20
-                    : 0
-                }
-                offset={10}
-                label={
-                  props.upcomingDate(event.attributes.Date) &&
-                  isDateSoon(event.attributes.Date)
-                    ? 'Soon'
-                    : ''
-                }
-                color='lime'
-              >
-                <Card
-                  shadow='sm'
-                  p='lg'
-                  m={10}
-                  style={{
-                    height: '100%',
-                  }}
+            <Link
+              href={'events/' + event.attributes.Slug}
+              key={event.attributes.Slug}
+            >
+              <UnstyledButton style={{ width: 340 }}>
+                <Indicator
+                  inline
+                  size={
+                    props.upcomingDate(event.attributes.Date) &&
+                    isDateSoon(event.attributes.Date)
+                      ? 20
+                      : 0
+                  }
+                  offset={12}
+                  label={
+                    props.upcomingDate(event.attributes.Date) &&
+                    isDateSoon(event.attributes.Date)
+                      ? 'Soon'
+                      : ''
+                  }
+                  color='lime'
                 >
-                  <Card.Section>
-                    <Image
-                      src={event.attributes.Image.data.attributes.url}
-                      height={160}
-                      alt=''
-                    />
-                  </Card.Section>
-
-                  <Group
-                    position='apart'
-                    style={{ marginBottom: 5, marginTop: theme.spacing.sm }}
+                  <Indicator
+                    inline
+                    size={20}
+                    offset={30}
+                    label={event.attributes.Cost ?? ''}
+                    color={theme.colorScheme === 'dark' ? 'black' : 'white'}
+                    position='top-start'
+                    radius='sm'
+                    styles={{
+                      indicator: {
+                        marginLeft: '12px',
+                        color: theme.colorScheme === 'dark' ? 'white' : 'black',
+                        padding: 10,
+                        fontWeight: 900,
+                        fontFamily: 'monospace',
+                        boxShadow:
+                          '0 2px 2px rgba(0,0,0,0.16), 0 2px 2px rgba(0,0,0,0.23)',
+                        display: event.attributes.Cost ? '' : 'none',
+                      },
+                    }}
                   >
-                    <Text weight={700}>{event.attributes.Title}</Text>
-                  </Group>
-                  <Badge
-                    color={
-                      props.upcomingDate(event.attributes.Date)
-                        ? 'green'
-                        : 'gray'
-                    }
-                    variant='dot'
-                    size='md'
-                    fullWidth
-                    mb={5}
-                  >
-                    {convertDateToReadable(event.attributes.Date)}
-                  </Badge>
-
-                  <ScrollArea
-                    style={{ height: 110 }}
-                    offsetScrollbars
-                    scrollbarSize={8}
-                  >
-                    <Text
-                      size='sm'
-                      style={{ color: secondaryColor, lineHeight: 1.5 }}
+                    <Card
+                      shadow='sm'
+                      p='lg'
+                      m={10}
+                      style={{
+                        height: '100%',
+                      }}
+                      styles={() => ({
+                        root: {
+                          color:
+                            theme.colorScheme === 'dark'
+                              ? '#d0cfd4'
+                              : '#3c4394',
+                          height: '100%',
+                          '&:hover': {
+                            backgroundColor:
+                              theme.colorScheme === 'dark'
+                                ? '#242936'
+                                : '#f6f8ff',
+                          },
+                        },
+                      })}
                     >
-                      {event.attributes.Description}
-                    </Text>
-                  </ScrollArea>
+                      <Card.Section>
+                        <Image
+                          src={event.attributes.Image.data.attributes.url}
+                          height={160}
+                          alt=''
+                        />
+                      </Card.Section>
 
-                  <Button
-                    variant='light'
-                    color='blue'
-                    fullWidth
-                    style={{ marginTop: 14 }}
-                  >
-                    Go to Event
-                  </Button>
-                </Card>
-              </Indicator>
-            </div>
+                      <Grid columns={7}>
+                        <Grid.Col span={1}>
+                          <Center
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              height: '100%',
+                            }}
+                          >
+                            <div
+                              style={{
+                                color: '#666af3',
+                                fontWeight: 600,
+                                marginBottom: '6px',
+                              }}
+                            >
+                              {convertDateToReadable(
+                                event.attributes.Date,
+                                true
+                              )}
+                            </div>
+                            <div style={{ fontWeight: 700 }}>
+                              {convertDateToReadable(event.attributes.Date)}
+                            </div>
+                          </Center>
+                        </Grid.Col>
+                        <Grid.Col span={6}>
+                          <Group
+                            position='apart'
+                            style={{
+                              marginBottom: 5,
+                              marginTop: theme.spacing.sm,
+                            }}
+                          >
+                            <Text weight={700}>{event.attributes.Title}</Text>
+                          </Group>
+
+                          <ScrollArea
+                            style={{ height: 120 }}
+                            offsetScrollbars
+                            scrollbarSize={8}
+                          >
+                            <Text
+                              size='sm'
+                              style={{ color: secondaryColor, lineHeight: 1.5 }}
+                            >
+                              {event.attributes.Description}
+                            </Text>
+                          </ScrollArea>
+                        </Grid.Col>
+                      </Grid>
+                    </Card>
+                  </Indicator>
+                </Indicator>
+              </UnstyledButton>
+            </Link>
           );
         })}
-      </div>
+      </Collapse>
     </>
   );
 };
