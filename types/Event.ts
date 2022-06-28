@@ -1,5 +1,4 @@
 export interface Event {
-  id: number;
   attributes: EventAttributes;
 }
 
@@ -12,12 +11,12 @@ export interface EventAttributes {
   Suburb: string;
   GoogleMapsURL: string;
   Footnote: string;
-  Image: EventImage;
   Cost: number;
   Slug: string;
+  Image?: EventImage;
 }
 
-export type EventImage = {
+type EventImage = {
   data: {
     attributes: {
       alternativeText: string;

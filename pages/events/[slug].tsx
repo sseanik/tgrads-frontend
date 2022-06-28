@@ -60,7 +60,7 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
             <Image
               mt={10}
               mb={10}
-              src={event.Image.data.attributes.url}
+              src={event.Image?.data.attributes.url}
               alt=''
             />
             <Text
