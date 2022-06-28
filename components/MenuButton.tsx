@@ -1,8 +1,9 @@
-import { Button, MediaQuery, Tooltip, useMantineTheme } from '@mantine/core';
+import { Button, Tooltip, useMantineTheme } from '@mantine/core';
 import Link from 'next/link';
+import { Icon } from 'tabler-icons-react';
 
 export interface MenuButtonProps {
-  icon: any;
+  icon: Icon;
   text: string;
   url: string;
   title: string;

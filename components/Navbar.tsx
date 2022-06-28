@@ -1,4 +1,5 @@
 import { Navbar as NavbarComponent } from '@mantine/core';
+
 import NavItems from '../assets/NavItems';
 import MobileMenuButton from './MobileMenuButton';
 import NavbarFooter from './NavbarFooter';

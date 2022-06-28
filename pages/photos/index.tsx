@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+
 import AppShell from '../../components/AppShell';
 
 const Photos: NextPage = () => {

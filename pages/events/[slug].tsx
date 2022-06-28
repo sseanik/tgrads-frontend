@@ -1,19 +1,18 @@
 import {
-  Card,
-  Text,
-  Image,
-  Grid,
-  Button,
-  useMantineTheme,
-  Group,
   AspectRatio,
-  ScrollArea,
-  MediaQuery,
   Box,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Image,
+  MediaQuery,
+  ScrollArea,
+  Text,
+  useMantineTheme,
 } from '@mantine/core';
-import { NextPage, GetStaticProps, GetStaticPaths } from 'next';
-import AppShell from '../../components/AppShell';
-import { fetchAPI } from '../../lib/api';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 import {
   Calendar,
   Clock,
@@ -21,48 +20,22 @@ import {
   Location,
   Map2,
 } from 'tabler-icons-react';
-export interface attributes {
-  Title: string;
-  Description: string;
-  Date: string;
-  Time: string;
-  Location: string;
-  Suburb: string;
-  GoogleMapsURL: string;
-  Footnote: string;
-  Image: eventImage;
-  Cost: number;
-}
 
-type eventImage = {
-  data: {
-    attributes: {
-      alternativeText: string;
-      caption: string;
-      height: number;
-      width: number;
-      url: string;
-    };
-  };
-};
+import AppShell from '../../components/AppShell';
+import Breadcrumbs from '../../components/Breadcrumbs';
+import { fetchAPI } from '../../lib/api';
+import { Event, EventAttributes } from '../../types/Event';
+import getDaysHoursMinutesRemaining from '../../utils/getDaysHoursMinutesRemaining';
 
-const Events: NextPage<{ event: attributes }> = ({ event }) => {
+const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
   const theme = useMantineTheme();
+  const router = useRouter();
 
   const eventTime = new Date(event.Date + ' ' + event.Time);
+  const isEventOver = new Date() > eventTime;
+  const { days, hours, minutes } = getDaysHoursMinutesRemaining(eventTime);
 
-  const timeNow = new Date();
-
-  const isEventOver = timeNow > eventTime;
-
-  let delta = Math.abs(eventTime.getTime() - timeNow.getTime()) / 1000;
-  const days = Math.floor(delta / 86400);
-  delta -= days * 86400;
-  const hours = Math.floor(delta / 3600) % 24;
-  delta -= hours * 3600;
-  const minutes = Math.floor(delta / 60) % 60;
-
-  const footnoteDark =
+  const parsedFootnoteDark =
     theme.colorScheme === 'dark'
       ? event.Footnote.replaceAll('black', '#cecfd0').replaceAll(
           'rgb(0, 22, 98)',
@@ -70,8 +43,17 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
         )
       : event.Footnote;
 
+  const crumbs = [
+    { title: 'Home', href: '/' },
+    { title: 'Events', href: '/events' },
+    { title: event.Title, href: router.query.slug?.toString() ?? '' },
+  ];
+
   return (
     <AppShell>
+      <Box style={{ margin: '0 0 6px 2px' }}>
+        <Breadcrumbs crumbs={crumbs} />
+      </Box>
       <Card shadow='sm' p='lg'>
         <Grid>
           <Grid.Col sm={5}>
@@ -99,7 +81,7 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
               sx={() => ({
                 display: 'flex',
                 flexFlow: 'column',
-                height: 'calc(100vh - 150px)',
+                height: 'calc(100vh - 180px)',
 
                 '@media (max-width: 768px)': {
                   height: '100%',
@@ -352,11 +334,13 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
                   type='auto'
                   offsetScrollbars
                 >
-                  <div dangerouslySetInnerHTML={{ __html: footnoteDark }} />
+                  <div
+                    dangerouslySetInnerHTML={{ __html: parsedFootnoteDark }}
+                  />
                 </ScrollArea>
               </MediaQuery>
               <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-                <div dangerouslySetInnerHTML={{ __html: footnoteDark }} />
+                <div dangerouslySetInnerHTML={{ __html: parsedFootnoteDark }} />
               </MediaQuery>
             </Box>
           </Grid.Col>
@@ -366,10 +350,10 @@ const Events: NextPage<{ event: attributes }> = ({ event }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }: any) => {
+export const getStaticProps: GetStaticProps = async (context) => {
   const eventResponse = await fetchAPI('events', {
     filters: {
-      slug: params.slug,
+      slug: context?.params?.slug,
     },
     populate: ['Image'],
   });
@@ -383,7 +367,7 @@ export const getStaticProps: GetStaticProps = async ({ params }: any) => {
 export const getStaticPaths: GetStaticPaths = async () => {
   const { data } = await fetchAPI('events', { fields: ['slug'] });
 
-  const paths = data.map((event: { id: number; attributes: any }) => {
+  const paths = data.map((event: Event) => {
     return { params: { slug: event.attributes.Slug } };
   });
 

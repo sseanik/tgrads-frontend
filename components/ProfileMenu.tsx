@@ -51,8 +51,8 @@ const ProfileMenu = () => {
 
   const logoutClick = () => {
     setLoggedIn('');
-    setValue('')
-  }
+    setValue('');
+  };
 
   return (
     <>
@@ -67,7 +67,7 @@ const ProfileMenu = () => {
         size='md'
       >
         <Autocomplete
-          description='We use your name to login, no need to register or passwords'
+          description='We use your name to login, no need to register'
           label='What is your name?'
           required
           data={minData}
@@ -120,7 +120,13 @@ const ProfileMenu = () => {
             >
               {loggedIn}
             </Text>
-            <Avatar radius='xl' color='indigo' />
+            {loggedIn ? (
+              <Avatar radius='xl' color='indigo'>
+                CM
+              </Avatar>
+            ) : (
+              <Avatar radius='xl' color='indigo' />
+            )}
           </Button>
         }
         styles={() => ({
@@ -138,10 +144,18 @@ const ProfileMenu = () => {
         >
           {dark ? 'Light' : 'Dark'} Mode
         </Menu.Item>
+
+        <Menu.Item color='Blue' icon={<Logout size={14} />}>
+          Cruise Login
+        </Menu.Item>
         <Divider />
 
         {loggedIn ? (
-          <Menu.Item color='red' icon={<Logout size={14} />} onClick={logoutClick}>
+          <Menu.Item
+            color='red'
+            icon={<Logout size={14} />}
+            onClick={logoutClick}
+          >
             Sign Out
           </Menu.Item>
         ) : (
@@ -150,7 +164,7 @@ const ProfileMenu = () => {
             icon={<Logout size={14} />}
             onClick={() => setOpened(true)}
           >
-            Login
+            NSW Login
           </Menu.Item>
         )}
       </Menu>

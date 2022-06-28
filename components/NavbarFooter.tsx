@@ -6,12 +6,17 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from '@mantine/core';
-import {
-  ChevronRight,
-} from 'tabler-icons-react';
+import { useLocalStorage } from '@mantine/hooks';
+import { ChevronRight } from 'tabler-icons-react';
 
 const NavbarFooter = () => {
   const theme = useMantineTheme();
+
+  const [loggedIn] = useLocalStorage({
+    key: 'loggedIn',
+    defaultValue: '',
+    getInitialValueInEffect: true,
+  });
 
   return (
     <Box
@@ -39,19 +44,17 @@ const NavbarFooter = () => {
           },
         }}
       >
-        <Group>
-          <Avatar
-            radius='xl'
-          />
+        <Group position="apart" style={{width: "220px"}}>
+          <Avatar radius='xl' />
           <Box>
             <Text size='sm' weight={500}>
-              Sean Smith
+              {loggedIn}
             </Text>
             <Text color='dimmed' size='xs'>
-              Software Engineer
+              {loggedIn ? 'NSW Graduate' : 'Login'}
             </Text>
           </Box>
-          <ChevronRight size={18} />
+          <Box><ChevronRight size={18} /></Box>
         </Group>
       </UnstyledButton>
     </Box>

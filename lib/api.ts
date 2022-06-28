@@ -5,7 +5,7 @@ import qs from 'qs';
  * @param {string} path Path of the URL
  * @returns {string} Full Strapi URL
  */
-export function getStrapiURL(path: string = ''): string {
+export function getStrapiURL(path = ''): string {
   return `https://telstra-grads.herokuapp.com/${path}`;
 }
 

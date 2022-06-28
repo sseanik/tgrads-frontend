@@ -1,4 +1,11 @@
-import { Header as HeaderComponent, MediaQuery, Burger, useMantineTheme } from '@mantine/core';
+import {
+  Burger,
+  Header as HeaderComponent,
+  MediaQuery,
+  useMantineTheme,
+} from '@mantine/core';
+import { Dispatch, SetStateAction } from 'react';
+
 import NavItems from '../assets/NavItems';
 import Logo from './Logo';
 import MenuButton from './MenuButton';
@@ -6,7 +13,7 @@ import ProfileMenu from './ProfileMenu';
 
 interface HeaderProps {
   opened: boolean;
-  setOpened: any;
+  setOpened: Dispatch<SetStateAction<boolean>>;
 }
 
 const Header = ({ opened, setOpened }: HeaderProps) => {

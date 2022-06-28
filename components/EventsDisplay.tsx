@@ -1,43 +1,32 @@
 import {
-  Collapse,
   Card,
+  Center,
+  createStyles,
+  Grid,
   Group,
+  Image,
   Indicator,
   ScrollArea,
-  Image,
   Text,
-  useMantineTheme,
-  Grid,
-  Center,
   UnstyledButton,
-  Button,
-  MediaQuery,
-  createStyles,
+  useMantineTheme,
 } from '@mantine/core';
 import Link from 'next/link';
 
+import { Event } from '../types/Event';
+import convertDateToReadable from '../utils/convertDateToReadable';
+import isDateSoon from '../utils/isDateSoon';
+import isUpcomingDate from '../utils/isUpcomingDate';
+
 interface EventsDisplayProps {
-  events: any;
-  upcomingDate: any;
+  events: Event[];
   title: string;
 }
 
 const EventsDisplay = (props: EventsDisplayProps) => {
   const theme = useMantineTheme();
 
-  const secondaryColor =
-    theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7];
-
-  const convertDateToReadable = (dateStr: string, month = false) => {
-    const dateWords = new Date(dateStr).toDateString().slice(0, -5).split(' ');
-    return month ? dateWords[1] : dateWords[2];
-  };
-
-  const isDateSoon = (dateStr: string) => {
-    return new Date(dateStr).getMonth() - new Date().getMonth() <= 1;
-  };
-
-  const useStyles = createStyles((theme) => ({
+  const useStyles = createStyles(() => ({
     cardW: {
       width: '340px',
       '@media (max-width: 730px)': {
@@ -58,7 +47,7 @@ const EventsDisplay = (props: EventsDisplayProps) => {
       <Text ml={10} size='xl' weight={700} color='gray'>
         {props.title}
       </Text>
-      {props.events.map((event: any) => {
+      {props.events.map((event: Event) => {
         return (
           <Link
             href={'events/' + event.attributes.Slug}
@@ -68,14 +57,14 @@ const EventsDisplay = (props: EventsDisplayProps) => {
               <Indicator
                 inline
                 size={
-                  props.upcomingDate(event.attributes.Date) &&
+                  isUpcomingDate(event.attributes.Date) &&
                   isDateSoon(event.attributes.Date)
                     ? 20
                     : 0
                 }
                 offset={12}
                 label={
-                  props.upcomingDate(event.attributes.Date) &&
+                  isUpcomingDate(event.attributes.Date) &&
                   isDateSoon(event.attributes.Date)
                     ? 'Soon'
                     : ''
@@ -174,7 +163,10 @@ const EventsDisplay = (props: EventsDisplayProps) => {
                           <Text
                             size='sm'
                             style={{
-                              color: secondaryColor,
+                              color:
+                                theme.colorScheme === 'dark'
+                                  ? theme.colors.dark[1]
+                                  : theme.colors.gray[7],
                               lineHeight: 1.5,
                             }}
                           >

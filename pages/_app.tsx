@@ -1,11 +1,11 @@
-import { AppProps } from 'next/app';
-import Head from 'next/head';
 import {
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
 } from '@mantine/core';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
+import { AppProps } from 'next/app';
+import Head from 'next/head';
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;

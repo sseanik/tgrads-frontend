@@ -1,24 +1,16 @@
 import { GetStaticProps, NextPage } from 'next';
+
 import AppShell from '../../components/AppShell';
-import { fetchAPI } from '../../lib/api';
-import { attributes } from './[slug]';
 import EventsDisplay from '../../components/EventsDisplay';
+import { fetchAPI } from '../../lib/api';
+import { Event } from '../../types/Event';
+import upcomingDate from '../../utils/isUpcomingDate';
 
-interface event {
-  attributes: attributes;
-  id: number;
-}
-
-const Events: NextPage<{ events: event[] }> = ({ events }) => {
-  const upcomingDate = (dateStr: string, upcoming = true) => {
-    const check = new Date() < new Date(dateStr);
-    return upcoming ? check : !check;
-  };
-
-  const extractSpecificEvents = (events: any, upcoming: boolean) => {
+const Events: NextPage<{ events: Event[] }> = ({ events }) => {
+  const extractSpecificEvents = (events: Event[], upcoming: boolean) => {
     return events
-      .filter((event: any) => upcomingDate(event.attributes.Date, upcoming))
-      .sort((a: any, b: any) =>
+      .filter((event: Event) => upcomingDate(event.attributes.Date, upcoming))
+      .sort((a: Event, b: Event) =>
         new Date(a.attributes.Date) < new Date(b.attributes.Date)
           ? upcoming
             ? -1
@@ -34,21 +26,13 @@ const Events: NextPage<{ events: event[] }> = ({ events }) => {
 
   return (
     <AppShell>
-      <EventsDisplay
-        events={upcomingEvents}
-        upcomingDate={upcomingDate}
-        title='Upcoming Events'
-      />
-      <EventsDisplay
-        events={pastEvents}
-        upcomingDate={upcomingDate}
-        title='Past Events'
-      />
+      <EventsDisplay events={upcomingEvents} title='Upcoming Events' />
+      <EventsDisplay events={pastEvents} title='Past Events' />
     </AppShell>
   );
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }: any) => {
+export const getStaticProps: GetStaticProps = async () => {
   const eventResponse = await fetchAPI('events', {
     populate: ['Image'],
   });

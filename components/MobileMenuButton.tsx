@@ -1,5 +1,6 @@
 import { Button, useMantineTheme } from '@mantine/core';
 import Link from 'next/link';
+
 import { MenuButtonProps } from './MenuButton';
 
 const MobileMenuButton = (props: MenuButtonProps) => {
