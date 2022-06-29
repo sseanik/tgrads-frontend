@@ -3,7 +3,7 @@ import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
 import Image from 'next/image';
 import { useState } from 'react';
-import PhotoAlbum from 'react-photo-album';
+import PhotoAlbum, { Photo } from 'react-photo-album';
 import Lightbox from 'yet-another-react-lightbox';
 
 import NextJsImage from './NextjsImage';
@@ -13,6 +13,7 @@ const MAX_HEIGHT = 900;
 
 const PhotoGallery = ({ photos }) => {
   const [index, setIndex] = useState<number>(-1);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo>();
 
   const getTrueSize = (height: number, width: number) => {
     if (height > width) {
@@ -45,7 +46,10 @@ const PhotoGallery = ({ photos }) => {
         spacing={14}
         renderPhoto={NextJsImage}
         columns={(containerWidth) => Math.floor(containerWidth / 400) + 1}
-        onClick={(event, photo, index) => setIndex(index)}
+        onClick={(_, photo, index) => {
+          setIndex(index);
+          setSelectedPhoto(photo);
+        }}
       />
       <Lightbox
         slides={data}
@@ -58,18 +62,17 @@ const PhotoGallery = ({ photos }) => {
               <div
                 style={{
                   position: 'relative',
-                  width: image.width,
-                  height: image.height,
+                  width: selectedPhoto?.width,
+                  height: selectedPhoto?.height,
                 }}
               >
                 <Image
                   src={image.src ?? ''}
                   layout='fill'
-                  loading='eager'
+                  loading='lazy'
                   objectFit='contain'
                   alt={'alt' in image ? image.alt : ''}
-                  sizes={image.width}
-                  onClick={(e) => console.log(e)}
+                  sizes={`${selectedPhoto?.width}`}
                 />
               </div>
             );
