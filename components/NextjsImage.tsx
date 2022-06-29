@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
 import Image from 'next/image';
+import React from 'react';
 import { PhotoProps } from 'react-photo-album';
-
-import styles from '../styles/NextjsImage.module.css';
 
 type NextJsImageProps = PhotoProps & {
   wrapperProps?: React.HTMLAttributes<HTMLDivElement>;
@@ -30,7 +28,7 @@ const NextJsImage = ({ photo, imageProps, wrapperProps }: NextJsImageProps) => {
         sizes={sizes}
         width={width}
         height={height}
-        className={styles.image}
+        className={className}
         onClick={onClick}
       />
     </div>

@@ -5,4 +5,13 @@
 
 .image:hover {
   transform: scale(1.2, 1.2);
+  cursor: pointer;
+}
+
+.yarl__container {
+  background-color: rgb(0, 0, 0, 0.5) !important;
+}
+
+.className :global(.yarl__container){
+  background-color: rgb(0, 0, 0, 0.5) !important;
 }

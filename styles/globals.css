@@ -19,3 +19,7 @@ a {
   font-family: 'Akkurat';
   src: url('../public/Akkurat.ttf') format('ttf');
 }
+
+.className :global(.yarl__container){
+  background-color: 'blue' !important;
+}
