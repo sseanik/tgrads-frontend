@@ -12,8 +12,8 @@ const Gallery: NextPage<{ galleries: Gallery[] }> = ({ galleries }) => {
       {galleries.map((gallery: Gallery) => {
         return (
           <EventCard
-            event={gallery.attributes.Event[0].event.data}
-            key={gallery.attributes.Event[0].event.data.attributes.Slug}
+            event={gallery.attributes.Event.data}
+            key={gallery.attributes.Event.data.attributes.Slug}
             photos={gallery.attributes.FeaturedPhotos.data}
           />
         );
@@ -26,7 +26,10 @@ export const getStaticProps: GetStaticProps = async () => {
   const galleryResponse = await fetchAPI('galleries', {
     populate: {
       Event: {
-        populate: '*',
+        fields: ['Date', 'Description', 'Location', 'Slug', 'Title'],
+        populate: {
+          Image: '*'
+        }
       },
       FeaturedPhotos: {
         fields: ['url'],

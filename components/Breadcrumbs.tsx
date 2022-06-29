@@ -1,5 +1,6 @@
 import { Breadcrumbs as BreadcrumbsComponent, Text } from '@mantine/core';
 import Link from 'next/link';
+import { ChevronsRight } from 'tabler-icons-react';
 
 import { Crumb } from '../types/Crumbs';
 
@@ -9,7 +10,7 @@ interface BreadcrumbsProps {
 
 const Breadcrumbs = ({ crumbs }: BreadcrumbsProps) => {
   return (
-    <BreadcrumbsComponent>
+    <BreadcrumbsComponent separator={<ChevronsRight size={20}/>}>
       {crumbs.map((item: Crumb, index: number) => {
         return (
           <Text

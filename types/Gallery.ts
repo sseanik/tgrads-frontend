@@ -4,17 +4,14 @@ export interface Gallery {
   attributes: GalleryAttributes;
 }
 
-export interface GalleryAttributes {
-  Event: GalleryEvent[];
-  FeaturedPhotos: GalleryPhotos;
-}
-
-type GalleryEvent = {
-  event: {
+export type GalleryAttributes = {
+  Event: {
     data: Event;
-  }
+  };
+  FeaturedPhotos: GalleryPhotos;
+  Photos: GalleryPhotos;
+  Recap: string;
 }
-
 interface GalleryPhotos {
   data: GalleryPhoto[];
 }
@@ -27,11 +24,11 @@ type GalleryPhoto = {
     width: number;
     name: string;
     url: string;
-  }
-}
+  };
+};
 
 export type GalleryPhotoReduced = {
   attributes: {
     url: string;
-  }
-}
+  };
+};

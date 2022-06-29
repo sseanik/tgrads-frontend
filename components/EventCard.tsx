@@ -106,7 +106,7 @@ const EventCard = ({ event, photos }: EventCardProps) => {
                 {photos ? (
                   <Crossfade
                     images={photos?.map((photo) => photo.attributes.url)}
-                    height='200px'
+                    height='180px'
                     width='100%'
                   />
                 ) : (

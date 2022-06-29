@@ -353,7 +353,7 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const eventResponse = await fetchAPI('events', {
     filters: {
-      slug: context?.params?.slug,
+      Slug: context?.params?.slug,
     },
     populate: ['Image'],
   });

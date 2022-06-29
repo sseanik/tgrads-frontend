@@ -8,6 +8,7 @@ import { Event } from '../../types/Event';
 import upcomingDate from '../../utils/isUpcomingDate';
 
 const Events: NextPage<{ events: Event[] }> = ({ events }) => {
+
   const extractSpecificEvents = (
     events: Event[],
     upcoming: boolean
@@ -30,9 +31,11 @@ const Events: NextPage<{ events: Event[] }> = ({ events }) => {
 
   return (
     <AppShell>
-      <Text ml={10} size='xl' weight={700} color='gray'>
-        Upcoming Events
-      </Text>
+      {upcomingEvents.length > 0 && (
+        <Text ml={10} size='xl' weight={700} color='gray'>
+          Upcoming Events
+        </Text>
+      )}
       {upcomingEvents.map((event: Event) => {
         return <EventCard event={event} key={event.attributes.Slug} />;
       })}
@@ -50,6 +53,12 @@ const Events: NextPage<{ events: Event[] }> = ({ events }) => {
 export const getStaticProps: GetStaticProps = async () => {
   const eventResponse = await fetchAPI('events', {
     populate: ['Image'],
+    fields: ['Cost', 'Date', 'Description', 'Slug', 'Title'],
+    filters: {
+      TGAEvent: {
+        $eq: true,
+      },
+    },
   });
 
   return {
