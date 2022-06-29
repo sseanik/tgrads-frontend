@@ -43,19 +43,8 @@ const EventCard = ({ event, photos }: EventCardProps) => {
   }));
   const { classes } = useStyles();
 
-  const selectedPhotos = () => {
-    if (!photos) return [];
-    if (photos.length < 3) {
-      return photos?.map((photo) => photo.attributes.url);
-    }
-    const chosenPhotos = [photos[0].attributes.url];
-    chosenPhotos.push(photos[Math.floor(photos.length / 3)].attributes.url)
-    chosenPhotos.push(photos[photos.length - 1].attributes.url)
-    return chosenPhotos
-  };
-
   return (
-    <Link href={'events/' + event.attributes.Slug}>
+    <Link href={(photos ? 'gallery/' : 'events/') + event.attributes.Slug}>
       <UnstyledButton className={classes.cardW}>
         <Indicator
           inline
@@ -116,7 +105,7 @@ const EventCard = ({ event, photos }: EventCardProps) => {
               <Card.Section>
                 {photos ? (
                   <Crossfade
-                    images={selectedPhotos()}
+                    images={photos?.map((photo) => photo.attributes.url)}
                     height='200px'
                     width='100%'
                   />

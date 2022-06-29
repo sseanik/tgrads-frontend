@@ -1,4 +1,4 @@
-const convertDateToReadable = (dateStr: string, month = false) => {
+const convertDateToReadable = (dateStr: string, month = false): string => {
   const dateWords = new Date(dateStr).toDateString().slice(0, -5).split(' ');
   return month ? dateWords[1] : dateWords[2];
 };

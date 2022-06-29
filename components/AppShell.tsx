@@ -10,7 +10,7 @@ type AppShellProps = {
 
 const AppShell = (props: AppShellProps) => {
   const theme = useMantineTheme();
-  const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState<boolean>(false);
 
   return (
     <AppShellComponent

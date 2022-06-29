@@ -1,4 +1,10 @@
-const getDaysHoursMinutesRemaining = (eventTime: Date) => {
+interface Remaining {
+  days: number;
+  hours: number;
+  minutes: number;
+}
+
+const getDaysHoursMinutesRemaining = (eventTime: Date): Remaining => {
   const timeNow = new Date();
   let delta = Math.abs(eventTime.getTime() - timeNow.getTime()) / 1000;
   const days = Math.floor(delta / 86400);

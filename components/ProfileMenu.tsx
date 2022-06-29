@@ -15,9 +15,9 @@ import { BrightnessHalf, Logout, Settings } from 'tabler-icons-react';
 import { MoodHappy, MoodSad } from 'tabler-icons-react';
 
 const ProfileMenu = () => {
-  const [opened, setOpened] = useState(false);
-  const [value, setValue] = useState('');
-  const [error, setError] = useState(false);
+  const [opened, setOpened] = useState<boolean>(false);
+  const [value, setValue] = useState<string>('');
+  const [error, setError] = useState<boolean>(false);
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   const [loggedIn, setLoggedIn] = useLocalStorage({
     key: 'loggedIn',
@@ -25,7 +25,7 @@ const ProfileMenu = () => {
     getInitialValueInEffect: true,
   });
 
-  const dark = colorScheme === 'dark';
+  const dark: boolean = colorScheme === 'dark';
 
   const data = [
     'Sean Smith',
@@ -33,9 +33,9 @@ const ProfileMenu = () => {
     'Miro Macapagal',
     'Justin Kwon',
   ];
-  const minData = value.length >= 3 ? data : [];
+  const minData: string[] = value.length >= 3 ? data : [];
 
-  const loginClick = () => {
+  const loginClick = (): void => {
     if (!data.includes(value)) {
       setError(true);
     } else {
@@ -44,12 +44,12 @@ const ProfileMenu = () => {
     }
   };
 
-  const changeValue = (name: string) => {
+  const changeValue = (name: string): void => {
     setValue(name);
     setError(false);
   };
 
-  const logoutClick = () => {
+  const logoutClick = (): void => {
     setLoggedIn('');
     setValue('');
   };

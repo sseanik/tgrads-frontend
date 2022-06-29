@@ -14,7 +14,7 @@ const Gallery: NextPage<{ galleries: Gallery[] }> = ({ galleries }) => {
           <EventCard
             event={gallery.attributes.Event[0].event.data}
             key={gallery.attributes.Event[0].event.data.attributes.Slug}
-            photos={gallery.attributes.Photos.data}
+            photos={gallery.attributes.FeaturedPhotos.data}
           />
         );
       })}
@@ -28,13 +28,11 @@ export const getStaticProps: GetStaticProps = async () => {
       Event: {
         populate: '*',
       },
-      Photos: {
+      FeaturedPhotos: {
         fields: ['url'],
       },
     },
   });
-
-
 
   return {
     props: { galleries: galleryResponse.data },

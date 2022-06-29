@@ -6,7 +6,7 @@ export interface Gallery {
 
 export interface GalleryAttributes {
   Event: GalleryEvent[];
-  Photos: GalleryPhotos;
+  FeaturedPhotos: GalleryPhotos;
 }
 
 type GalleryEvent = {

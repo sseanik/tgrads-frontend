@@ -31,11 +31,11 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
   const theme = useMantineTheme();
   const router = useRouter();
 
-  const eventTime = new Date(event.Date + ' ' + event.Time);
-  const isEventOver = new Date() > eventTime;
+  const eventTime: Date = new Date(event.Date + ' ' + event.Time);
+  const isEventOver: boolean = new Date() > eventTime;
   const { days, hours, minutes } = getDaysHoursMinutesRemaining(eventTime);
 
-  const parsedFootnoteDark =
+  const parsedFootnoteDark: string =
     theme.colorScheme === 'dark'
       ? event.Footnote.replaceAll('black', '#cecfd0').replaceAll(
           'rgb(0, 22, 98)',

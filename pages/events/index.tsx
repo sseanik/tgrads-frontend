@@ -8,8 +8,10 @@ import { Event } from '../../types/Event';
 import upcomingDate from '../../utils/isUpcomingDate';
 
 const Events: NextPage<{ events: Event[] }> = ({ events }) => {
-
-  const extractSpecificEvents = (events: Event[], upcoming: boolean) => {
+  const extractSpecificEvents = (
+    events: Event[],
+    upcoming: boolean
+  ): Event[] => {
     return events
       .filter((event: Event) => upcomingDate(event.attributes.Date, upcoming))
       .sort((a: Event, b: Event) =>
@@ -49,7 +51,6 @@ export const getStaticProps: GetStaticProps = async () => {
   const eventResponse = await fetchAPI('events', {
     populate: ['Image'],
   });
-
 
   return {
     props: { events: eventResponse.data },
