@@ -14,8 +14,6 @@
     "@mantine/next": "^4.2.10",
     "axios": "^0.27.2",
     "eslint": "^8.18.0",
-    "face-api.js": "^0.20.0",
-    "fs": "^0.0.1-security",
     "install": "^0.13.0",
     "next": "12.1.6",
     "qs": "^6.10.5",
@@ -23,7 +21,6 @@
     "react-crossfade-responsive": "^1.2.0",
     "react-dom": "18.1.0",
     "react-photo-album": "^1.14.0",
-    "react-slick": "^0.29.0",
     "tabler-icons-react": "^1.50.0",
     "yet-another-react-lightbox": "^1.8.1"
   },
