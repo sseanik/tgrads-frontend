@@ -132,9 +132,8 @@ const PhotoGallery = ({
 
   const handleFaceDetection = () => {
     if (!faceDetectionApp) {
-      console.log(process)
       faceDetectionApp = new Clarifai.App({
-        apiKey: process.env.CLARIFAI_KEY,
+        apiKey: process.env.NEXT_PUBLIC_CLARIFAI_KEY,
       });
     }
     setDetectionLoading(true);
