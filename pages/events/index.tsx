@@ -3,12 +3,12 @@ import { GetStaticProps, NextPage } from 'next';
 
 import AppShell from '../../components/AppShell';
 import EventCard from '../../components/EventCard';
-import { fetchAPI } from '../../lib/api';
+import { QUERY_ALL_EVENTS } from '../../graphql/queries/events';
+import client from '../../lib/apollo';
 import { Event } from '../../types/Event';
 import upcomingDate from '../../utils/isUpcomingDate';
 
 const Events: NextPage<{ events: Event[] }> = ({ events }) => {
-
   const extractSpecificEvents = (
     events: Event[],
     upcoming: boolean
@@ -51,19 +51,16 @@ const Events: NextPage<{ events: Event[] }> = ({ events }) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const eventResponse = await fetchAPI('events', {
-    populate: ['Image'],
-    fields: ['Cost', 'Date', 'Description', 'Slug', 'Title'],
-    filters: {
-      TGAEvent: {
-        $eq: true,
-      },
+  const {
+    data: {
+      events: { data },
     },
+  } = await client.query({
+    query: QUERY_ALL_EVENTS,
   });
 
   return {
-    props: { events: eventResponse.data },
-    revalidate: 1,
+    props: { events: data },
   };
 };
 

@@ -23,7 +23,11 @@ import {
 
 import AppShell from '../../components/AppShell';
 import Breadcrumbs from '../../components/Breadcrumbs';
-import { fetchAPI } from '../../lib/api';
+import {
+  QUERY_EVENT_SLUGS,
+  QUERY_SPECIFIC_EVENT,
+} from '../../graphql/queries/events';
+import client from '../../lib/apollo';
 import { Event, EventAttributes } from '../../types/Event';
 import getDaysHoursMinutesRemaining from '../../utils/getDaysHoursMinutesRemaining';
 
@@ -44,7 +48,6 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
       : event.Footnote;
 
   const crumbs = [
-    { title: 'Home', href: '/' },
     { title: 'Events', href: '/events' },
     { title: event.Title, href: router.query.slug?.toString() ?? '' },
   ];
@@ -351,21 +354,27 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const eventResponse = await fetchAPI('events', {
-    filters: {
-      Slug: context?.params?.slug,
+  const {
+    data: {
+      events: { data },
     },
-    populate: ['Image'],
+  } = await client.query({
+    query: QUERY_SPECIFIC_EVENT(context?.params?.slug),
   });
 
   return {
-    props: { event: eventResponse.data[0].attributes },
-    revalidate: 1,
+    props: { event: data[0].attributes },
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { data } = await fetchAPI('events', { fields: ['slug'] });
+  const {
+    data: {
+      events: { data },
+    },
+  } = await client.query({
+    query: QUERY_EVENT_SLUGS,
+  });
 
   const paths = data.map((event: Event) => {
     return { params: { slug: event.attributes.Slug } };

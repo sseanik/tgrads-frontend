@@ -1,13 +1,17 @@
 import '../styles/globals.css';
 
+import { ApolloProvider } from '@apollo/client';
 import {
   ColorScheme,
   ColorSchemeProvider,
   MantineProvider,
 } from '@mantine/core';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
+import { NotificationsProvider } from '@mantine/notifications';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
+
+import client from '../lib/apollo';
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -25,7 +29,7 @@ export default function App(props: AppProps) {
   return (
     <>
       <Head>
-        <title>Page title</title>
+        <title>Big T Grads</title>
         <meta
           name='viewport'
           content='minimum-scale=1, initial-scale=1, width=device-width'
@@ -45,7 +49,11 @@ export default function App(props: AppProps) {
             colorScheme: colorScheme,
           }}
         >
-          <Component {...pageProps} />
+          <NotificationsProvider zIndex={999999} containerWidth={350}>
+            <ApolloProvider client={client}>
+              <Component {...pageProps} />
+            </ApolloProvider>
+          </NotificationsProvider>
         </MantineProvider>
       </ColorSchemeProvider>
     </>

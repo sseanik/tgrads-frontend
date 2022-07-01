@@ -5,14 +5,25 @@ import { useRouter } from 'next/router';
 import AppShell from '../../components/AppShell';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import PhotoGallery from '../../components/PhotoGallery';
-import { fetchAPI } from '../../lib/api';
+import {
+  QUERY_GALLERY_SLUGS,
+  QUERY_SPECIFIC_GALLERY,
+} from '../../graphql/queries/galleries';
+import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
+import { QUERY_PHOTO_TAGS } from '../../graphql/queries/photoTags';
+import client from '../../lib/apollo';
+import { FaceBoxAttributes } from '../../types/FaceBoxes';
 import { Gallery, GalleryAttributes } from '../../types/Gallery';
 
-const Events: NextPage<{ gallery: GalleryAttributes }> = ({ gallery }) => {
+const Events: NextPage<{
+  gallery: GalleryAttributes;
+  galleryPhotoTags: FaceBoxAttributes[];
+  names: string[];
+  slug: string;
+}> = ({ gallery, galleryPhotoTags, names, slug }) => {
   const router = useRouter();
 
   const crumbs = [
-    { title: 'Home', href: '/' },
     { title: 'Photo Gallery', href: '/gallery' },
     {
       title: gallery.Event.data.attributes.Title,
@@ -26,39 +37,63 @@ const Events: NextPage<{ gallery: GalleryAttributes }> = ({ gallery }) => {
         <Breadcrumbs crumbs={crumbs} />
       </Box>
       <Card shadow='sm' p='sm'>
-        <PhotoGallery photos={gallery.Photos.data} />
+        <PhotoGallery
+          photos={gallery.Photos.data}
+          galleryPhotoTags={galleryPhotoTags}
+          names={names}
+          slug={slug}
+        />
       </Card>
     </AppShell>
   );
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const galleryResponse = await fetchAPI('galleries', {
-    filters: {
-      Event: {
-        Slug: context?.params?.slug,
-      },
+  const {
+    data: {
+      galleries: { data },
     },
-    populate: ['Photos', 'Event'],
+  } = await client.query({
+    query: QUERY_SPECIFIC_GALLERY(context?.params?.slug),
   });
 
+  const {
+    data: { photoTags },
+  } = await client.query({
+    query: QUERY_PHOTO_TAGS(context?.params?.slug),
+  });
+
+  const {
+    data: { grads },
+  } = await client.query({
+    query: QUERY_ALL_NAMES,
+  });
+
+  const names = grads.data.map(
+    (grad) => `${grad.attributes.FirstName} ${grad.attributes.LastName}`
+  );
+
   return {
-    props: { gallery: galleryResponse.data[0].attributes },
-    revalidate: 1,
+    props: {
+      gallery: data[0].attributes,
+      galleryPhotoTags: photoTags.data,
+      names: names,
+      slug: context?.params?.slug,
+    },
   };
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const { data } = await fetchAPI('galleries', {
-    populate: {
-      Event: {
-        fields: ['Slug'],
-      },
+  const {
+    data: {
+      galleries: { data },
     },
+  } = await client.query({
+    query: QUERY_GALLERY_SLUGS,
   });
 
   const paths = data.map((gallery: Gallery) => {
-    return { params: { slug: gallery.attributes.Event.data.attributes.Slug } };
+    return { params: { slug: gallery.attributes.Event.data?.attributes.Slug } };
   });
 
   return {

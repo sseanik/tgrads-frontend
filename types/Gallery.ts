@@ -11,12 +11,13 @@ export type GalleryAttributes = {
   FeaturedPhotos: GalleryPhotos;
   Photos: GalleryPhotos;
   Recap: string;
-}
+};
 interface GalleryPhotos {
   data: GalleryPhoto[];
 }
 
-type GalleryPhoto = {
+export type GalleryPhoto = {
+  id: string;
   attributes: {
     alternativeText: string;
     caption: string;
@@ -27,8 +28,37 @@ type GalleryPhoto = {
   };
 };
 
+export interface ParsedPhoto {
+  id: string;
+  alternativeText: string;
+  caption: string;
+  height: number;
+  width: number;
+  name: string;
+  src: string;
+}
+
 export type GalleryPhotoReduced = {
   attributes: {
     url: string;
+  };
+};
+
+export type FaceDetectionResponse = {
+  outputs: {
+    data: {
+      regions: FaceDetectionRegion[];
+    };
+  }[];
+};
+
+export type FaceDetectionRegion = {
+  region_info: {
+    bounding_box: {
+      top_row: number;
+      left_col: number;
+      right_col: number;
+      bottom_row: number;
+    };
   };
 };

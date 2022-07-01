@@ -2,11 +2,11 @@ import { GetStaticProps, NextPage } from 'next';
 
 import AppShell from '../../components/AppShell';
 import EventCard from '../../components/EventCard';
-import { fetchAPI } from '../../lib/api';
+import { QUERY_ALL_GALLERIES } from '../../graphql/queries/galleries';
+import client from '../../lib/apollo';
 import { Gallery } from '../../types/Gallery';
 
 const Gallery: NextPage<{ galleries: Gallery[] }> = ({ galleries }) => {
-
   return (
     <AppShell>
       {galleries.map((gallery: Gallery) => {
@@ -23,23 +23,16 @@ const Gallery: NextPage<{ galleries: Gallery[] }> = ({ galleries }) => {
 };
 
 export const getStaticProps: GetStaticProps = async () => {
-  const galleryResponse = await fetchAPI('galleries', {
-    populate: {
-      Event: {
-        fields: ['Date', 'Description', 'Location', 'Slug', 'Title'],
-        populate: {
-          Image: '*'
-        }
-      },
-      FeaturedPhotos: {
-        fields: ['url'],
-      },
+  const {
+    data: {
+      galleries: { data },
     },
+  } = await client.query({
+    query: QUERY_ALL_GALLERIES,
   });
 
   return {
-    props: { galleries: galleryResponse.data },
-    revalidate: 1,
+    props: { galleries: data },
   };
 };
 
