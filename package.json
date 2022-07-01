@@ -31,6 +31,7 @@
     "react-crossfade-responsive": "^1.2.0",
     "react-dom": "17.0.2",
     "react-photo-album": "^1.14.0",
+    "sharp": "^0.30.7",
     "tabler-icons-react": "^1.51.0",
     "yet-another-react-lightbox": "^1.8.1"
   },

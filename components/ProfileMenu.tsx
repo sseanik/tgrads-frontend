@@ -14,7 +14,11 @@ import { useState } from 'react';
 import { BrightnessHalf, Logout, Settings } from 'tabler-icons-react';
 import { MoodHappy, MoodSad } from 'tabler-icons-react';
 
-const ProfileMenu = () => {
+interface ProfileMenuProps {
+  names: string[];
+}
+
+const ProfileMenu = ({ names }: ProfileMenuProps) => {
   const [opened, setOpened] = useState<boolean>(false);
   const [value, setValue] = useState<string>('');
   const [error, setError] = useState<boolean>(false);
@@ -27,16 +31,10 @@ const ProfileMenu = () => {
 
   const dark: boolean = colorScheme === 'dark';
 
-  const data = [
-    'Sean Smith',
-    'Cynthia Mather',
-    'Miro Macapagal',
-    'Justin Kwon',
-  ];
-  const minData: string[] = value.length >= 3 ? data : [];
+  const minData: string[] = value.length >= 1 ? names : [];
 
   const loginClick = (): void => {
-    if (!data.includes(value)) {
+    if (!names.includes(value)) {
       setError(true);
     } else {
       setLoggedIn(value);
@@ -78,6 +76,9 @@ const ProfileMenu = () => {
           icon={error ? <MoodSad /> : <MoodHappy />}
           limit={3}
           error={error ? 'Name not found in Grad Program' : ''}
+          filter={(value, item) =>
+            item.value.toLowerCase().startsWith(value.toLowerCase())
+          }
         />
         <Center>
           <Button
@@ -108,21 +109,9 @@ const ProfileMenu = () => {
               },
             })}
           >
-            <Text
-              style={{ marginRight: '10px' }}
-              styles={() => ({
-                root: {
-                  '@media (max-width: 755px)': {
-                    fontSize: 0,
-                  },
-                },
-              })}
-            >
-              {loggedIn}
-            </Text>
             {loggedIn ? (
               <Avatar radius='xl' color='indigo'>
-                CM
+                {loggedIn.replace(/[^A-Z]/g, '')}
               </Avatar>
             ) : (
               <Avatar radius='xl' color='indigo' />

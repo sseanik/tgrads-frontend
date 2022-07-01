@@ -4,20 +4,27 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log('revalidate')
   // Check for secret to confirm this is a valid request
-  if (req.headers.secret !== process.env.REVALIDATE_SECRET) {
-    console.log("problem")
+  if (req.query.secret !== process.env.NEXT_PUBLIC_REVALIDATE_SECRET) {
+    console.log('Secret is invalid');
     return res.status(401).json({ message: 'Invalid token' });
   }
 
   try {
-    if (req.body.event === "entry.update" && req.body.model == "photo-tag") {
-      await res.revalidate(`/gallery/${req.body.entry.GallerySlug}`);
+    const parsedBody =
+      typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    if (
+      (parsedBody.event === 'entry.update' ||
+        parsedBody.event === 'entry.create') &&
+      parsedBody.model === 'photo-tag'
+    ) {
+      console.log(`Revalidating Gallery: ${parsedBody.entry.GallerySlug}`);
+      await res.revalidate(`/gallery/${parsedBody.entry.GallerySlug}`);
     }
 
     return res.json({ revalidated: true });
   } catch (err) {
+    console.log('Revalidate Error');
     // If there was an error, Next.js will continue
     // to show the last successfully generated page
     return res.status(500).json({ message: 'Error revalidating' });

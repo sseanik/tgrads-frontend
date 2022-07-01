@@ -20,6 +20,7 @@ import {
 import Lightbox from 'yet-another-react-lightbox';
 
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
+import { revalidateGallery } from '../lib/triggerRevalidate';
 import { FaceBoxAttributes } from '../types/FaceBoxes';
 import {
   FaceDetectionRegion,
@@ -190,14 +191,15 @@ const PhotoGallery = ({
                 },
               },
             ]);
-          });
-          updateNotification({
-            id: 'detecting-faces',
-            color: 'green',
-            title: 'Successful',
-            message: 'Successfully detected faces in photo',
-            icon: <FaceId />,
-            autoClose: 2000,
+            revalidateGallery('create', slug);
+            updateNotification({
+              id: 'detecting-faces',
+              color: 'green',
+              title: 'Successful',
+              message: 'Successfully detected faces in photo',
+              icon: <FaceId />,
+              autoClose: 2000,
+            });
           });
         },
         (error: string) => {
@@ -227,6 +229,7 @@ const PhotoGallery = ({
       },
     }).then((response) => {
       console.log('Created Empty Photo Tags');
+      revalidateGallery('create', slug);
       setCreatedPhotoTagID(response.data.createPhotoTag.data.id);
     });
     setNoFacesDetected(true);
@@ -273,7 +276,7 @@ const PhotoGallery = ({
                 </Tooltip>
               )
             ) : !showTags ? (
-              <div key="enabled_tags">
+              <div key='enabled_tags'>
                 <Tooltip
                   key='show_all_tags'
                   label={showAllTags ? 'Hide Tags' : 'Show Tags'}
@@ -283,7 +286,7 @@ const PhotoGallery = ({
                   <MoodHappy
                     size={28}
                     style={{ cursor: 'pointer', margin: '10px 22px 0 0' }}
-                    onClick={() => setShowAllTags(prev => !prev)}
+                    onClick={() => setShowAllTags((prev) => !prev)}
                   />
                 </Tooltip>
                 <Tooltip

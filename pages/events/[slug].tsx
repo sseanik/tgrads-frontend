@@ -27,11 +27,16 @@ import {
   QUERY_EVENT_SLUGS,
   QUERY_SPECIFIC_EVENT,
 } from '../../graphql/queries/events';
+import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';
 import { Event, EventAttributes } from '../../types/Event';
 import getDaysHoursMinutesRemaining from '../../utils/getDaysHoursMinutesRemaining';
+import { mapAndSortNames } from '../../utils/mapAndSortNames';
 
-const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
+const Events: NextPage<{ event: EventAttributes; names: string[] }> = ({
+  event,
+  names,
+}) => {
   const theme = useMantineTheme();
   const router = useRouter();
 
@@ -53,7 +58,7 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
   ];
 
   return (
-    <AppShell>
+    <AppShell names={names}>
       <Box style={{ margin: '0 0 6px 2px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
@@ -315,7 +320,7 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
                         weight={600}
                         align='center'
                       >
-                        {event.Cost === "$" ? 'BYO' : event.Cost}
+                        {event.Cost === '$' ? 'BYO' : event.Cost}
                       </Text>
                       <Text
                         sx={(theme) => ({
@@ -362,8 +367,16 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_SPECIFIC_EVENT(context?.params?.slug),
   });
 
+  const {
+    data: { grads },
+  } = await client.query({
+    query: QUERY_ALL_NAMES,
+  });
+
+  const names = mapAndSortNames(grads)
+
   return {
-    props: { event: data[0].attributes },
+    props: { event: data[0].attributes, names: names },
   };
 };
 

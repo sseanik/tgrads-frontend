@@ -52,7 +52,7 @@ const Logo = () => {
           weight={700}
           style={{
             marginLeft: 'auto',
-            marginRight: '30px',
+            marginRight: '16px',
             backgroundColor:
               theme.colorScheme === 'dark' ? '#fff' : '#5b6cf4',
             backgroundSize: '100%',

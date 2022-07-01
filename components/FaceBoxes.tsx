@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { AlertCircle, FaceId } from 'tabler-icons-react';
 
 import { UPDATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
+import { revalidateGallery } from '../lib/triggerRevalidate';
 import { ParsedPhoto } from '../types/Gallery';
 import { FaceDetectionBox } from './PhotoGallery';
 
@@ -16,7 +17,7 @@ interface FaceBoxesProps {
   selectedPhoto?: ParsedPhoto;
   showTags: boolean;
   showAllTags: boolean;
-  names: string[]
+  names: string[];
 }
 
 let tagIncrement = 0;
@@ -68,6 +69,9 @@ const FaceBoxes = (props: FaceBoxesProps) => {
         },
       }).then(() => {
         console.log('Added name to Photo tag');
+        revalidateGallery('update', props.slug).then((r) =>
+          r.json().then((r) => console.log(r))
+        );
         updateNotification({
           id: `updating-face-tag-${increment}`,
           color: 'green',
@@ -109,7 +113,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             position='bottom'
             zIndex={9999}
             disabled={props.showTags || faceBox.name === ''}
-            opened={props.showAllTags}
+            opened={props.showAllTags ? props.showAllTags : undefined}
           >
             {props.showTags && (
               <Menu
@@ -140,7 +144,9 @@ const FaceBoxes = (props: FaceBoxesProps) => {
                   size='sm'
                   radius='sm'
                   onItemSubmit={(e) => submitFaceTag(e.value, faceBoxIndex)}
-                  limit={5}
+                  filter={(value, item) =>
+                    item.value.toLowerCase().startsWith(value.toLowerCase())
+                  }
                 />
               </Menu>
             )}

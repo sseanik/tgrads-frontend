@@ -14,9 +14,10 @@ import ProfileMenu from './ProfileMenu';
 interface HeaderProps {
   opened: boolean;
   setOpened: Dispatch<SetStateAction<boolean>>;
+  names: string[];
 }
 
-const Header = ({ opened, setOpened }: HeaderProps) => {
+const Header = ({ opened, setOpened, names }: HeaderProps) => {
   const theme = useMantineTheme();
 
   return (
@@ -51,7 +52,7 @@ const Header = ({ opened, setOpened }: HeaderProps) => {
           </MediaQuery>
         </div>
 
-        <ProfileMenu />
+        <ProfileMenu names={names} />
       </div>
     </HeaderComponent>
   );

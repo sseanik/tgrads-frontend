@@ -6,6 +6,7 @@ import Navbar from '../components/Navbar';
 
 type AppShellProps = {
   children: React.ReactNode;
+  names: string[];
 };
 
 const AppShell = (props: AppShellProps) => {
@@ -26,7 +27,7 @@ const AppShell = (props: AppShellProps) => {
         },
       }}
       navbar={<Navbar opened={opened} />}
-      header={<Header opened={opened} setOpened={setOpened} />}
+      header={<Header opened={opened} setOpened={setOpened} names={props.names} />}
     >
       {props.children}
     </AppShellComponent>

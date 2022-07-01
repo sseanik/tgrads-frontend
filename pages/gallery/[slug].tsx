@@ -14,6 +14,7 @@ import { QUERY_PHOTO_TAGS } from '../../graphql/queries/photoTags';
 import client from '../../lib/apollo';
 import { FaceBoxAttributes } from '../../types/FaceBoxes';
 import { Gallery, GalleryAttributes } from '../../types/Gallery';
+import { mapAndSortNames } from '../../utils/mapAndSortNames';
 
 const Events: NextPage<{
   gallery: GalleryAttributes;
@@ -32,7 +33,7 @@ const Events: NextPage<{
   ];
 
   return (
-    <AppShell>
+    <AppShell names={names}>
       <Box style={{ margin: '0 0 6px 2px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
@@ -49,6 +50,7 @@ const Events: NextPage<{
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
+  console.log("Running getStaticProps...")
   const {
     data: {
       galleries: { data },
@@ -69,9 +71,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = grads.data.map(
-    (grad) => `${grad.attributes.FirstName} ${grad.attributes.LastName}`
-  );
+  const names = mapAndSortNames(grads)
 
   return {
     props: {
