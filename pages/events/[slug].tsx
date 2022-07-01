@@ -315,7 +315,7 @@ const Events: NextPage<{ event: EventAttributes }> = ({ event }) => {
                         weight={600}
                         align='center'
                       >
-                        {event.Cost ?? 'BYO'}
+                        {event.Cost === "$" ? 'BYO' : event.Cost}
                       </Text>
                       <Text
                         sx={(theme) => ({

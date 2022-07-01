@@ -13,7 +13,7 @@ const Gallery: NextPage<{ galleries: Gallery[] }> = ({ galleries }) => {
         return (
           <EventCard
             event={gallery.attributes.Event.data}
-            key={gallery.attributes.Event.data.attributes.Slug}
+            key={gallery.attributes.Event.data?.attributes.Slug}
             photos={gallery.attributes.FeaturedPhotos.data}
           />
         );

@@ -14,7 +14,6 @@ import {
   FaceId,
   FaceIdError,
   MoodHappy,
-  Tag,
   Tags,
   TagsOff,
 } from 'tabler-icons-react';
@@ -262,11 +261,11 @@ const PhotoGallery = ({
               ) : (
                 <Tooltip
                   key='tag_photo'
-                  label='Generate Tags'
+                  label='Detect Faces'
                   withArrow
                   zIndex={9999}
                 >
-                  <Tag
+                  <FaceId
                     size={28}
                     style={{ cursor: 'pointer', margin: '10px 10px 0 0' }}
                     onClick={handleFaceDetection}
@@ -303,7 +302,7 @@ const PhotoGallery = ({
             ) : (
               <Tooltip
                 key='hide_tags'
-                label='Editing Off'
+                label='Tagging Off'
                 withArrow
                 zIndex={9999}
               >

@@ -44,19 +44,19 @@ const EventCard = ({ event, photos }: EventCardProps) => {
   const { classes } = useStyles();
 
   return (
-    <Link href={(photos ? 'gallery/' : 'events/') + event.attributes.Slug}>
+    <Link href={(photos ? 'gallery/' : 'events/') + event?.attributes?.Slug}>
       <UnstyledButton className={classes.cardW}>
         <Indicator
           inline
           size={
-            isUpcomingDate(event.attributes.Date) &&
+            isUpcomingDate(event?.attributes.Date) &&
             isDateSoon(event.attributes.Date)
               ? 20
               : 0
           }
           offset={12}
           label={
-            isUpcomingDate(event.attributes.Date) &&
+            isUpcomingDate(event?.attributes.Date) &&
             isDateSoon(event.attributes.Date)
               ? 'Soon'
               : ''
@@ -67,7 +67,7 @@ const EventCard = ({ event, photos }: EventCardProps) => {
             inline
             size={20}
             offset={30}
-            label={event.attributes.Cost ?? ''}
+            label={event?.attributes.Cost === '$' ? '' : event?.attributes.Cost}
             color={theme.colorScheme === 'dark' ? 'black' : 'white'}
             position='top-start'
             radius='sm'
@@ -80,7 +80,10 @@ const EventCard = ({ event, photos }: EventCardProps) => {
                 fontFamily: 'monospace',
                 boxShadow:
                   '0 2px 2px rgba(0,0,0,0.16), 0 2px 2px rgba(0,0,0,0.23)',
-                display: event.attributes.Cost ? '' : 'none',
+                display:
+                  event?.attributes.Cost === '$' || !event?.attributes.Cost
+                    ? 'none'
+                    : '',
               },
             }}
           >
@@ -134,10 +137,10 @@ const EventCard = ({ event, photos }: EventCardProps) => {
                         marginBottom: '6px',
                       }}
                     >
-                      {convertDateToReadable(event.attributes.Date, true)}
+                      {convertDateToReadable(event?.attributes.Date, true)}
                     </div>
                     <div style={{ fontWeight: 700 }}>
-                      {convertDateToReadable(event.attributes.Date)}
+                      {convertDateToReadable(event?.attributes.Date)}
                     </div>
                   </Center>
                 </Grid.Col>
@@ -149,7 +152,7 @@ const EventCard = ({ event, photos }: EventCardProps) => {
                       marginTop: theme.spacing.sm,
                     }}
                   >
-                    <Text weight={700}>{event.attributes.Title}</Text>
+                    <Text weight={700}>{event?.attributes.Title}</Text>
                   </Group>
                   <Text
                     lineClamp={4}
@@ -162,7 +165,7 @@ const EventCard = ({ event, photos }: EventCardProps) => {
                       lineHeight: 1.5,
                     }}
                   >
-                    {event.attributes.Description}
+                    {event?.attributes.Description}
                   </Text>
                 </Grid.Col>
               </Grid>

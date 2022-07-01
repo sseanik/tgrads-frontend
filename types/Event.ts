@@ -11,7 +11,7 @@ export interface EventAttributes {
   Suburb: string;
   GoogleMapsURL: string;
   Footnote: string;
-  Cost: number;
+  Cost: string;
   Slug: string;
   Image?: EventImage;
 }

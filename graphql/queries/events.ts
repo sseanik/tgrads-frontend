@@ -65,7 +65,7 @@ export const QUERY_SPECIFIC_EVENT = (slug: string | string[] | undefined) => {
           Time
           Location
           Suburb
-          GoogleMapsURL
+          LocationURL
           Footnote
           Cost
           RSVPURL

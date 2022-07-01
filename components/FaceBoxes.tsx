@@ -80,8 +80,6 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     }
   };
 
-  console.log(props.names)
-
   return (
     <>
       {props.faceBoxes.map((faceBox, faceBoxIndex) => {
