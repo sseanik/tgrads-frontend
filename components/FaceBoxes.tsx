@@ -18,6 +18,8 @@ interface FaceBoxesProps {
   showTags: boolean;
   showAllTags: boolean;
   names: string[];
+  responsiveWidth: number;
+  responsiveHeight: number;
 }
 
 let tagIncrement = 0;
@@ -82,17 +84,18 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     }
   };
 
-  const calculateFaceBoxes = (faceBox) => {
+  console.log(`W: ${props.responsiveWidth}, H: ${props.responsiveHeight}`);
 
+  const calculateFaceBoxes = (faceBox) => {
+    const responsiveWithFix =
+      (32 + (props.selectedPhoto?.width ?? 0)) > window.innerWidth
+        ? props.responsiveWidth - 32
+        : props.responsiveWidth;
     return {
-      left: faceBox.left * (props.selectedPhoto?.width ?? 0),
-      top: faceBox.top * (props.selectedPhoto?.height ?? 0),
-      right:
-        (props.selectedPhoto?.width ?? 0) -
-        faceBox.right * (props.selectedPhoto?.width ?? 0),
-      bottom:
-        (props.selectedPhoto?.height ?? 0) -
-        faceBox.bottom * (props.selectedPhoto?.height ?? 0),
+      left: faceBox.left * responsiveWithFix,
+      top: faceBox.top * props.responsiveHeight,
+      right: responsiveWithFix - faceBox.right * responsiveWithFix,
+      bottom: props.responsiveHeight - faceBox.bottom * props.responsiveHeight,
     };
   };
 
@@ -132,8 +135,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
                   <UnstyledButton
                     style={{
                       width:
-                        (faceBox.right - faceBox.left) *
-                        (props.selectedPhoto?.width ?? 0),
+                        (faceBox.right - faceBox.left) * props.responsiveWidth,
                       height: '100%',
                     }}
                   />

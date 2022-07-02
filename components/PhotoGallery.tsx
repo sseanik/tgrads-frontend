@@ -28,6 +28,7 @@ import {
   GalleryPhoto,
   ParsedPhoto,
 } from '../types/Gallery';
+import { calculateResponsiveDimensions } from '../utils/calculateResponsiveDimensions';
 import { getTrueImageDimensions } from '../utils/getTrueImageDimensions';
 import FaceBoxes from './FaceBoxes';
 import NextJsImage from './NextjsImage';
@@ -245,36 +246,6 @@ const PhotoGallery = ({
     setNoFacesDetected(true);
   };
 
-  const calculateResponsiveSize = (
-    imageDimensionA: number,
-    imageDimensionB: number,
-    windowDimensionA: number,
-    windowDimensionB: number
-  ) => {
-    // Width is bigger than height
-    if (imageDimensionA > imageDimensionB) {
-      // Image has black bars to the side as it is smaller than the window
-      if (imageDimensionA < windowDimensionA) {
-        return imageDimensionA;
-      }
-      // Image takes up all view width as viewport width is less than image width
-      else {
-        return windowDimensionA;
-      }
-    }
-    // Height is bigger than width
-    else {
-      // Image fits within the viewport height
-      if (imageDimensionB < windowDimensionB) {
-        return imageDimensionA;
-      }
-      // Width is now based on reduced height % applied to image width
-      else {
-        return (imageDimensionB / windowDimensionB) * imageDimensionA;
-      }
-    }
-  };
-
   return (
     <>
       <PhotoAlbum
@@ -375,19 +346,24 @@ const PhotoGallery = ({
             return (
               <div
                 style={{
-                  position: 'absolute',
-                  width: parsedPhotos[slideIndex].width,
-                  height: parsedPhotos[slideIndex].height,
+                  position: 'relative',
+                  width: calculateResponsiveDimensions(
+                    parsedPhotos[slideIndex].width,
+                    parsedPhotos[slideIndex].height,
+                    true
+                  ),
+                  height: calculateResponsiveDimensions(
+                    parsedPhotos[slideIndex].width,
+                    parsedPhotos[slideIndex].height
+                  ),
                 }}
               >
                 <Image
                   src={image.src ?? ''}
-                  layout='responsive'
+                  layout='fill'
                   loading='lazy'
                   objectFit='contain'
                   alt={'alt' in image ? image.alt : ''}
-                  width={parsedPhotos[slideIndex].width}
-                  height={parsedPhotos[slideIndex].height}
                 />
                 <FaceBoxes
                   faceBoxes={Array.isArray(faceBoxes) ? faceBoxes : []}
@@ -398,6 +374,15 @@ const PhotoGallery = ({
                   showTags={showTags}
                   showAllTags={showAllTags}
                   names={names}
+                  responsiveWidth={calculateResponsiveDimensions(
+                    parsedPhotos[slideIndex].width,
+                    parsedPhotos[slideIndex].height,
+                    true
+                  )}
+                  responsiveHeight={calculateResponsiveDimensions(
+                    parsedPhotos[slideIndex].width,
+                    parsedPhotos[slideIndex].height
+                  )}
                 />
               </div>
             );
