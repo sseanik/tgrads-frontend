@@ -1,6 +1,10 @@
 export const revalidateGallery = (event: string, slug: string) => {
+  const domain =
+    process.env.NODE_ENV === 'production'
+      ? 'https://tgrads.vercel.app'
+      : 'http://localhost:3000';
   return fetch(
-    `http://localhost:3000/api/revalidate?secret=${process.env.NEXT_PUBLIC_REVALIDATE_SECRET}`,
+    `${domain}/api/revalidate?secret=${process.env.NEXT_PUBLIC_REVALIDATE_SECRET}`,
     {
       method: 'POST',
       body: JSON.stringify({
