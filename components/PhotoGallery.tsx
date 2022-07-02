@@ -17,8 +17,11 @@ import {
   FaceIdError,
   Tags,
   TagsOff,
+  ZoomIn,
+  ZoomOut,
 } from 'tabler-icons-react';
 import Lightbox from 'yet-another-react-lightbox';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
 import { revalidateGallery } from '../lib/triggerRevalidate';
@@ -263,6 +266,11 @@ const PhotoGallery = ({
         open={slideIndex >= 0}
         index={slideIndex}
         close={onLightboxClose}
+        plugins={[Zoom]}
+        zoom={{
+          maxZoomPixelRatio: 3,
+          zoomInMultiplier: 2,
+        }}
         on={{
           view: (index: number) => onSlideAction(index),
         }}
@@ -351,6 +359,26 @@ const PhotoGallery = ({
               <ChevronRight size={40} onClick={() => onLightboxAction(false)} />
             );
           },
+          iconZoomIn: () => {
+            return (
+              <Tooltip key='zoom_in' label='Zoom In' withArrow zIndex={9999}>
+                <ZoomIn
+                  size={28}
+                  style={{ cursor: 'pointer', margin: '0 2px 0 0' }}
+                />
+              </Tooltip>
+            );
+          },
+          iconZoomOut: () => {
+            return (
+              <Tooltip key='zoom_out' label='Zoom Out' withArrow zIndex={9999}>
+                <ZoomOut
+                  size={28}
+                  style={{ cursor: 'pointer', margin: '0 12px 0 0' }}
+                />
+              </Tooltip>
+            );
+          },
           slide: (image) => {
             const { width, height } = calcResponsiveDimensions(
               parsedPhotos[slideIndex].width,
@@ -360,15 +388,6 @@ const PhotoGallery = ({
               <div
                 style={{
                   position: 'relative',
-                  // width: calculateResponsiveDimensions(
-                  //   parsedPhotos[slideIndex].width,
-                  //   parsedPhotos[slideIndex].height,
-                  //   true
-                  // ),
-                  // height: calculateResponsiveDimensions(
-                  //   parsedPhotos[slideIndex].width,
-                  //   parsedPhotos[slideIndex].height
-                  // ),
                   width: width,
                   height: height,
                 }}
@@ -389,15 +408,6 @@ const PhotoGallery = ({
                   showTags={showTags}
                   showAllTags={showAllTags}
                   names={names}
-                  // responsiveWidth={calculateResponsiveDimensions(
-                  //   parsedPhotos[slideIndex].width,
-                  //   parsedPhotos[slideIndex].height,
-                  //   true
-                  // )}
-                  // responsiveHeight={calculateResponsiveDimensions(
-                  //   parsedPhotos[slideIndex].width,
-                  //   parsedPhotos[slideIndex].height
-                  // )}
                   width={width}
                   height={height}
                 />
