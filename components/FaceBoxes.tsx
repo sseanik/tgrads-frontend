@@ -69,9 +69,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
         },
       }).then(() => {
         console.log('Added name to Photo tag');
-        revalidateGallery('update', props.slug).then((r) =>
-          r.json().then((r) => console.log(r))
-        );
+        revalidateGallery('update', props.slug);
         updateNotification({
           id: `updating-face-tag-${increment}`,
           color: 'green',
@@ -84,6 +82,20 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     }
   };
 
+  const calculateFaceBoxes = (faceBox) => {
+
+    return {
+      left: faceBox.left * (props.selectedPhoto?.width ?? 0),
+      top: faceBox.top * (props.selectedPhoto?.height ?? 0),
+      right:
+        (props.selectedPhoto?.width ?? 0) -
+        faceBox.right * (props.selectedPhoto?.width ?? 0),
+      bottom:
+        (props.selectedPhoto?.height ?? 0) -
+        faceBox.bottom * (props.selectedPhoto?.height ?? 0),
+    };
+  };
+
   return (
     <>
       {props.faceBoxes.map((faceBox, faceBoxIndex) => {
@@ -91,14 +103,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
           <Tooltip
             key={`face-${faceBoxIndex}`}
             style={{
-              left: faceBox.left * (props.selectedPhoto?.width ?? 0),
-              top: faceBox.top * (props.selectedPhoto?.height ?? 0),
-              right:
-                (props.selectedPhoto?.width ?? 0) -
-                faceBox.right * (props.selectedPhoto?.width ?? 0),
-              bottom:
-                (props.selectedPhoto?.height ?? 0) -
-                faceBox.bottom * (props.selectedPhoto?.height ?? 0),
+              ...calculateFaceBoxes(faceBox),
               position: 'absolute',
               boxShadow: props.showTags
                 ? '0 0 0 3px rgba(255, 255, 255, 0.5) inset'

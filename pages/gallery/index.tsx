@@ -15,6 +15,7 @@ const Gallery: NextPage<{ galleries: Gallery[]; names: string[] }> = ({
   return (
     <AppShell names={names}>
       {galleries
+        .slice()
         .sort((a, b) =>
           new Date(a.attributes.Event.data.attributes.Date) <
           new Date(b.attributes.Event.data.attributes.Date)
@@ -49,7 +50,7 @@ export const getStaticProps: GetStaticProps = async () => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads)
+  const names = mapAndSortNames(grads);
 
   return {
     props: { galleries: data, names: names },

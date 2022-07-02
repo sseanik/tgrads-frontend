@@ -40,10 +40,9 @@ export const QUERY_EVENT_SLUGS = gql`
   }
 `;
 
-export const QUERY_SPECIFIC_EVENT = (slug: string | string[] | undefined) => {
-  return gql`
-  query SpecificEvent {
-    events(filters: { Slug: { eq: "${slug}" } }) {
+export const QUERY_SPECIFIC_EVENT = gql`
+  query SpecificEvent($slug: String!) {
+    events(filters: { Slug: { eq: $slug } }) {
       data {
         attributes {
           Title
@@ -75,4 +74,3 @@ export const QUERY_SPECIFIC_EVENT = (slug: string | string[] | undefined) => {
     }
   }
 `;
-};

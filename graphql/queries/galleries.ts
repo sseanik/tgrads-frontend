@@ -47,10 +47,9 @@ export const QUERY_GALLERY_SLUGS = gql`
   }
 `;
 
-export const QUERY_SPECIFIC_GALLERY = (slug: string | string[] | undefined) => {
-  return gql`
-  query SpecificGallery {
-    galleries(filters: { Event: { Slug: { eq: "${slug}" } } }) {
+export const QUERY_SPECIFIC_GALLERY = gql`
+  query SpecificGallery($slug: String!) {
+    galleries(filters: { Event: { Slug: { eq: $slug } } }) {
       data {
         attributes {
           Photos(pagination: { limit: 100 }) {
@@ -63,8 +62,6 @@ export const QUERY_SPECIFIC_GALLERY = (slug: string | string[] | undefined) => {
                 width
                 height
                 url
-                formats
-                provider_metadata
               }
             }
           }
@@ -81,4 +78,3 @@ export const QUERY_SPECIFIC_GALLERY = (slug: string | string[] | undefined) => {
     }
   }
 `;
-};

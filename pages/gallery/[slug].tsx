@@ -50,19 +50,21 @@ const Events: NextPage<{
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  console.log("Running getStaticProps...")
+  console.log('Running getStaticProps...');
   const {
     data: {
       galleries: { data },
     },
   } = await client.query({
-    query: QUERY_SPECIFIC_GALLERY(context?.params?.slug),
+    query: QUERY_SPECIFIC_GALLERY,
+    variables: { slug: context?.params?.slug },
   });
 
   const {
     data: { photoTags },
   } = await client.query({
-    query: QUERY_PHOTO_TAGS(context?.params?.slug),
+    query: QUERY_PHOTO_TAGS,
+    variables: { slug: context?.params?.slug },
   });
 
   const {
@@ -71,7 +73,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads)
+  const names = mapAndSortNames(grads);
 
   return {
     props: {

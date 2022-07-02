@@ -83,6 +83,12 @@ const PhotoGallery = ({
     };
   });
 
+  const onSlideAction = (index: number) => {
+    setSlideIndex(index);
+    setShowTags(false);
+    setAndCheckPreExistingTags(index);
+  };
+
   const onLightboxAction = (left = true, open = false, index = -1) => {
     let newIndex = -1;
     if (!open) {
@@ -107,11 +113,15 @@ const PhotoGallery = ({
       setSlideIndex(index);
     }
 
+    setAndCheckPreExistingTags(newIndex);
+  };
+
+  const setAndCheckPreExistingTags = (index: number) => {
     // Each time lightbox slides to a new photo check if Photo Tags exist
     // Combine the existing Face Boxes with the client side created ones
     const preExistingFaceBoxes = galleryPhotoTags
       .concat(newPhotoTags)
-      .find((face) => face.attributes.PhotoID === parsedPhotos[newIndex]?.id);
+      .find((face) => face.attributes.PhotoID === parsedPhotos[index]?.id);
     // If it exists, use the Tags and save the Photo Tag ID
     if (preExistingFaceBoxes) {
       setFaceBoxes(JSON.parse(preExistingFaceBoxes.attributes.FaceBoxes));
@@ -235,6 +245,36 @@ const PhotoGallery = ({
     setNoFacesDetected(true);
   };
 
+  const calculateResponsiveSize = (
+    imageDimensionA: number,
+    imageDimensionB: number,
+    windowDimensionA: number,
+    windowDimensionB: number
+  ) => {
+    // Width is bigger than height
+    if (imageDimensionA > imageDimensionB) {
+      // Image has black bars to the side as it is smaller than the window
+      if (imageDimensionA < windowDimensionA) {
+        return imageDimensionA;
+      }
+      // Image takes up all view width as viewport width is less than image width
+      else {
+        return windowDimensionA;
+      }
+    }
+    // Height is bigger than width
+    else {
+      // Image fits within the viewport height
+      if (imageDimensionB < windowDimensionB) {
+        return imageDimensionA;
+      }
+      // Width is now based on reduced height % applied to image width
+      else {
+        return (imageDimensionB / windowDimensionB) * imageDimensionA;
+      }
+    }
+  };
+
   return (
     <>
       <PhotoAlbum
@@ -251,6 +291,9 @@ const PhotoGallery = ({
         open={slideIndex >= 0}
         index={slideIndex}
         close={onLightboxClose}
+        on={{
+          view: (index: number) => onSlideAction(index),
+        }}
         toolbar={{
           buttons: [
             !noFacesDetected && faceBoxes.length === 0 ? (
@@ -332,18 +375,19 @@ const PhotoGallery = ({
             return (
               <div
                 style={{
-                  position: 'relative',
+                  position: 'absolute',
                   width: parsedPhotos[slideIndex].width,
                   height: parsedPhotos[slideIndex].height,
                 }}
               >
                 <Image
                   src={image.src ?? ''}
-                  layout='fill'
+                  layout='responsive'
                   loading='lazy'
                   objectFit='contain'
                   alt={'alt' in image ? image.alt : ''}
-                  sizes={`${parsedPhotos[slideIndex].width}`}
+                  width={parsedPhotos[slideIndex].width}
+                  height={parsedPhotos[slideIndex].height}
                 />
                 <FaceBoxes
                   faceBoxes={Array.isArray(faceBoxes) ? faceBoxes : []}

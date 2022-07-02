@@ -364,7 +364,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
       events: { data },
     },
   } = await client.query({
-    query: QUERY_SPECIFIC_EVENT(context?.params?.slug),
+    query: QUERY_SPECIFIC_EVENT,
+    variables: { slug: context?.params?.slug },
   });
 
   const {
@@ -373,7 +374,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads)
+  const names = mapAndSortNames(grads);
 
   return {
     props: { event: data[0].attributes, names: names },
