@@ -13,13 +13,17 @@ export const calculateResponsiveDimensions = (
   if (dimensionB > windowDimensionB) {
     if (dimensionA > windowDimensionA) {
       if (dimensionB - windowDimensionB < dimensionA - windowDimensionA) {
-        if (dimensionA > dimensionB) {
+        if (dimensionA < dimensionB) {
           return (windowDimensionB / dimensionB) * dimensionA - (widthCheck ? 0 : offset);
         } else {
           return windowDimensionA;
         }
       } else {
-        return (windowDimensionB / dimensionB) * dimensionA - (widthCheck ? 0 : offset);
+        if (dimensionA > dimensionB) {
+          return (windowDimensionB / dimensionB) * dimensionA - (widthCheck ? 0 : offset);
+        } else {
+          return windowDimensionA;
+        }
       }
     } else {
       return (windowDimensionB / dimensionB) * dimensionA - (widthCheck ? 0 : offset);

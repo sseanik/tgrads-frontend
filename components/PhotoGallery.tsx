@@ -11,9 +11,10 @@ import PhotoAlbum from 'react-photo-album';
 import {
   ChevronLeft,
   ChevronRight,
+  Edit,
+  EditOff,
   FaceId,
   FaceIdError,
-  MoodHappy,
   Tags,
   TagsOff,
 } from 'tabler-icons-react';
@@ -28,7 +29,7 @@ import {
   GalleryPhoto,
   ParsedPhoto,
 } from '../types/Gallery';
-import { calculateResponsiveDimensions } from '../utils/calculateResponsiveDimensions';
+import { calcResponsiveDimensions } from '../utils/calcResponsiveDimensions';
 import { getTrueImageDimensions } from '../utils/getTrueImageDimensions';
 import FaceBoxes from './FaceBoxes';
 import NextJsImage from './NextjsImage';
@@ -297,11 +298,19 @@ const PhotoGallery = ({
                   withArrow
                   zIndex={9999}
                 >
-                  <MoodHappy
-                    size={28}
-                    style={{ cursor: 'pointer', margin: '10px 22px 0 0' }}
-                    onClick={() => setShowAllTags((prev) => !prev)}
-                  />
+                  {showAllTags ? (
+                    <TagsOff
+                      size={28}
+                      style={{ cursor: 'pointer', margin: '10px 22px 0 0' }}
+                      onClick={() => setShowAllTags((prev) => !prev)}
+                    />
+                  ) : (
+                    <Tags
+                      size={28}
+                      style={{ cursor: 'pointer', margin: '10px 22px 0 0' }}
+                      onClick={() => setShowAllTags((prev) => !prev)}
+                    />
+                  )}
                 </Tooltip>
                 <Tooltip
                   key='show_tags'
@@ -309,7 +318,7 @@ const PhotoGallery = ({
                   withArrow
                   zIndex={9999}
                 >
-                  <Tags
+                  <Edit
                     size={28}
                     style={{ cursor: 'pointer', margin: '10px 10px 0 0' }}
                     onClick={() => setShowTags(true)}
@@ -323,7 +332,7 @@ const PhotoGallery = ({
                 withArrow
                 zIndex={9999}
               >
-                <TagsOff
+                <EditOff
                   size={28}
                   style={{ cursor: 'pointer', margin: '10px 10px 0 0' }}
                   onClick={() => setShowTags(false)}
@@ -343,19 +352,25 @@ const PhotoGallery = ({
             );
           },
           slide: (image) => {
+            const { width, height } = calcResponsiveDimensions(
+              parsedPhotos[slideIndex].width,
+              parsedPhotos[slideIndex].height
+            );
             return (
               <div
                 style={{
                   position: 'relative',
-                  width: calculateResponsiveDimensions(
-                    parsedPhotos[slideIndex].width,
-                    parsedPhotos[slideIndex].height,
-                    true
-                  ),
-                  height: calculateResponsiveDimensions(
-                    parsedPhotos[slideIndex].width,
-                    parsedPhotos[slideIndex].height
-                  ),
+                  // width: calculateResponsiveDimensions(
+                  //   parsedPhotos[slideIndex].width,
+                  //   parsedPhotos[slideIndex].height,
+                  //   true
+                  // ),
+                  // height: calculateResponsiveDimensions(
+                  //   parsedPhotos[slideIndex].width,
+                  //   parsedPhotos[slideIndex].height
+                  // ),
+                  width: width,
+                  height: height,
                 }}
               >
                 <Image
@@ -374,15 +389,17 @@ const PhotoGallery = ({
                   showTags={showTags}
                   showAllTags={showAllTags}
                   names={names}
-                  responsiveWidth={calculateResponsiveDimensions(
-                    parsedPhotos[slideIndex].width,
-                    parsedPhotos[slideIndex].height,
-                    true
-                  )}
-                  responsiveHeight={calculateResponsiveDimensions(
-                    parsedPhotos[slideIndex].width,
-                    parsedPhotos[slideIndex].height
-                  )}
+                  // responsiveWidth={calculateResponsiveDimensions(
+                  //   parsedPhotos[slideIndex].width,
+                  //   parsedPhotos[slideIndex].height,
+                  //   true
+                  // )}
+                  // responsiveHeight={calculateResponsiveDimensions(
+                  //   parsedPhotos[slideIndex].width,
+                  //   parsedPhotos[slideIndex].height
+                  // )}
+                  width={width}
+                  height={height}
                 />
               </div>
             );
