@@ -381,8 +381,8 @@ const PhotoGallery = ({
               <div
                 style={{
                   position: 'relative',
-                  width: width,
-                  height: height,
+                  width: window.innerWidth,
+                  height: window.innerHeight,
                 }}
               >
                 <Image
