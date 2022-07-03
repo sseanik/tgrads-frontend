@@ -109,61 +109,59 @@ const FaceBoxes = (props: FaceBoxesProps) => {
           <Tooltip
             key={`face-${faceBoxIndex}`}
             opened={props.showNameTags ? props.showNameTags : undefined}
+            withinPortal={true}
+            style={{
+              ...calculateFaceBoxes(faceBox),
+              position: 'absolute',
+              boxShadow: props.editingTags
+                ? '0 0 0 3px rgba(255, 255, 255, 0.5) inset'
+                : '',
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
+              cursor: props.editingTags ? 'pointer' : '',
+            }}
             label={faceBox.name}
             withArrow
             position='bottom'
             zIndex={9999}
             disabled={props.editingTags || faceBox.name === ''}
           >
-            <div
-              style={{
-                ...calculateFaceBoxes(faceBox),
-                position: 'absolute',
-                boxShadow: props.editingTags
-                  ? '0 0 0 3px rgba(255, 255, 255, 0.5) inset'
-                  : '',
-                display: 'flex',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-                cursor: props.editingTags ? 'pointer' : '',
-              }}
-            >
-              {props.editingTags && (
-                <Menu
-                  position='bottom'
-                  placement='center'
-                  zIndex={9999}
-                  size={150}
-                  withArrow
-                  transitionDuration={25}
-                  control={
-                    <UnstyledButton
-                      style={{
-                        width: (faceBox.right - faceBox.left) * props.width,
-                        height: '100%',
-                      }}
-                    />
-                  }
-                >
-                  <Autocomplete
-                    zIndex={10000}
-                    placeholder='Tag Person'
-                    required
-                    data={props.names}
-                    value={faceBox.name}
-                    onChange={(value) =>
-                      updateBoxNameLetters(value, faceBoxIndex)
-                    }
-                    size='sm'
-                    radius='sm'
-                    onItemSubmit={(e) => submitFaceTag(e.value, faceBoxIndex)}
-                    filter={(value, item) =>
-                      item.value.toLowerCase().startsWith(value.toLowerCase())
-                    }
+            {props.editingTags && (
+              <Menu
+                position='bottom'
+                placement='center'
+                zIndex={9999}
+                size={150}
+                withArrow
+                transitionDuration={25}
+                control={
+                  <UnstyledButton
+                    style={{
+                      width: (faceBox.right - faceBox.left) * props.width,
+                      height: '100%',
+                    }}
                   />
-                </Menu>
-              )}
-            </div>
+                }
+              >
+                <Autocomplete
+                  zIndex={10000}
+                  placeholder='Tag Person'
+                  required
+                  data={props.names}
+                  value={faceBox.name}
+                  onChange={(value) =>
+                    updateBoxNameLetters(value, faceBoxIndex)
+                  }
+                  size='sm'
+                  radius='sm'
+                  onItemSubmit={(e) => submitFaceTag(e.value, faceBoxIndex)}
+                  filter={(value, item) =>
+                    item.value.toLowerCase().startsWith(value.toLowerCase())
+                  }
+                />
+              </Menu>
+            )}
           </Tooltip>
         );
       })}
