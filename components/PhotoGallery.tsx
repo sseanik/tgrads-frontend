@@ -99,6 +99,7 @@ const PhotoGallery = ({
     setSlideIndex(index);
     setEditingTags(false);
     setAndCheckPreExistingTags(index);
+    setShowNameTags(false)
   };
 
   const onLightboxAction = (left = true, open = false, index = -1) => {
@@ -136,6 +137,7 @@ const PhotoGallery = ({
     );
     // If it exists, use the Tags and save the Photo Tag ID
     if (preExistingFaceBoxes) {
+      console.log("Hello?")
       const parsedFaceBoxes = JSON.parse(
         preExistingFaceBoxes.attributes.FaceBoxes
       );
