@@ -93,16 +93,12 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     }
   };
 
-  const calculateFaceBoxes = () => {
+  const calculateFaceBoxes = (faceBox: FaceDetectionBox) => {
     return {
-      // left: faceBox.left * props.width,
-      // top: faceBox.top * props.height,
-      // right: props.width - faceBox.right * props.width,
-      // bottom: props.height - faceBox.bottom * props.height,
-      left: 0,
-      top: 0,
-      right: window.innerWidth,
-      bottom: window.innerHeight,
+      left: faceBox.left * props.width,
+      top: faceBox.top * props.height,
+      right: props.width - faceBox.right * props.width,
+      bottom: props.height - faceBox.bottom * props.height,
     };
   };
 
@@ -114,7 +110,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             key={`face-${faceBoxIndex}`}
             opened={props.showNameTags ? props.showNameTags : undefined}
             style={{
-              ...calculateFaceBoxes(),
+              ...calculateFaceBoxes(faceBox),
               position: 'absolute',
               boxShadow: props.editingTags
                 ? '0 0 0 3px rgba(255, 255, 255, 0.5) inset'

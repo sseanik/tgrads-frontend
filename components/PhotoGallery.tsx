@@ -290,8 +290,8 @@ const PhotoGallery = ({
         close={onLightboxClose}
         plugins={[Zoom]}
         zoom={{
-          maxZoomPixelRatio: 2,
-          zoomInMultiplier: 1.5,
+          maxZoomPixelRatio: 3,
+          zoomInMultiplier: 2,
         }}
         on={{
           view: (index: number) => onSlideAction(index),
