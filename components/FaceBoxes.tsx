@@ -93,12 +93,16 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     }
   };
 
-  const calculateFaceBoxes = (faceBox) => {
+  const calculateFaceBoxes = () => {
     return {
-      left: faceBox.left * props.width,
-      top: faceBox.top * props.height,
-      right: props.width - faceBox.right * props.width,
-      bottom: props.height - faceBox.bottom * props.height,
+      // left: faceBox.left * props.width,
+      // top: faceBox.top * props.height,
+      // right: props.width - faceBox.right * props.width,
+      // bottom: props.height - faceBox.bottom * props.height,
+      left: 0,
+      top: 0,
+      right: window.innerWidth,
+      bottom: window.innerHeight,
     };
   };
 
@@ -109,9 +113,8 @@ const FaceBoxes = (props: FaceBoxesProps) => {
           <Tooltip
             key={`face-${faceBoxIndex}`}
             opened={props.showNameTags ? props.showNameTags : undefined}
-            withinPortal={true}
             style={{
-              ...calculateFaceBoxes(faceBox),
+              ...calculateFaceBoxes(),
               position: 'absolute',
               boxShadow: props.editingTags
                 ? '0 0 0 3px rgba(255, 255, 255, 0.5) inset'
