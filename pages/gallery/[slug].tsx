@@ -1,6 +1,7 @@
 import { Box, Card } from '@mantine/core';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 import AppShell from '../../components/AppShell';
 import Breadcrumbs from '../../components/Breadcrumbs';
@@ -22,6 +23,7 @@ const Events: NextPage<{
   names: string[];
   slug: string;
 }> = ({ gallery, galleryPhotoTags, names, slug }) => {
+  const [photosAndTags, setPhotosAndTags] = useState<FaceBoxAttributes[]>(galleryPhotoTags)
   const router = useRouter();
 
   const crumbs = [
@@ -40,7 +42,8 @@ const Events: NextPage<{
       <Card shadow='sm' p='sm'>
         <PhotoGallery
           photos={gallery.Photos.data}
-          galleryPhotoTags={galleryPhotoTags}
+          photosAndTags={photosAndTags}
+          setPhotosAndTags={setPhotosAndTags}
           names={names}
           slug={slug}
         />

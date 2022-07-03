@@ -6,7 +6,7 @@ import { Loader, Tooltip } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import Clarifai from 'clarifai';
 import Image from 'next/image';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import PhotoAlbum from 'react-photo-album';
 import {
   ChevronLeft,
@@ -25,7 +25,7 @@ import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
 import { revalidateGallery } from '../lib/triggerRevalidate';
-import { FaceBoxAttributes } from '../types/FaceBoxes';
+import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
 import {
   FaceDetectionRegion,
   FaceDetectionResponse,
@@ -37,16 +37,10 @@ import { getTrueImageDimensions } from '../utils/getTrueImageDimensions';
 import FaceBoxes from './FaceBoxes';
 import NextJsImage from './NextjsImage';
 
-export interface FaceDetectionBox {
-  bottom: number;
-  left: number;
-  right: number;
-  top: number;
-  name: string;
-}
 interface PhotoGalleryProps {
   photos: GalleryPhoto[];
-  galleryPhotoTags: FaceBoxAttributes[];
+  photosAndTags: FaceBoxAttributes[];
+  setPhotosAndTags: Dispatch<SetStateAction<FaceBoxAttributes[]>>;
   names: string[];
   slug: string;
 }
@@ -55,20 +49,33 @@ let faceDetectionApp;
 
 const PhotoGallery = ({
   photos,
-  galleryPhotoTags,
+  photosAndTags,
+  setPhotosAndTags,
   names,
   slug,
 }: PhotoGalleryProps) => {
-  // State
+  /* ----------------------------- PHOTO SELECTION ---------------------------- */
+  // Index of selected photo from gallery or lightbox slide action
   const [slideIndex, setSlideIndex] = useState<number>(-1);
+  /* ------------------------------- FACE BOXES ------------------------------- */
+  // Face Boxes state of the current photo
   const [faceBoxes, setFaceBoxes] = useState<FaceDetectionBox[]>([]);
-  const [createdPhotoTagID, setCreatedPhotoTagID] = useState<string>('');
+  /* ------------------------- ON DETECT FACES ACTION ------------------------- */
+  // Boolean to track when face detection action is in progress
   const [detectionLoading, setDetectionLoading] = useState<boolean>(false);
+  // Photo Tags ID of created face detection action
+  const [createdPhotoTagID, setCreatedPhotoTagID] = useState<string>('');
+  // Boolean to track when no faces were detected
   const [noFacesDetected, setNoFacesDetected] = useState<boolean>(false);
-  const [newPhotoTags, setNewPhotoTags] = useState<FaceBoxAttributes[]>([]);
-  const [showTags, setShowTags] = useState<boolean>(false);
-  const [showAllTags, setShowAllTags] = useState<boolean>(false);
-  // GraphQL
+  /* ---------------------------- LIGHTBOX TOOLBOX ---------------------------- */
+  // Track when user is editing photo tags
+  const [editingTags, setEditingTags] = useState<boolean>(false);
+  // Track when user is showing name tags
+  const [showNameTags, setShowNameTags] = useState<boolean>(false);
+  // Track when toolbox icon is hovered
+  const [iconHover, setIconHover] = useState<string>('');
+  /* --------------------------------- GRAPHQL -------------------------------- */
+  // GraphQL mutation to create photo tags
   const [createPhotoTags] = useMutation(CREATE_PHOTO_TAGS);
 
   const parsedPhotos: ParsedPhoto[] = photos.map((photo) => {
@@ -90,7 +97,7 @@ const PhotoGallery = ({
 
   const onSlideAction = (index: number) => {
     setSlideIndex(index);
-    setShowTags(false);
+    setEditingTags(false);
     setAndCheckPreExistingTags(index);
   };
 
@@ -112,7 +119,7 @@ const PhotoGallery = ({
         newIndex = slideIndex + 1;
         setSlideIndex((idx) => idx + 1);
       }
-      setShowTags(false);
+      setEditingTags(false);
     } else {
       newIndex = index * 1;
       setSlideIndex(index);
@@ -124,12 +131,18 @@ const PhotoGallery = ({
   const setAndCheckPreExistingTags = (index: number) => {
     // Each time lightbox slides to a new photo check if Photo Tags exist
     // Combine the existing Face Boxes with the client side created ones
-    const preExistingFaceBoxes = galleryPhotoTags
-      .concat(newPhotoTags)
-      .find((face) => face.attributes.PhotoID === parsedPhotos[index]?.id);
+    const preExistingFaceBoxes = photosAndTags.find(
+      (face) => face.attributes.PhotoID === parsedPhotos[index]?.id
+    );
     // If it exists, use the Tags and save the Photo Tag ID
     if (preExistingFaceBoxes) {
-      setFaceBoxes(JSON.parse(preExistingFaceBoxes.attributes.FaceBoxes));
+      const parsedFaceBoxes = JSON.parse(
+        preExistingFaceBoxes.attributes.FaceBoxes
+      );
+      if (!Array.isArray(parsedFaceBoxes)) {
+        setNoFacesDetected(true);
+      }
+      setFaceBoxes(parsedFaceBoxes);
       setCreatedPhotoTagID(preExistingFaceBoxes.id);
     } else {
       setFaceBoxes([]);
@@ -186,7 +199,7 @@ const PhotoGallery = ({
           }
           setDetectionLoading(false);
           setFaceBoxes(responseFaceBoxes);
-          setShowTags(true);
+          setEditingTags(true);
           createPhotoTags({
             variables: {
               id: parsedPhotos[slideIndex].id,
@@ -194,10 +207,10 @@ const PhotoGallery = ({
               faceBoxes: JSON.stringify(JSON.stringify(responseFaceBoxes)),
             },
           }).then((response) => {
-            console.log('Created Photo Tags');
             setCreatedPhotoTagID(response.data.createPhotoTag.data.id);
-            setNewPhotoTags((prevTags) => [
-              ...prevTags,
+            // Update the array of all photos and with new photo with empty tags
+            setPhotosAndTags((prevPhotos) => [
+              ...prevPhotos,
               {
                 id: response.data.createPhotoTag.data.id,
                 attributes: {
@@ -228,14 +241,6 @@ const PhotoGallery = ({
   };
 
   const onNoFacesDetected = () => {
-    updateNotification({
-      id: 'detecting-faces',
-      title: 'Error',
-      message: 'No faces were detected in this photo',
-      autoClose: 3000,
-      color: 'red',
-      icon: <FaceIdError />,
-    });
     createPhotoTags({
       variables: {
         id: parsedPhotos[slideIndex].id,
@@ -243,9 +248,26 @@ const PhotoGallery = ({
         faceBoxes: JSON.stringify(JSON.stringify({ error: true })),
       },
     }).then((response) => {
-      console.log('Created Empty Photo Tags');
-      revalidateGallery('create', slug);
       setCreatedPhotoTagID(response.data.createPhotoTag.data.id);
+      setPhotosAndTags((prevPhotos) => [
+        ...prevPhotos,
+        {
+          id: response.data.createPhotoTag.data.id,
+          attributes: {
+            FaceBoxes: JSON.stringify({ error: true }),
+            PhotoID: parsedPhotos[slideIndex].id,
+          },
+        },
+      ]);
+      revalidateGallery('create', slug);
+      updateNotification({
+        id: 'detecting-faces',
+        title: 'Error',
+        message: 'No faces were detected in this photo',
+        autoClose: 3000,
+        color: 'red',
+        icon: <FaceIdError />,
+      });
     });
     setNoFacesDetected(true);
   };
@@ -282,70 +304,108 @@ const PhotoGallery = ({
                   key='tag_photo_loading'
                   color='white'
                   size='sm'
-                  style={{ margin: '14px 10px 0 0' }}
+                  style={{
+                    margin: '14px 10px 0 0',
+                    filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
+                  }}
                 />
               ) : (
                 <Tooltip
-                  key='tag_photo'
+                  key='detect_faces'
                   label='Detect Faces'
                   withArrow
                   zIndex={9999}
+                  style={{ margin: '10px 10px 0 0' }}
                 >
                   <FaceId
                     size={28}
-                    style={{ cursor: 'pointer', margin: '10px 10px 0 0' }}
+                    onMouseOver={() => setIconHover('FaceId')}
+                    onMouseLeave={() => setIconHover('')}
                     onClick={handleFaceDetection}
+                    style={{
+                      cursor: 'pointer',
+                      filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
+                      color: iconHover === 'FaceId' ? 'white' : '#cfcfcf',
+                    }}
                   />
                 </Tooltip>
               )
-            ) : !showTags ? (
-              <div key='enabled_tags'>
-                <Tooltip
-                  key='show_all_tags'
-                  label={showAllTags ? 'Hide Tags' : 'Show Tags'}
-                  withArrow
-                  zIndex={9999}
-                >
-                  {showAllTags ? (
-                    <TagsOff
-                      size={28}
-                      style={{ cursor: 'pointer', margin: '10px 22px 0 0' }}
-                      onClick={() => setShowAllTags((prev) => !prev)}
-                    />
-                  ) : (
-                    <Tags
-                      size={28}
-                      style={{ cursor: 'pointer', margin: '10px 22px 0 0' }}
-                      onClick={() => setShowAllTags((prev) => !prev)}
-                    />
-                  )}
-                </Tooltip>
-                <Tooltip
-                  key='show_tags'
-                  label='Edit Tags'
-                  withArrow
-                  zIndex={9999}
-                >
-                  <Edit
-                    size={28}
-                    style={{ cursor: 'pointer', margin: '10px 10px 0 0' }}
-                    onClick={() => setShowTags(true)}
-                  />
-                </Tooltip>
-              </div>
             ) : (
-              <Tooltip
-                key='hide_tags'
-                label='Tagging Off'
-                withArrow
-                zIndex={9999}
-              >
-                <EditOff
-                  size={28}
-                  style={{ cursor: 'pointer', margin: '10px 10px 0 0' }}
-                  onClick={() => setShowTags(false)}
-                />
-              </Tooltip>
+              !noFacesDetected && (
+                <div key='enabled_tags'>
+                  {!editingTags && (
+                    <Tooltip
+                      key='show_tags'
+                      label={showNameTags ? 'Hide Tags' : 'Show Tags'}
+                      withArrow
+                      zIndex={9999}
+                      style={{ margin: '10px 18px 0 0' }}
+                    >
+                      {showNameTags ? (
+                        <TagsOff
+                          size={28}
+                          onMouseOver={() => setIconHover('TagsOff')}
+                          onMouseLeave={() => setIconHover('')}
+                          onClick={() => setShowNameTags((prev) => !prev)}
+                          style={{
+                            cursor: 'pointer',
+                            filter:
+                              'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
+                            color:
+                              iconHover === 'TagsOff' ? 'white' : '#cfcfcf',
+                          }}
+                        />
+                      ) : (
+                        <Tags
+                          size={28}
+                          onMouseOver={() => setIconHover('Tags')}
+                          onMouseLeave={() => setIconHover('')}
+                          onClick={() => setShowNameTags((prev) => !prev)}
+                          style={{
+                            cursor: 'pointer',
+                            filter:
+                              'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
+                            color: iconHover === 'Tags' ? 'white' : '#cfcfcf',
+                          }}
+                        />
+                      )}
+                    </Tooltip>
+                  )}
+                  <Tooltip
+                    key='edit_tags'
+                    label={!editingTags ? 'Edit Tags' : 'Stop Tagging'}
+                    withArrow
+                    zIndex={9999}
+                    style={{ margin: '10px 10px 0 0' }}
+                  >
+                    {!editingTags ? (
+                      <Edit
+                        size={28}
+                        onMouseOver={() => setIconHover('Edit')}
+                        onMouseLeave={() => setIconHover('')}
+                        onClick={() => setEditingTags(true)}
+                        style={{
+                          cursor: 'pointer',
+                          filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
+                          color: iconHover === 'Edit' ? 'white' : '#cfcfcf',
+                        }}
+                      />
+                    ) : (
+                      <EditOff
+                        size={28}
+                        onMouseOver={() => setIconHover('EditOff')}
+                        onMouseLeave={() => setIconHover('')}
+                        onClick={() => setEditingTags(false)}
+                        style={{
+                          cursor: 'pointer',
+                          filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
+                          color: iconHover === 'EditOff' ? 'white' : '#cfcfcf',
+                        }}
+                      />
+                    )}
+                  </Tooltip>
+                </div>
+              )
             ),
             'close',
           ],
@@ -361,20 +421,35 @@ const PhotoGallery = ({
           },
           iconZoomIn: () => {
             return (
-              <Tooltip key='zoom_in' label='Zoom In' withArrow zIndex={9999}>
+              <Tooltip
+                key='zoom_in'
+                label='Zoom In'
+                withArrow
+                zIndex={9999}
+                gutter={10}
+              >
                 <ZoomIn
                   size={28}
-                  style={{ cursor: 'pointer', margin: '0 2px 0 0' }}
+                  style={{ cursor: 'pointer', margin: '4px 2px 0 0' }}
                 />
               </Tooltip>
             );
           },
           iconZoomOut: () => {
             return (
-              <Tooltip key='zoom_out' label='Zoom Out' withArrow zIndex={9999}>
+              <Tooltip
+                key='zoom_out'
+                label='Zoom Out'
+                withArrow
+                zIndex={9999}
+                gutter={10}
+              >
                 <ZoomOut
                   size={28}
-                  style={{ cursor: 'pointer', margin: '0 12px 0 0' }}
+                  style={{
+                    cursor: 'pointer',
+                    margin: `4px ${noFacesDetected ? 0 : '12px'} 0 0`,
+                  }}
                 />
               </Tooltip>
             );
@@ -403,10 +478,11 @@ const PhotoGallery = ({
                   faceBoxes={Array.isArray(faceBoxes) ? faceBoxes : []}
                   createdPhotoTagID={createdPhotoTagID}
                   setFaceBoxes={setFaceBoxes}
+                  setPhotosAndTags={setPhotosAndTags}
                   slug={slug}
                   selectedPhoto={parsedPhotos[slideIndex]}
-                  showTags={showTags}
-                  showAllTags={showAllTags}
+                  editingTags={editingTags}
+                  showNameTags={showNameTags}
                   names={names}
                   width={width}
                   height={height}

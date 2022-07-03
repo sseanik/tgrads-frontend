@@ -6,17 +6,18 @@ import { AlertCircle, FaceId } from 'tabler-icons-react';
 
 import { UPDATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
 import { revalidateGallery } from '../lib/triggerRevalidate';
+import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
 import { ParsedPhoto } from '../types/Gallery';
-import { FaceDetectionBox } from './PhotoGallery';
 
 interface FaceBoxesProps {
   faceBoxes: FaceDetectionBox[];
   createdPhotoTagID: string;
   setFaceBoxes: Dispatch<SetStateAction<FaceDetectionBox[]>>;
+  setPhotosAndTags: Dispatch<SetStateAction<FaceBoxAttributes[]>>;
   slug: string;
   selectedPhoto?: ParsedPhoto;
-  showTags: boolean;
-  showAllTags: boolean;
+  editingTags: boolean;
+  showNameTags: boolean;
   names: string[];
   width: number;
   height: number;
@@ -27,9 +28,9 @@ let tagIncrement = 0;
 const FaceBoxes = (props: FaceBoxesProps) => {
   const [updatePhotoTags, updatedPhotoTags] = useMutation(UPDATE_PHOTO_TAGS);
 
-  const updateBoxNameTag = (name: string, faceBoxIndex: number) => {
-    props.setFaceBoxes(
-      props.faceBoxes.map((faceBox, idx) =>
+  const updateBoxNameLetters = (name: string, faceBoxIndex: number) => {
+    props.setFaceBoxes((prevFaceBoxes) =>
+      prevFaceBoxes.map((faceBox, idx) =>
         idx === faceBoxIndex ? { ...faceBox, name: name } : faceBox
       )
     );
@@ -69,8 +70,16 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             )
           ),
         },
-      }).then(() => {
-        console.log('Added name to Photo tag');
+      }).then((response) => {
+        // Update the array of all photos and their tags with edited name
+        const responsePhotoAndTag = response.data.updatePhotoTag.data;
+        props.setPhotosAndTags((prevPhotosAndTags) =>
+          prevPhotosAndTags.map((photoAndTag) => {
+            return photoAndTag.id === responsePhotoAndTag.id
+              ? responsePhotoAndTag
+              : photoAndTag;
+          })
+        );
         revalidateGallery('update', props.slug);
         updateNotification({
           id: `updating-face-tag-${increment}`,
@@ -102,22 +111,22 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             style={{
               ...calculateFaceBoxes(faceBox),
               position: 'absolute',
-              boxShadow: props.showTags
+              boxShadow: props.editingTags
                 ? '0 0 0 3px rgba(255, 255, 255, 0.5) inset'
                 : '',
               display: 'flex',
               flexWrap: 'wrap',
               justifyContent: 'center',
-              cursor: props.showTags ? 'pointer' : '',
+              cursor: props.editingTags ? 'pointer' : '',
             }}
             label={faceBox.name}
             withArrow
             position='bottom'
             zIndex={9999}
-            disabled={props.showTags || faceBox.name === ''}
-            opened={props.showAllTags ? props.showAllTags : undefined}
+            disabled={props.editingTags || faceBox.name === ''}
+            opened={props.showNameTags ? props.showNameTags : undefined}
           >
-            {props.showTags && (
+            {props.editingTags && (
               <Menu
                 position='bottom'
                 placement='center'
@@ -140,7 +149,9 @@ const FaceBoxes = (props: FaceBoxesProps) => {
                   required
                   data={props.names}
                   value={faceBox.name}
-                  onChange={(value) => updateBoxNameTag(value, faceBoxIndex)}
+                  onChange={(value) =>
+                    updateBoxNameLetters(value, faceBoxIndex)
+                  }
                   size='sm'
                   radius='sm'
                   onItemSubmit={(e) => submitFaceTag(e.value, faceBoxIndex)}

@@ -5,3 +5,11 @@ export type FaceBoxAttributes = {
     PhotoID: string;
   };
 };
+
+export interface FaceDetectionBox {
+  bottom: number;
+  left: number;
+  right: number;
+  top: number;
+  name: string;
+}
