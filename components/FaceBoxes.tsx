@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import { Autocomplete, FloatingTooltip, Menu, UnstyledButton } from '@mantine/core';
+import { Autocomplete, Menu, Tooltip, UnstyledButton } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { Dispatch, SetStateAction } from 'react';
 import { AlertCircle, FaceId } from 'tabler-icons-react';
@@ -106,8 +106,10 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     <>
       {props.faceBoxes.map((faceBox, faceBoxIndex) => {
         return (
-          <FloatingTooltip
+          <Tooltip
             key={`face-${faceBoxIndex}`}
+            opened={props.showNameTags ? props.showNameTags : undefined}
+            withinPortal={true}
             style={{
               ...calculateFaceBoxes(faceBox),
               position: 'absolute',
@@ -124,7 +126,6 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             position='bottom'
             zIndex={9999}
             disabled={props.editingTags || faceBox.name === ''}
-            opened={props.showNameTags ? props.showNameTags : undefined}
           >
             {props.editingTags && (
               <Menu
@@ -161,7 +162,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
                 />
               </Menu>
             )}
-          </FloatingTooltip>
+          </Tooltip>
         );
       })}
     </>
