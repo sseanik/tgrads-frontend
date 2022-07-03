@@ -2,7 +2,7 @@ import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
 import { useMutation } from '@apollo/client';
-import { Tooltip } from '@mantine/core';
+// import { Tooltip } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import Clarifai from 'clarifai';
 import Image from 'next/image';
@@ -13,12 +13,12 @@ import {
   ChevronRight,
   FaceId,
   FaceIdError,
-  ZoomIn,
-  ZoomOut,
+  // ZoomIn,
+  // ZoomOut,
 } from 'tabler-icons-react';
 import Lightbox from 'yet-another-react-lightbox';
-import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
+// import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
 import { revalidateGallery } from '../lib/triggerRevalidate';
 import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
