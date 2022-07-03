@@ -124,7 +124,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             position='bottom'
             zIndex={9999}
             disabled={props.editingTags || faceBox.name === ''}
-            opened={props.showNameTags ? props.showNameTags : undefined}
+            opened={true}
           >
             {props.editingTags && (
               <Menu
