@@ -2,7 +2,7 @@ import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
 import { useMutation } from '@apollo/client';
-import { Loader, Tooltip } from '@mantine/core';
+import { Tooltip } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import Clarifai from 'clarifai';
 import Image from 'next/image';
@@ -11,12 +11,8 @@ import PhotoAlbum from 'react-photo-album';
 import {
   ChevronLeft,
   ChevronRight,
-  Edit,
-  EditOff,
   FaceId,
   FaceIdError,
-  Tags,
-  TagsOff,
   ZoomIn,
   ZoomOut,
 } from 'tabler-icons-react';
@@ -35,6 +31,9 @@ import {
 import { calcResponsiveDimensions } from '../utils/calcResponsiveDimensions';
 import { getTrueImageDimensions } from '../utils/getTrueImageDimensions';
 import FaceBoxes from './FaceBoxes';
+import DisplayTags from './LightboxToolbar/DisplayTags';
+import EditTags from './LightboxToolbar/EditTags';
+import FaceDetection from './LightboxToolbar/FaceDetection';
 import NextJsImage from './NextjsImage';
 
 interface PhotoGalleryProps {
@@ -99,7 +98,7 @@ const PhotoGallery = ({
     setSlideIndex(index);
     setEditingTags(false);
     setAndCheckPreExistingTags(index);
-    setShowNameTags(false)
+    setShowNameTags(false);
   };
 
   const onLightboxAction = (left = true, open = false, index = -1) => {
@@ -137,7 +136,6 @@ const PhotoGallery = ({
     );
     // If it exists, use the Tags and save the Photo Tag ID
     if (preExistingFaceBoxes) {
-      console.log("Hello?")
       const parsedFaceBoxes = JSON.parse(
         preExistingFaceBoxes.attributes.FaceBoxes
       );
@@ -292,122 +290,40 @@ const PhotoGallery = ({
         close={onLightboxClose}
         plugins={[Zoom]}
         zoom={{
-          maxZoomPixelRatio: 3,
-          zoomInMultiplier: 2,
+          maxZoomPixelRatio: 2,
+          zoomInMultiplier: 1.5,
         }}
         on={{
           view: (index: number) => onSlideAction(index),
         }}
         toolbar={{
           buttons: [
-            !noFacesDetected && faceBoxes.length === 0 ? (
-              detectionLoading ? (
-                <Loader
-                  key='tag_photo_loading'
-                  color='white'
-                  size='sm'
-                  style={{
-                    margin: '14px 10px 0 0',
-                    filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-                  }}
-                />
-              ) : (
-                <Tooltip
-                  key='detect_faces'
-                  label='Detect Faces'
-                  withArrow
-                  zIndex={9999}
-                  style={{ margin: '10px 10px 0 0' }}
-                >
-                  <FaceId
-                    size={28}
-                    onMouseOver={() => setIconHover('FaceId')}
-                    onMouseLeave={() => setIconHover('')}
-                    onClick={handleFaceDetection}
-                    style={{
-                      cursor: 'pointer',
-                      filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-                      color: iconHover === 'FaceId' ? 'white' : '#cfcfcf',
-                    }}
-                  />
-                </Tooltip>
-              )
-            ) : (
-              !noFacesDetected && (
-                <div key='enabled_tags'>
-                  {!editingTags && (
-                    <Tooltip
-                      key='show_tags'
-                      label={showNameTags ? 'Hide Tags' : 'Show Tags'}
-                      withArrow
-                      zIndex={9999}
-                      style={{ margin: '10px 18px 0 0' }}
-                    >
-                      {showNameTags ? (
-                        <TagsOff
-                          size={28}
-                          onMouseOver={() => setIconHover('TagsOff')}
-                          onMouseLeave={() => setIconHover('')}
-                          onClick={() => setShowNameTags((prev) => !prev)}
-                          style={{
-                            cursor: 'pointer',
-                            filter:
-                              'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-                            color:
-                              iconHover === 'TagsOff' ? 'white' : '#cfcfcf',
-                          }}
-                        />
-                      ) : (
-                        <Tags
-                          size={28}
-                          onMouseOver={() => setIconHover('Tags')}
-                          onMouseLeave={() => setIconHover('')}
-                          onClick={() => setShowNameTags((prev) => !prev)}
-                          style={{
-                            cursor: 'pointer',
-                            filter:
-                              'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-                            color: iconHover === 'Tags' ? 'white' : '#cfcfcf',
-                          }}
-                        />
-                      )}
-                    </Tooltip>
-                  )}
-                  <Tooltip
-                    key='edit_tags'
-                    label={!editingTags ? 'Edit Tags' : 'Stop Tagging'}
-                    withArrow
-                    zIndex={9999}
-                    style={{ margin: '10px 10px 0 0' }}
-                  >
-                    {!editingTags ? (
-                      <Edit
-                        size={28}
-                        onMouseOver={() => setIconHover('Edit')}
-                        onMouseLeave={() => setIconHover('')}
-                        onClick={() => setEditingTags(true)}
-                        style={{
-                          cursor: 'pointer',
-                          filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-                          color: iconHover === 'Edit' ? 'white' : '#cfcfcf',
-                        }}
-                      />
-                    ) : (
-                      <EditOff
-                        size={28}
-                        onMouseOver={() => setIconHover('EditOff')}
-                        onMouseLeave={() => setIconHover('')}
-                        onClick={() => setEditingTags(false)}
-                        style={{
-                          cursor: 'pointer',
-                          filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-                          color: iconHover === 'EditOff' ? 'white' : '#cfcfcf',
-                        }}
-                      />
-                    )}
-                  </Tooltip>
-                </div>
-              )
+            !noFacesDetected && faceBoxes.length === 0 && (
+              <FaceDetection
+                key='face_detection'
+                detectionLoading={detectionLoading}
+                setIconHover={setIconHover}
+                handleFaceDetection={handleFaceDetection}
+                iconHover={iconHover}
+              />
+            ),
+            !noFacesDetected && !editingTags && (
+              <DisplayTags
+                key='display_tags'
+                showNameTags={showNameTags}
+                setIconHover={setIconHover}
+                setShowNameTags={setShowNameTags}
+                iconHover={iconHover}
+              />
+            ),
+            !noFacesDetected && (
+              <EditTags
+                key='edit_tags'
+                editingTags={editingTags}
+                setIconHover={setIconHover}
+                setEditingTags={setEditingTags}
+                iconHover={iconHover}
+              />
             ),
             'close',
           ],
