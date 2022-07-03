@@ -2,7 +2,7 @@ import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
 import { useMutation } from '@apollo/client';
-// import { Tooltip } from '@mantine/core';
+import { Tooltip } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import Clarifai from 'clarifai';
 import Image from 'next/image';
@@ -13,12 +13,12 @@ import {
   ChevronRight,
   FaceId,
   FaceIdError,
-  // ZoomIn,
-  // ZoomOut,
+  ZoomIn,
+  ZoomOut,
 } from 'tabler-icons-react';
 import Lightbox from 'yet-another-react-lightbox';
+import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
-// import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
 import { revalidateGallery } from '../lib/triggerRevalidate';
 import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
@@ -288,11 +288,11 @@ const PhotoGallery = ({
         open={slideIndex >= 0}
         index={slideIndex}
         close={onLightboxClose}
-        // plugins={[Zoom]}
-        // zoom={{
-        //   maxZoomPixelRatio: 2,
-        //   zoomInMultiplier: 1.5,
-        // }}
+        plugins={[Zoom]}
+        zoom={{
+          maxZoomPixelRatio: 2,
+          zoomInMultiplier: 1.5,
+        }}
         on={{
           view: (index: number) => onSlideAction(index),
         }}
@@ -337,41 +337,41 @@ const PhotoGallery = ({
               <ChevronRight size={40} onClick={() => onLightboxAction(false)} />
             );
           },
-          // iconZoomIn: () => {
-          //   return (
-          //     <Tooltip
-          //       key='zoom_in'
-          //       label='Zoom In'
-          //       withArrow
-          //       zIndex={9999}
-          //       gutter={10}
-          //     >
-          //       <ZoomIn
-          //         size={28}
-          //         style={{ cursor: 'pointer', margin: '4px 2px 0 0' }}
-          //       />
-          //     </Tooltip>
-          //   );
-          // },
-          // iconZoomOut: () => {
-          //   return (
-          //     <Tooltip
-          //       key='zoom_out'
-          //       label='Zoom Out'
-          //       withArrow
-          //       zIndex={9999}
-          //       gutter={10}
-          //     >
-          //       <ZoomOut
-          //         size={28}
-          //         style={{
-          //           cursor: 'pointer',
-          //           margin: `4px ${noFacesDetected ? 0 : '12px'} 0 0`,
-          //         }}
-          //       />
-          //     </Tooltip>
-          //   );
-          // },
+          iconZoomIn: () => {
+            return (
+              <Tooltip
+                key='zoom_in'
+                label='Zoom In'
+                withArrow
+                zIndex={9999}
+                gutter={10}
+              >
+                <ZoomIn
+                  size={28}
+                  style={{ cursor: 'pointer', margin: '4px 2px 0 0' }}
+                />
+              </Tooltip>
+            );
+          },
+          iconZoomOut: () => {
+            return (
+              <Tooltip
+                key='zoom_out'
+                label='Zoom Out'
+                withArrow
+                zIndex={9999}
+                gutter={10}
+              >
+                <ZoomOut
+                  size={28}
+                  style={{
+                    cursor: 'pointer',
+                    margin: `4px ${noFacesDetected ? 0 : '12px'} 0 0`,
+                  }}
+                />
+              </Tooltip>
+            );
+          },
           slide: (image) => {
             const { width, height } = calcResponsiveDimensions(
               parsedPhotos[slideIndex].width,

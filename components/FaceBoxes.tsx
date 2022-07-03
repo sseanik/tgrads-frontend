@@ -124,7 +124,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             label={faceBox.name}
             withArrow
             position='bottom'
-            zIndex={9999}
+            zIndex={12000}
             disabled={props.editingTags || faceBox.name === ''}
           >
             {props.editingTags && (
