@@ -255,10 +255,10 @@ const Cruise: NextPage<{
             </Text>
 
             <Text size='sm'>
-              Countdown:{' '}
+              Countdown:
               {isEventOver
-                ? `${days} Days ago`
-                : `${days} Days, ${hours} Hours, ${minutes} Minutes`}
+                ? ` ${days} Days ago`
+                : ` ${days} Days, ${hours} Hours, ${minutes} Minutes`}
             </Text>
           </Box>
         </div>
