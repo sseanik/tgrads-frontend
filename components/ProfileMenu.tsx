@@ -28,7 +28,6 @@ const ProfileMenu = ({ names }: ProfileMenuProps) => {
   const { data: session } = useSession();
   useEffect(() => {
     if (session == null) return;
-    console.log('session.jwt', session.jwt);
   }, [session]);
   //
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();

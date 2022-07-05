@@ -42,9 +42,9 @@ interface PhotoGalleryProps {
   setPhotosAndTags: Dispatch<SetStateAction<FaceBoxAttributes[]>>;
   names: string[];
   slug: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  clarifaiApp: any;
 }
-
-let faceDetectionApp;
 
 const PhotoGallery = ({
   photos,
@@ -52,6 +52,7 @@ const PhotoGallery = ({
   setPhotosAndTags,
   names,
   slug,
+  clarifaiApp
 }: PhotoGalleryProps) => {
   /* ----------------------------- PHOTO SELECTION ---------------------------- */
   // Index of selected photo from gallery or lightbox slide action
@@ -160,11 +161,6 @@ const PhotoGallery = ({
   };
 
   const handleFaceDetection = () => {
-    if (!faceDetectionApp) {
-      faceDetectionApp = new Clarifai.App({
-        apiKey: process.env.NEXT_PUBLIC_CLARIFAI_KEY,
-      });
-    }
     setDetectionLoading(true);
     showNotification({
       id: 'detecting-faces',
@@ -174,7 +170,7 @@ const PhotoGallery = ({
       autoClose: false,
       disallowClose: true,
     });
-    faceDetectionApp.models
+    clarifaiApp.models
       .predict(Clarifai.FACE_DETECT_MODEL, parsedPhotos[slideIndex].src)
       .then(
         (response: FaceDetectionResponse) => {

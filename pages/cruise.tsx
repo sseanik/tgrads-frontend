@@ -44,7 +44,7 @@ const Cruise: NextPage<{
     } else {
       setIsLoading(true);
       fetch(
-        `${process.env.STRAPI_URL}/api/user/me`,
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/user/me`,
         {
           method: 'GET',
           headers: {
@@ -54,7 +54,6 @@ const Cruise: NextPage<{
       )
         .then((res) => res.json())
         .then((res) => {
-          console.log(res);
           setIsLoading(false);
           setUserDetails(res);
         })
