@@ -43,8 +43,9 @@ const Cruise: NextPage<{
       setUserDetails(undefined);
     } else {
       setIsLoading(true);
+      console.log(process.env.NEXT_PUBLIC_STRAPI_URL)
       fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/user/me`,
+        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`,
         {
           method: 'GET',
           headers: {
@@ -79,6 +80,8 @@ const Cruise: NextPage<{
       },
     });
   };
+
+  console.log(userDetails)
 
   return (
     <AppShell names={names}>

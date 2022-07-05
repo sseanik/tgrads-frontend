@@ -166,6 +166,7 @@ const PhotoGallery = ({
       });
     }
     setDetectionLoading(true);
+    console.log("loading is true")
     showNotification({
       id: 'detecting-faces',
       loading: true,
@@ -197,7 +198,6 @@ const PhotoGallery = ({
             onNoFacesDetected();
             throw new Error('No Face Regions Detected');
           }
-          setDetectionLoading(false);
           setFaceBoxes(responseFaceBoxes);
           setEditingTags(true);
           updateNotification({
@@ -215,6 +215,7 @@ const PhotoGallery = ({
               faceBoxes: JSON.stringify(JSON.stringify(responseFaceBoxes)),
             },
           }).then((response) => {
+            setDetectionLoading(false);
             setCreatedPhotoTagID(response.data.createPhotoTag.data.id);
             // Update the array of all photos and with new photo with empty tags
             setPhotosAndTags((prevPhotos) => [

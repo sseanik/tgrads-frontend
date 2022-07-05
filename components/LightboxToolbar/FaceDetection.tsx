@@ -11,7 +11,7 @@ interface FaceDetectionProps {
 
 const FaceDetection = (props: FaceDetectionProps) => {
   if (props.detectionLoading) {
-    <Loader
+    return <Loader
       key='tag_photo_loading'
       color='white'
       size='sm'
