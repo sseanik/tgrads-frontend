@@ -1,5 +1,4 @@
 import { Box, Card } from '@mantine/core';
-import Clarifai from 'clarifai';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -23,9 +22,7 @@ const Events: NextPage<{
   galleryPhotoTags: FaceBoxAttributes[];
   names: string[];
   slug: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clarifaiApp: any;
-}> = ({ gallery, galleryPhotoTags, names, slug, clarifaiApp }) => {
+}> = ({ gallery, galleryPhotoTags, names, slug }) => {
   const [photosAndTags, setPhotosAndTags] = useState<FaceBoxAttributes[]>(galleryPhotoTags)
   const router = useRouter();
 
@@ -49,7 +46,6 @@ const Events: NextPage<{
           setPhotosAndTags={setPhotosAndTags}
           names={names}
           slug={slug}
-          clarifaiApp={clarifaiApp}
         />
       </Card>
     </AppShell>
@@ -82,17 +78,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   const names = mapAndSortNames(grads);
 
-  const clarifaiApp = new Clarifai.App({
-    apiKey: process.env.CLARIFAI_KEY,
-  })
-
   return {
     props: {
       gallery: data[0].attributes,
       galleryPhotoTags: photoTags.data,
       names: names,
       slug: context?.params?.slug,
-      clarifaiApp: clarifaiApp
     },
   };
 };
@@ -109,8 +100,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const paths = data.map((gallery: Gallery) => {
     return { params: { slug: gallery.attributes.Event.data?.attributes.Slug } };
   });
-
-
 
   return {
     paths: paths,
