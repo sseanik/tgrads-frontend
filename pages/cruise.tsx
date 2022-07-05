@@ -44,9 +44,7 @@ const Cruise: NextPage<{
     } else {
       setIsLoading(true);
       fetch(
-        process.env.NODE_ENV === 'production'
-          ? 'https://tgrads.vercel.app/api/user/me'
-          : 'http://localhost:1337/api/users/me',
+        `${process.env.STRAPI_URL}/api/user/me`,
         {
           method: 'GET',
           headers: {
