@@ -34,6 +34,7 @@
     "react-component-export-image": "^1.0.6",
     "react-crossfade-responsive": "^1.2.0",
     "react-dom": "17.0.2",
+    "react-icons": "^4.4.0",
     "react-photo-album": "^1.14.0",
     "react-qr-code": "^2.0.7",
     "sharp": "^0.30.7",

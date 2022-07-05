@@ -158,7 +158,7 @@ const Events: NextPage<{ event: EventAttributes; names: string[] }> = ({
                             border: '2px solid black',
                           }}
                         >
-                          {event.GoogleMapsURL ? (
+                          {event.LocationURL ? (
                             <Map2 size={36} strokeWidth={2} color={'#fff'} />
                           ) : (
                             <Location
@@ -179,9 +179,9 @@ const Events: NextPage<{ event: EventAttributes; names: string[] }> = ({
                             fontSize: theme.fontSizes.sm,
                           },
                         })}
-                        variant={event.GoogleMapsURL ? 'link' : 'text'}
-                        component={event.GoogleMapsURL ? 'a' : 'span'}
-                        href={event.GoogleMapsURL ?? ''}
+                        variant={event.LocationURL ? 'link' : 'text'}
+                        component={event.LocationURL ? 'a' : 'span'}
+                        href={event.LocationURL ?? ''}
                       >
                         {event.Location}
                       </Text>

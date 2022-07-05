@@ -9,7 +9,7 @@ export interface EventAttributes {
   Time: string;
   Location: string;
   Suburb: string;
-  GoogleMapsURL: string;
+  LocationURL: string;
   Footnote: string;
   Cost: string;
   Slug: string;
