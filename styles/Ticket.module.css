@@ -1,0 +1,208 @@
+.container {
+  max-width: 770px;
+  color: white;
+  font-size: 14px;
+}
+
+.ticketContainer {
+  margin: auto;
+  display: flex;
+  background: none;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 20px, rgba(0, 0, 0, 0.2) 0px 5px 10px;
+  border-radius: 10px;
+}
+
+.rightTicketSection {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.altColour {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(230, 62, 115, 0.4),
+      rgba(66, 16, 142, 0.25)
+    ),
+    url('https://res.cloudinary.com/tga/image/upload/v1656931731/harbour-spirit-on-water-at-night_1900x650_uh45xf.jpg');
+}
+
+.mainColour {
+  background-image: linear-gradient(
+      to bottom,
+      rgba(30, 75, 173, 0.25),
+      rgba(64, 21, 164, 0.25)
+    ),
+    url('https://res.cloudinary.com/tga/image/upload/v1656931731/harbour-spirit-on-water-at-night_1900x650_uh45xf.jpg');
+}
+
+.ticketImage {
+  height: 250px;
+  background-size: cover;
+  opacity: 0.9;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.ticketImage > * {
+  z-index: 100;
+}
+
+.topDetails {
+  width: 90%;
+  border-bottom: 1px solid rgb(189, 189, 189);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.topDetails span {
+  text-shadow: 2px 2px #000;
+}
+
+.topDetails span:first-child {
+  text-align: left;
+}
+
+.topDetails span:last-child {
+  text-align: right;
+}
+
+.topDetails .dateText {
+  color: #fff;
+  font-size: 20px;
+}
+
+.middleHeading {
+  color: #fff;
+  margin-top: 10px;
+}
+
+.middleHeading h1 {
+  font-size: 4;
+  font-weight: 700;
+  letter-spacing: 0em;
+  color: #fff;
+  margin: 0;
+  text-shadow: 2px 2px #000;
+}
+
+.middleHeading h2 {
+  font-size: 16px;
+  font-weight: 500;
+  text-shadow: 2px 2px #000;
+}
+
+.bottomDetails {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid rgb(189, 189, 189);
+  width: 90%;
+  text-shadow: 2px 2px #000;
+}
+
+.bottomDetails .separator {
+  font-size: 20px;
+}
+
+.time {
+  color: #000;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-weight: 700;
+}
+
+.time span {
+  font-weight: 400;
+  color: gray;
+}
+
+.time p {
+  margin: 0;
+}
+
+.leftSection {
+  width: 90%;
+  border-radius: 10px;
+}
+
+.leftSection .time {
+  font-size: 16px;
+}
+
+.rightSection {
+  min-width: 180px;
+  border-left: 1px dashed #404040;
+  border-radius: 10px;
+  background: white;
+}
+
+.rightSection .admit-one {
+  color: darkgray;
+}
+
+.rightSection .admit-one span:nth-child(2) {
+  color: gray;
+}
+
+.rightSection .rightContainer {
+  min-width: 180px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.rightSection .rightContainer .middleHeading .name {
+  font-size: 14px;
+  font-weight: 600;
+  text-shadow: 0px 0px !important;
+}
+
+.rightSection .middleHeading h1 {
+  font-size: 14px;
+  color: black;
+}
+
+.barcode {
+  height: 100px;
+}
+
+.barcode img {
+  height: 100%;
+}
+
+.rightSection .ticketNumber {
+  margin: 24px 0 0 0;
+  color: gray;
+}
+
+@media only screen and (max-width: 500px) {
+  .ticketContainer {
+    flex-direction: column;
+  }
+  .leftSection {
+    width: 100% !important;
+  }
+  .rightSection {
+    border-top: 1px dashed #404040;
+    border-left: none !important;
+  }
+  .rightContainer {
+    flex-direction: row !important;
+    height: 180px !important;
+  }
+  .barcode {
+    margin-top: 10px;
+  }
+}

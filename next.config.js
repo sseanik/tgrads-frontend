@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     loader: 'default',
-    domains: ['res.cloudinary.com'],
+    domains: ['res.cloudinary.com', 'image-charts.com'],
   },
   webpack5: true,
   webpack: (config) => {

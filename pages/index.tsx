@@ -10,7 +10,7 @@ const Home: NextPage<{
 }> = ({ names }) => {
   return (
     <AppShell names={names}>
-      <p>{process.env.NODE_ENV}</p>
+      <p>Dashboard coming soon...</p>
     </AppShell>
   );
 };

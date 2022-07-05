@@ -6,7 +6,7 @@ import {
 } from '@mantine/core';
 import { Dispatch, SetStateAction } from 'react';
 
-import NavItems from '../assets/NavItems';
+import navItem from '../lib/navItem';
 import Logo from './Logo';
 import MenuButton from './MenuButton';
 import ProfileMenu from './ProfileMenu';
@@ -45,7 +45,7 @@ const Header = ({ opened, setOpened, names }: HeaderProps) => {
         <div style={{ flex: 1, display: 'flex', height: '100%' }}>
           <MediaQuery smallerThan='xs' styles={{ display: 'none' }}>
             <div>
-              {NavItems.map((item) => {
+              {navItem.map((item) => {
                 return <MenuButton key={item.url} {...item} />;
               })}
             </div>

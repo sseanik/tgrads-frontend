@@ -8,13 +8,12 @@ import {
 } from '@mantine/core';
 import { useHotkeys, useLocalStorage } from '@mantine/hooks';
 import { NotificationsProvider } from '@mantine/notifications';
-import { AppProps } from 'next/app';
 import Head from 'next/head';
+import { SessionProvider } from 'next-auth/react';
 
 import client from '../lib/apollo';
 
-export default function App(props: AppProps) {
-  const { Component, pageProps } = props;
+export default function App({ Component, pageProps: { session, ...pageProps } })  {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',
@@ -35,27 +34,28 @@ export default function App(props: AppProps) {
           content='minimum-scale=1, initial-scale=1, width=device-width'
         />
       </Head>
-
-      <ColorSchemeProvider
-        colorScheme={colorScheme}
-        toggleColorScheme={toggleColorScheme}
-      >
-        <MantineProvider
-          withGlobalStyles
-          withNormalizeCSS
-          theme={{
-            /** Put your mantine theme override here */
-            fontFamily: 'Akkurat, sans-serif',
-            colorScheme: colorScheme,
-          }}
+      <SessionProvider session={session}>
+        <ColorSchemeProvider
+          colorScheme={colorScheme}
+          toggleColorScheme={toggleColorScheme}
         >
-          <NotificationsProvider zIndex={999999} containerWidth={350}>
-            <ApolloProvider client={client}>
-              <Component {...pageProps} />
-            </ApolloProvider>
-          </NotificationsProvider>
-        </MantineProvider>
-      </ColorSchemeProvider>
+          <MantineProvider
+            withGlobalStyles
+            withNormalizeCSS
+            theme={{
+              /** Put your mantine theme override here */
+              fontFamily: 'Akkurat, sans-serif',
+              colorScheme: colorScheme,
+            }}
+          >
+            <NotificationsProvider zIndex={999999} containerWidth={350}>
+              <ApolloProvider client={client}>
+                <Component {...pageProps} />
+              </ApolloProvider>
+            </NotificationsProvider>
+          </MantineProvider>
+        </ColorSchemeProvider>
+      </SessionProvider>
     </>
   );
 }

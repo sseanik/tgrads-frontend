@@ -1,6 +1,6 @@
 import { Navbar as NavbarComponent } from '@mantine/core';
 
-import NavItems from '../assets/NavItems';
+import navItem from '../lib/navItem';
 import MobileMenuButton from './MobileMenuButton';
 import NavbarFooter from './NavbarFooter';
 
@@ -23,7 +23,7 @@ const Navbar = ({ opened }: NavbarProps) => {
       }}
     >
       <NavbarComponent.Section mt={10}>
-        {NavItems.map((item) => {
+        {navItem.map((item) => {
           return <MobileMenuButton key={item.url} {...item} />;
         })}
       </NavbarComponent.Section>

@@ -200,6 +200,14 @@ const PhotoGallery = ({
           setDetectionLoading(false);
           setFaceBoxes(responseFaceBoxes);
           setEditingTags(true);
+          updateNotification({
+            id: 'detecting-faces',
+            loading: true,
+            title: 'Creating Photo Tags',
+            message: 'Creating tag boxes for all faces in photo',
+            autoClose: false,
+            disallowClose: true,
+          });
           createPhotoTags({
             variables: {
               id: parsedPhotos[slideIndex].id,
@@ -307,7 +315,7 @@ const PhotoGallery = ({
                 iconHover={iconHover}
               />
             ),
-            !noFacesDetected && !editingTags && (
+            !noFacesDetected && faceBoxes.length > 0 && !editingTags && (
               <DisplayTags
                 key='display_tags'
                 showNameTags={showNameTags}
@@ -316,7 +324,7 @@ const PhotoGallery = ({
                 iconHover={iconHover}
               />
             ),
-            !noFacesDetected && (
+            !noFacesDetected && faceBoxes.length > 0 && (
               <EditTags
                 key='edit_tags'
                 editingTags={editingTags}
