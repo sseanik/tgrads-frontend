@@ -20,7 +20,7 @@ import Lightbox from 'yet-another-react-lightbox';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
-import { revalidateGallery } from '../lib/triggerRevalidate';
+// import { revalidateGallery } from '../lib/triggerRevalidate';
 import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
 import {
   FaceDetectionRegion,
@@ -227,7 +227,7 @@ const PhotoGallery = ({
                 },
               },
             ]);
-            revalidateGallery('create', slug);
+            // revalidateGallery('create', slug);
             updateNotification({
               id: 'detecting-faces',
               color: 'green',
@@ -267,7 +267,7 @@ const PhotoGallery = ({
           },
         },
       ]);
-      revalidateGallery('create', slug);
+      // revalidateGallery('create', slug);
       updateNotification({
         id: 'detecting-faces',
         title: 'Error',

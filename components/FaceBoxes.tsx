@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { AlertCircle, FaceId } from 'tabler-icons-react';
 
 import { UPDATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
-import { revalidateGallery } from '../lib/triggerRevalidate';
+// import { revalidateGallery } from '../lib/triggerRevalidate';
 import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
 import { ParsedPhoto } from '../types/Gallery';
 
@@ -80,7 +80,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
               : photoAndTag;
           })
         );
-        revalidateGallery('update', props.slug);
+        // revalidateGallery('update', props.slug);
         updateNotification({
           id: `updating-face-tag-${increment}`,
           color: 'green',
