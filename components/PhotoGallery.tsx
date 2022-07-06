@@ -99,6 +99,7 @@ const PhotoGallery = ({
     setEditingTags(false);
     setAndCheckPreExistingTags(index);
     setShowNameTags(false);
+    setNoFacesDetected(false);
   };
 
   const onLightboxAction = (left = true, open = false, index = -1) => {
