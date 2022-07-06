@@ -149,7 +149,7 @@ const Cruise: NextPage<{
     {
       title: 'Time',
       blurb: {
-        title: 'Board at 6:30pm',
+        title: 'Board at 6:15pm',
         link: null,
       },
       footnote: {
