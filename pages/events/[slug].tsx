@@ -12,6 +12,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import {
   Calendar,
@@ -21,22 +22,24 @@ import {
   Map2,
 } from 'tabler-icons-react';
 
-import AppShell from '../../components/AppShell';
-import Breadcrumbs from '../../components/Breadcrumbs';
+import AppShell from '../../components/Navigation/AppShell';
+import Breadcrumbs from '../../components/Navigation/Breadcrumbs';
 import {
   QUERY_EVENT_SLUGS,
   QUERY_SPECIFIC_EVENT,
 } from '../../graphql/queries/events';
+import { QUERY_SPECIFIC_GALLERY } from '../../graphql/queries/galleries';
 import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';
 import { Event, EventAttributes } from '../../types/Event';
 import getDaysHoursMinutesRemaining from '../../utils/getDaysHoursMinutesRemaining';
 import { mapAndSortNames } from '../../utils/mapAndSortNames';
 
-const Events: NextPage<{ event: EventAttributes; names: string[] }> = ({
-  event,
-  names,
-}) => {
+const Events: NextPage<{
+  event: EventAttributes;
+  names: string[];
+  galleryAvailable: boolean;
+}> = ({ event, names, galleryAvailable }) => {
   const theme = useMantineTheme();
   const router = useRouter();
 
@@ -97,39 +100,56 @@ const Events: NextPage<{ event: EventAttributes; names: string[] }> = ({
               })}
             >
               <div style={{ flex: '0 1 auto' }}>
-                {isEventOver ? (
-                  <Button
-                    fullWidth
-                    radius='xs'
-                    variant='gradient'
-                    size='lg'
-                    mt={12}
-                    mb={16}
-                    gradient={{
-                      from:
-                        theme.colorScheme === 'dark' ? '#d699e9' : '#9f58ad',
-                      to: theme.colorScheme === 'dark' ? '#d887fa' : '#ef61c2',
-                    }}
-                  >
-                    Go to Photo Gallery
-                  </Button>
-                ) : (
-                  <Button
-                    fullWidth
-                    radius='xs'
-                    variant='gradient'
-                    size='lg'
-                    mt={12}
-                    mb={16}
-                    gradient={{
-                      from:
-                        theme.colorScheme === 'dark' ? '#d08dff' : '#9546c1',
-                      to: theme.colorScheme === 'dark' ? '#8687ff' : '#5b6cf4',
-                    }}
-                  >
-                    RSVP
-                  </Button>
-                )}
+                {isEventOver
+                  ? galleryAvailable && (
+                      <Link href={'/gallery/' + router.query.slug?.toString()}>
+                        <Button
+                          fullWidth
+                          radius='xs'
+                          variant='gradient'
+                          size='lg'
+                          mt={12}
+                          mb={16}
+                          gradient={{
+                            from:
+                              theme.colorScheme === 'dark'
+                                ? '#d699e9'
+                                : '#9f58ad',
+                            to:
+                              theme.colorScheme === 'dark'
+                                ? '#d887fa'
+                                : '#ef61c2',
+                          }}
+                        >
+                          Go to Photo Gallery
+                        </Button>
+                      </Link>
+                    )
+                  : event.RSVPURL && (
+                      <Button
+                        component='a'
+                        href={event.RSVPURL}
+                        target='_blank'
+                        fullWidth
+                        radius='xs'
+                        variant='gradient'
+                        size='lg'
+                        mt={12}
+                        mb={16}
+                        gradient={{
+                          from:
+                            theme.colorScheme === 'dark'
+                              ? '#d08dff'
+                              : '#9546c1',
+                          to:
+                            theme.colorScheme === 'dark'
+                              ? '#8687ff'
+                              : '#5b6cf4',
+                        }}
+                      >
+                        RSVP
+                      </Button>
+                    )}
                 <Text component='span'>
                   {isEventOver ? 'Event finished ' : 'Event starts in: '}
                 </Text>
@@ -368,6 +388,19 @@ export const getStaticProps: GetStaticProps = async (context) => {
     variables: { slug: context?.params?.slug },
   });
 
+  let galleryAvailable = false;
+  if (new Date(data[0].attributes.Date) < new Date()) {
+    const {
+      data: { galleries },
+    } = await client.query({
+      query: QUERY_SPECIFIC_GALLERY,
+      variables: { slug: context?.params?.slug },
+    });
+    if (galleries.data.length > 0) {
+      galleryAvailable = true;
+    }
+  }
+
   const {
     data: { grads },
   } = await client.query({
@@ -377,7 +410,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const names = mapAndSortNames(grads);
 
   return {
-    props: { event: data[0].attributes, names: names },
+    props: { event: data[0].attributes, names, galleryAvailable },
   };
 };
 

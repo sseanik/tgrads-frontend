@@ -14,6 +14,7 @@ export interface EventAttributes {
   Cost: string;
   Slug: string;
   Image?: EventImage;
+  RSVPURL: string;
 }
 
 type EventImage = {

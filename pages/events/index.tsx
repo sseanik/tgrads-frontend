@@ -1,8 +1,8 @@
 import { Text } from '@mantine/core';
 import { GetStaticProps, NextPage } from 'next';
 
-import AppShell from '../../components/AppShell';
 import EventCard from '../../components/EventCard';
+import AppShell from '../../components/Navigation/AppShell';
 import { QUERY_ALL_EVENTS } from '../../graphql/queries/events';
 import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';

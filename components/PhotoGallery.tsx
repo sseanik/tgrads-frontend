@@ -34,7 +34,7 @@ import FaceBoxes from './FaceBoxes';
 import DisplayTags from './LightboxToolbar/DisplayTags';
 import EditTags from './LightboxToolbar/EditTags';
 import FaceDetection from './LightboxToolbar/FaceDetection';
-import NextJsImage from './NextjsImage';
+import NextJsImage from './NextJsImage';
 
 interface PhotoGalleryProps {
   photos: GalleryPhoto[];

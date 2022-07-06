@@ -29,6 +29,7 @@
     "react-icons": "^4.4.0",
     "react-photo-album": "^1.14.0",
     "react-qr-code": "^2.0.7",
+    "react-tiny-fab": "^4.0.4",
     "sharp": "^0.30.7",
     "tabler-icons-react": "^1.51.0",
     "yet-another-react-lightbox": "^1.8.1"

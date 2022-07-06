@@ -1,7 +1,7 @@
 import { GetStaticProps, NextPage } from 'next';
 
-import AppShell from '../../components/AppShell';
 import EventCard from '../../components/EventCard';
+import AppShell from '../../components/Navigation/AppShell';
 import { QUERY_ALL_GALLERIES } from '../../graphql/queries/galleries';
 import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';

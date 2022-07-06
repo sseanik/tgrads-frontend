@@ -1,10 +1,14 @@
+import 'react-tiny-fab/dist/styles.css';
+
 import { Box, Card } from '@mantine/core';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { Fab } from 'react-tiny-fab';
+import { Upload } from 'tabler-icons-react';
 
-import AppShell from '../../components/AppShell';
-import Breadcrumbs from '../../components/Breadcrumbs';
+import AppShell from '../../components/Navigation/AppShell';
+import Breadcrumbs from '../../components/Navigation/Breadcrumbs';
 import PhotoGallery from '../../components/PhotoGallery';
 import {
   QUERY_GALLERY_SLUGS,
@@ -16,14 +20,14 @@ import client from '../../lib/apollo';
 import { FaceBoxAttributes } from '../../types/FaceBoxes';
 import { Gallery, GalleryAttributes } from '../../types/Gallery';
 import { mapAndSortNames } from '../../utils/mapAndSortNames';
-
 const Events: NextPage<{
   gallery: GalleryAttributes;
   galleryPhotoTags: FaceBoxAttributes[];
   names: string[];
   slug: string;
 }> = ({ gallery, galleryPhotoTags, names, slug }) => {
-  const [photosAndTags, setPhotosAndTags] = useState<FaceBoxAttributes[]>(galleryPhotoTags)
+  const [photosAndTags, setPhotosAndTags] =
+    useState<FaceBoxAttributes[]>(galleryPhotoTags);
   const router = useRouter();
 
   const crumbs = [
@@ -39,6 +43,15 @@ const Events: NextPage<{
       <Box style={{ margin: '0 0 6px 2px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
+      {typeof window !== 'undefined' && (
+        <Fab
+          icon={<Upload />}
+          event='hover'
+          text='Upload Photo'
+          alwaysShowTitle={false}
+          mainButtonStyles={{ backgroundColor: '#666AF3' }}
+        />
+      )}
       <Card shadow='sm' p='sm'>
         <PhotoGallery
           photos={gallery.Photos.data}

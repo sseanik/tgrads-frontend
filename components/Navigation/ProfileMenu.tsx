@@ -14,7 +14,7 @@ import {
   Settings,
 } from 'tabler-icons-react';
 
-import LoginModalNSW from './LoginModalNSW';
+import LoginModalNSW from '../Modal/LoginModalNSW';
 
 interface ProfileMenuProps {
   names: string[];

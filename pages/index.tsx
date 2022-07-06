@@ -1,6 +1,6 @@
 import type { GetStaticProps, NextPage } from 'next';
 
-import AppShell from '../components/AppShell';
+import AppShell from '../components/Navigation/AppShell';
 import { QUERY_ALL_NAMES } from '../graphql/queries/people';
 import client from '../lib/apollo';
 import { mapAndSortNames } from '../utils/mapAndSortNames';

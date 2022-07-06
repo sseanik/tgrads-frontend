@@ -6,7 +6,7 @@ import {
 } from '@mantine/core';
 import { Dispatch, SetStateAction } from 'react';
 
-import navItem from '../lib/navItem';
+import navItem from '../../lib/navItem';
 import Logo from './Logo';
 import MenuButton from './MenuButton';
 import ProfileMenu from './ProfileMenu';

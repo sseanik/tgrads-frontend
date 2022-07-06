@@ -2,7 +2,7 @@ import { Breadcrumbs as BreadcrumbsComponent, Text } from '@mantine/core';
 import Link from 'next/link';
 import { ChevronsRight } from 'tabler-icons-react';
 
-import { Crumb } from '../types/Crumbs';
+import { Crumb } from '../../types/Crumbs';
 
 interface BreadcrumbsProps {
   crumbs: Crumb[];

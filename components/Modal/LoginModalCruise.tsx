@@ -55,7 +55,6 @@ const LoginModalCruise = ({
         router.replace('/cruise');
         setOpenedCruise(false);
       } else {
-        console.log(result);
         showNotification({
           id: 'login-error',
           title: 'Error',

@@ -1,7 +1,7 @@
 import { Navbar as NavbarComponent } from '@mantine/core';
 import { Dispatch, SetStateAction } from 'react';
 
-import navItem from '../lib/navItem';
+import navItem from '../../lib/navItem';
 import MobileMenuButton from './MobileMenuButton';
 // import NavbarFooter from './NavbarFooter';
 
