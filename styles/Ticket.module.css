@@ -85,7 +85,6 @@
 }
 
 .middleHeading h1 {
-  font-size: 4;
   font-weight: 700;
   letter-spacing: 0em;
   color: #fff;
@@ -204,5 +203,73 @@
   }
   .barcode {
     margin-top: 10px;
+  }
+}
+
+@media only screen and (min-width: 500px) and (max-width: 600px) {
+  .middleHeading h1 {
+    font-size: 22px !important;
+  }
+  .middleHeading h2 {
+    font-size: 14px !important;
+  }
+
+  .topDetails span {
+    font-size: 16px !important;
+  }
+
+  .topDetails span:first-child {
+    font-size: 12px !important;
+  }
+
+  .topDetails span:last-child {
+    font-size: 12px !important;
+  }
+
+  .bottomDetails span {
+    font-size: 12px !important;
+  }
+
+  .rightSection .rightContainer .middleHeading .name {
+    font-size: 15px !important;
+  }
+}
+
+@media only screen and (min-width: 425px) and (max-width: 500px) {
+  .rightSection .rightContainer .middleHeading .name {
+    font-size: 18px !important;
+  }
+}
+
+@media only screen and (max-width: 350px) {
+  .middleHeading h1 {
+    font-size: 22px !important;
+  }
+  .middleHeading h2 {
+    font-size: 14px !important;
+  }
+
+  .topDetails span {
+    font-size: 16px !important;
+  }
+
+  .topDetails span:first-child {
+    font-size: 12px !important;
+  }
+
+  .topDetails span:last-child {
+    font-size: 12px !important;
+  }
+
+  .bottomDetails span {
+    font-size: 12px !important;
+  }
+
+  .rightSection .rightContainer .middleHeading .name {
+    font-size: 14px !important;
+  }
+
+  .time p {
+    font-size: 12px !important;
   }
 }

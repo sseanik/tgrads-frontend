@@ -24,12 +24,12 @@ const MenuButton = (props: MenuButtonProps) => {
         }}
         styles={() => ({
           body: {
-            '@media (min-width: 756px)': {
+            '@media (min-width: 716px)': {
               display: 'none',
             },
           },
           arrow: {
-            '@media (min-width: 756px)': {
+            '@media (min-width: 716px)': {
               display: 'none',
             },
           },
@@ -52,7 +52,7 @@ const MenuButton = (props: MenuButtonProps) => {
                 backgroundSize: '100% 4px',
                 backgroundColor: theme.colorScheme === 'dark' ? '#242936' : '',
               },
-              '@media (max-width: 755px)': {
+              '@media (max-width: 715px)': {
                 fontSize: 0,
               },
             },

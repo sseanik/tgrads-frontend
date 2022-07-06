@@ -43,7 +43,7 @@ const Header = ({ opened, setOpened, names }: HeaderProps) => {
         <Logo />
 
         <div style={{ flex: 1, display: 'flex', height: '100%' }}>
-          <MediaQuery smallerThan='xs' styles={{ display: 'none' }}>
+          <MediaQuery smallerThan={577} styles={{ display: 'none' }}>
             <div>
               {navItem.map((item) => {
                 return <MenuButton key={item.url} {...item} />;

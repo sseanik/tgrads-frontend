@@ -7,9 +7,11 @@ import {
   MantineSize,
   Text,
 } from '@mantine/core';
+import { toPng } from 'html-to-image';
 import { GetStaticProps, NextPage } from 'next';
+import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { BiWine } from 'react-icons/bi';
 import { GiLargeDress, GiMeal } from 'react-icons/gi';
 import {
@@ -64,8 +66,10 @@ const Cruise: NextPage<{
 }> = ({ event, names }) => {
   const { data: session } = useSession();
   const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
+  // Tickets
   const exportableTicket = useRef<HTMLDivElement>(null);
   const exportablePlusOneTicket = useRef<HTMLDivElement>(null);
+  //
   const [isLoading, setIsLoading] = useState(false);
   const eventTime: Date = new Date(event.Date + ' ' + event.Time);
   const isEventOver: boolean = new Date() > eventTime;
@@ -95,24 +99,36 @@ const Cruise: NextPage<{
     }
   }, [session, userDetails]);
 
-  const handleDownloadImage = async (main = true) => {
-    const { exportComponentAsPNG } = await import(
-      'react-component-export-image'
-    );
-    exportComponentAsPNG(main ? exportableTicket : exportablePlusOneTicket, {
-      fileName: `Sydney Cruise Ticket - ${
-        main ? userDetails?.firstName : userDetails?.plusOneFirstName
-      }`,
-      html2CanvasOptions: {
-        width: 770,
-        height: 250,
-        backgroundColor: null,
-        scale: 2,
-        windowWidth: 1000,
-        windowHeight: 1000,
-      },
-    });
-  };
+  const onButtonClick = useCallback(
+    (mainTicket = true) => {
+      const selectedTicket = mainTicket
+        ? exportableTicket
+        : exportablePlusOneTicket;
+
+      if (selectedTicket.current === null) {
+        return;
+      }
+
+      const selectedName = mainTicket
+        ? userDetails?.firstName
+        : userDetails?.plusOneFirstName;
+
+      toPng(selectedTicket.current, {
+        cacheBust: true,
+        pixelRatio: 3,
+      })
+        .then((dataUrl) => {
+          const link = document.createElement('a');
+          link.download = `SydneyCruiseTicket${selectedName}.png`;
+          link.href = dataUrl;
+          link.click();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
+    [userDetails, exportableTicket, exportablePlusOneTicket]
+  );
 
   const detailSegments: EventDetail[] = [
     {
@@ -237,7 +253,7 @@ const Cruise: NextPage<{
           variant='outline'
           color='indigo'
         >
-          Ticket Logout
+          E Ticket Logout
         </Button>
       ) : (
         <>
@@ -314,7 +330,7 @@ const Cruise: NextPage<{
                   fullWidth
                   style={{ maxWidth: 770 }}
                   my={16}
-                  onClick={() => handleDownloadImage()}
+                  onClick={() => onButtonClick()}
                 >
                   {`Download ${userDetails.firstName}'s Ticket`}
                 </Button>
@@ -334,7 +350,7 @@ const Cruise: NextPage<{
                   fullWidth
                   style={{ maxWidth: 770 }}
                   mt={16}
-                  onClick={() => handleDownloadImage(false)}
+                  onClick={() => onButtonClick(false)}
                 >
                   {`Download ${userDetails.plusOneFirstName}'s Ticket`}
                 </Button>
@@ -344,11 +360,20 @@ const Cruise: NextPage<{
         </Card>
       )}
       <Card shadow='sm' p='sm' mt={10}>
-        <Text mb={10} size='xl' weight={700} color='gray'>
-          Event Details:
-        </Text>
+        <Link href='/events/sydney-cruise-party'>
+          <Text
+            size='xl'
+            weight={700}
+            variant='link'
+            component='a'
+            color='indigo'
+            style={{ cursor: 'pointer' }}
+          >
+            Event Details
+          </Text>
+        </Link>
 
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: 10 }}>
           {detailSegments.map((detail) => {
             return (
               <div

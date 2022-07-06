@@ -84,7 +84,7 @@ const LoginModalCruise = ({
       }
       size='md'
     >
-      <div style={{ width: 400, position: 'relative' }}>
+      <div style={{ position: 'relative' }}>
         <LoadingOverlay visible={visible} />
         <form onSubmit={onSubmit}>
           <TextInput
