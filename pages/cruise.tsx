@@ -12,7 +12,15 @@ import { signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { BiWine } from 'react-icons/bi';
 import { GiLargeDress, GiMeal } from 'react-icons/gi';
-import { Calendar, Clock, CurrencyDollar, Map2, Speedboat } from 'tabler-icons-react';
+import {
+  Calendar,
+  Clock,
+  CurrencyDollar,
+  Login,
+  Logout,
+  Map2,
+  Speedboat,
+} from 'tabler-icons-react';
 
 import AppShell from '../components/AppShell';
 import LoginModalCruise from '../components/LoginModalCruise';
@@ -62,8 +70,8 @@ const Cruise: NextPage<{
   const eventTime: Date = new Date(event.Date + ' ' + event.Time);
   const isEventOver: boolean = new Date() > eventTime;
   const { days, hours } = getDaysHoursMinutesRemaining(eventTime);
-    // Cruise Modal
-    const [openedCruise, setOpenedCruise] = useState<boolean>(false);
+  // Cruise Modal
+  const [openedCruise, setOpenedCruise] = useState<boolean>(false);
 
   useEffect(() => {
     if (session == null) {
@@ -224,26 +232,39 @@ const Cruise: NextPage<{
 
       {session ? (
         <Button
-          rightIcon={<Speedboat />}
+          rightIcon={<Logout />}
           onClick={() => signOut({ redirect: false })}
-          variant="outline" 
-          color="indigo"
+          variant='outline'
+          color='indigo'
         >
           Ticket Logout
         </Button>
       ) : (
-        <Button
-          rightIcon={<Speedboat />}
-          onClick={() => setOpenedCruise(true)}
-          variant="outline" 
-          color="indigo"
-        >
-          Ticket Login
-        </Button>
+        <>
+          <Button
+            rightIcon={<Login />}
+            onClick={() => setOpenedCruise(true)}
+            variant='outline'
+            color='indigo'
+          >
+            Ticket Login
+          </Button>
+          <Button
+            ml={10}
+            rightIcon={<Speedboat />}
+            color='indigo'
+            component='a'
+            target='_blank'
+            href='https://docs.google.com/forms/d/e/1FAIpQLSekaPjLC5JBvKdOUdKO5HOZwLhvKPgUWqqLIYPZrjyhH8mENA/viewform?usp=sf_link'
+          >
+            Buy Ticket
+          </Button>
+        </>
       )}
       {isLoading && (
         <Box sx={{ display: 'flex' }}>
           <Text
+            mt={10}
             ml={10}
             size='xl'
             weight={700}

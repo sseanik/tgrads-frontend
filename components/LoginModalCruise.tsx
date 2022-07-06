@@ -1,15 +1,18 @@
 import {
   Button,
   Center,
+  LoadingOverlay,
   Modal,
   PasswordInput,
   Text,
   TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
 import { useRouter } from 'next/router';
 import { signIn } from 'next-auth/react';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { AlertCircle } from 'tabler-icons-react';
 
 interface LoginModalNSWProps {
   openedCruise: boolean;
@@ -22,6 +25,7 @@ const LoginModalCruise = ({
 }: LoginModalNSWProps) => {
   const router = useRouter();
 
+  const [visible, setVisible] = useState(false);
 
   const form = useForm({
     initialValues: {
@@ -40,19 +44,32 @@ const LoginModalCruise = ({
   const onSubmit = async (e) => {
     e.preventDefault();
     if (!form.validate().hasErrors) {
+      setVisible(true);
       const result = await signIn('credentials', {
         redirect: false,
         email: form.values.email,
         password: form.values.password,
       });
-  
+
       if (result?.ok) {
-        alert('Credential are good');
-        router.replace("/cruise")
+        router.replace('/cruise');
         setOpenedCruise(false);
       } else {
-        alert('Credential is not valid');
+        console.log(result);
+        showNotification({
+          id: 'login-error',
+          title: 'Error',
+          message: `Login Failed${
+            result?.error === 'CredentialsSignin'
+              ? ': Invalid email or password'
+              : ''
+          }`,
+          autoClose: 3000,
+          color: 'red',
+          icon: <AlertCircle />,
+        });
       }
+      setVisible(false);
     }
   };
 
@@ -67,25 +84,28 @@ const LoginModalCruise = ({
       }
       size='md'
     >
-      <form onSubmit={onSubmit}>
-        <TextInput
-          required
-          label='Email'
-          placeholder='@team.telstra.com'
-          {...form.getInputProps('email')}
-          mb={10}
-        />
-        <PasswordInput
-          required
-          label='Password'
-          {...form.getInputProps('password')}
-        />
-        <Center>
-          <Button size='md' mt={16} style={{ width: '100%' }} type="submit">
-            Login
-          </Button>
-        </Center>
-      </form>
+      <div style={{ width: 400, position: 'relative' }}>
+        <LoadingOverlay visible={visible} />
+        <form onSubmit={onSubmit}>
+          <TextInput
+            required
+            label='Email'
+            placeholder='@team.telstra.com'
+            {...form.getInputProps('email')}
+            mb={10}
+          />
+          <PasswordInput
+            required
+            label='Password'
+            {...form.getInputProps('password')}
+          />
+          <Center>
+            <Button size='md' mt={16} style={{ width: '100%' }} type='submit'>
+              Login
+            </Button>
+          </Center>
+        </form>
+      </div>
     </Modal>
   );
 };
