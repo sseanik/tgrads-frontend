@@ -62,7 +62,7 @@ const Logo = () => {
             animation: 'rainbow-text-simple-animation-rev 0.75s ease forwards',
           }}
         >
-          Big T Grads
+          T Grads
         </Text>
       </Button>
     </Link>

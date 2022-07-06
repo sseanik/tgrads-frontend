@@ -29,7 +29,7 @@ const LoginModalCruise = ({
 
   const form = useForm({
     initialValues: {
-      email: '',
+      email: "@team.telstra.com",
       password: '',
     },
 
