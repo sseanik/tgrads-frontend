@@ -1,14 +1,26 @@
 import { Button, useMantineTheme } from '@mantine/core';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Dispatch, SetStateAction } from 'react';
 
 import { MenuButtonProps } from './MenuButton';
 
-const MobileMenuButton = (props: MenuButtonProps) => {
+interface MobileMenuButtonProps {
+  setOpened: Dispatch<SetStateAction<boolean>>;
+}
+
+const MobileMenuButton = (props: MenuButtonProps & MobileMenuButtonProps) => {
   const theme = useMantineTheme();
+  const router = useRouter();
 
   return (
-    <Link href={"/" + props.url}>
+    <Link href={'/' + props.url}>
       <Button
+        onClick={() => {
+          if (router.pathname === '/' + props.url) {
+            props.setOpened(false);
+          }
+        }}
         styles={() => ({
           root: {
             color: theme.colorScheme === 'dark' ? '#d0cfd4' : '#3c4394',

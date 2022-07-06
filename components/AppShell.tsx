@@ -26,7 +26,7 @@ const AppShell = (props: AppShellProps) => {
               : theme.colors.gray[0],
         },
       }}
-      navbar={<Navbar opened={opened} />}
+      navbar={<Navbar opened={opened} setOpened={setOpened} />}
       header={<Header opened={opened} setOpened={setOpened} names={props.names} />}
     >
       {props.children}
