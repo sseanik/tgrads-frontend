@@ -3,10 +3,11 @@ import 'react-tiny-fab/dist/styles.css';
 import { Box, Card } from '@mantine/core';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { Fab } from 'react-tiny-fab';
-import { Upload } from 'tabler-icons-react';
+import { useEffect, useState } from 'react';
+import { Action, Fab } from 'react-tiny-fab';
+import { Filter, Plus, Upload } from 'tabler-icons-react';
 
+import UploadPhotoModal from '../../components/Modal/UploadPhotoModal';
 import AppShell from '../../components/Navigation/AppShell';
 import Breadcrumbs from '../../components/Navigation/Breadcrumbs';
 import PhotoGallery from '../../components/PhotoGallery';
@@ -29,6 +30,8 @@ const Events: NextPage<{
   const [photosAndTags, setPhotosAndTags] =
     useState<FaceBoxAttributes[]>(galleryPhotoTags);
   const router = useRouter();
+  const [opened, setOpened] = useState<boolean>(false);
+  const [fabComponent, setFabComponent] = useState(<></>);
 
   const crumbs = [
     { title: 'Photo Gallery', href: '/gallery' },
@@ -38,20 +41,37 @@ const Events: NextPage<{
     },
   ];
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setFabComponent(
+        <Fab
+          icon={<Plus />}
+          event='hover'
+          alwaysShowTitle={true}
+          mainButtonStyles={{ backgroundColor: '#666AF3' }}
+        >
+          <Action
+            text='Upload Photo'
+            style={{ backgroundColor: '#9a53e6' }}
+            onClick={() => setOpened(true)}
+          >
+            <Upload />
+          </Action>
+          <Action text='Filter Photos' style={{ backgroundColor: '#9a53e6' }}>
+            <Filter />
+          </Action>
+        </Fab>
+      );
+    }
+  }, []);
+
   return (
     <AppShell names={names}>
       <Box style={{ margin: '0 0 6px 2px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
-      {typeof window !== 'undefined' && (
-        <Fab
-          icon={<Upload />}
-          event='hover'
-          text='Upload Photo'
-          alwaysShowTitle={false}
-          mainButtonStyles={{ backgroundColor: '#666AF3' }}
-        />
-      )}
+      <UploadPhotoModal opened={opened} setOpened={setOpened} slug={slug} />
+      {fabComponent}
       <Card shadow='sm' p='sm'>
         <PhotoGallery
           photos={gallery.Photos.data}

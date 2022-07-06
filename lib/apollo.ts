@@ -1,15 +1,17 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-
-const strapiURL = `${process.env.NEXT_PUBLIC_STRAPI_URL}/graphql`;
+import { createUploadLink } from 'apollo-upload-client';
 
 const client = new ApolloClient({
-  uri: strapiURL,
-  cache: new InMemoryCache(),
   defaultOptions: {
     watchQuery: {
       fetchPolicy: 'no-cache',
     },
   },
+  ssrMode: typeof window === 'undefined',
+  link: createUploadLink({
+    uri: `${process.env.NEXT_PUBLIC_STRAPI_URL}/graphql`,
+  }),
+  cache: new InMemoryCache(),
 });
 
 export default client;
