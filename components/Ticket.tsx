@@ -22,7 +22,7 @@ const Ticket = forwardRef(
               } ${styles.ticketImage}`}
             >
               <p className={styles.topDetails}>
-                <span>Sunday</span>
+                <span>Saturday</span>
                 <span className={styles.dateText}>September 3rd</span>
                 <span>2022</span>
               </p>

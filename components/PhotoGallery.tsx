@@ -166,7 +166,6 @@ const PhotoGallery = ({
       });
     }
     setDetectionLoading(true);
-    console.log("loading is true")
     showNotification({
       id: 'detecting-faces',
       loading: true,

@@ -1,12 +1,21 @@
-import { AspectRatio, Box, Button, Card, Loader, Text } from '@mantine/core';
+import {
+  AspectRatio,
+  Box,
+  Button,
+  Card,
+  Loader,
+  MantineSize,
+  Text,
+} from '@mantine/core';
 import { GetStaticProps, NextPage } from 'next';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import React, { useEffect, useRef, useState } from 'react';
 import { BiWine } from 'react-icons/bi';
 import { GiLargeDress, GiMeal } from 'react-icons/gi';
-import { Calendar, Clock, CurrencyDollar, Map2 } from 'tabler-icons-react';
+import { Calendar, Clock, CurrencyDollar, Map2, Speedboat } from 'tabler-icons-react';
 
 import AppShell from '../components/AppShell';
+import LoginModalCruise from '../components/LoginModalCruise';
 import Ticket from '../components/Ticket';
 import { QUERY_SPECIFIC_EVENT } from '../graphql/queries/events';
 import { QUERY_ALL_NAMES } from '../graphql/queries/people';
@@ -25,6 +34,22 @@ interface UserDetails {
   plusOneLastName: string;
 }
 
+type EventDetail = {
+  title: string;
+  blurb: {
+    title: string;
+    link: string | null;
+  };
+  footnote: {
+    title: string;
+    size: MantineSize;
+    link: string | null;
+  };
+  colour: string;
+  icon: typeof Map2;
+  iconCheck: boolean;
+};
+
 const Cruise: NextPage<{
   event: EventAttributes;
   names: string[];
@@ -36,23 +61,23 @@ const Cruise: NextPage<{
   const [isLoading, setIsLoading] = useState(false);
   const eventTime: Date = new Date(event.Date + ' ' + event.Time);
   const isEventOver: boolean = new Date() > eventTime;
-  const { days, hours, minutes } = getDaysHoursMinutesRemaining(eventTime);
+  const { days, hours } = getDaysHoursMinutesRemaining(eventTime);
+    // Cruise Modal
+    const [openedCruise, setOpenedCruise] = useState<boolean>(false);
 
   useEffect(() => {
     if (session == null) {
       setUserDetails(undefined);
+    } else if (userDetails !== undefined) {
+      return;
     } else {
       setIsLoading(true);
-      console.log(process.env.NEXT_PUBLIC_STRAPI_URL)
-      fetch(
-        `${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${session.jwt}`,
-          },
-        }
-      )
+      fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${session.jwt}`,
+        },
+      })
         .then((res) => res.json())
         .then((res) => {
           setIsLoading(false);
@@ -60,7 +85,7 @@ const Cruise: NextPage<{
         })
         .catch((e) => console.log(e));
     }
-  }, [session]);
+  }, [session, userDetails]);
 
   const handleDownloadImage = async (main = true) => {
     const { exportComponentAsPNG } = await import(
@@ -81,10 +106,141 @@ const Cruise: NextPage<{
     });
   };
 
-  console.log(userDetails)
+  const detailSegments: EventDetail[] = [
+    {
+      title: 'Location',
+      blurb: {
+        title: 'King St Wharf 3',
+        link: 'https://www.google.com/maps/place/King+Street+Wharf+3/@-33.8668541,151.2000156,18z/data=!4m5!3m4!1s0x0:0xe3f07a964c511a7d!8m2!3d-33.8668167!4d151.2007484',
+      },
+      footnote: {
+        title: 'Darling Harbour',
+        size: 'sm',
+        link: null,
+      },
+      colour: '#43b2e9',
+      icon: Map2,
+      iconCheck: false,
+    },
+    {
+      title: 'Date',
+      blurb: {
+        title: 'Saturday, 3rd of September',
+        link: null,
+      },
+      footnote: {
+        title: `Countdown:
+        ${isEventOver ? ` ${days} Days ago` : ` ${days} Days, ${hours} Hours`}`,
+        size: 'sm',
+        link: null,
+      },
+      colour: '#e5832a',
+      icon: Calendar,
+      iconCheck: false,
+    },
+    {
+      title: 'Time',
+      blurb: {
+        title: 'Board at 6:30pm',
+        link: null,
+      },
+      footnote: {
+        title: 'Ends at 10:30pm',
+        size: 'md',
+        link: null,
+      },
+      colour: '#95c44d',
+      icon: Clock,
+      iconCheck: false,
+    },
+    {
+      title: 'Price',
+      blurb: {
+        title: '$109 for all NSW Grads',
+        link: null,
+      },
+      footnote: {
+        title: '$99 for interstate Grads',
+        size: 'md',
+        link: null,
+      },
+      colour: '#ed3693',
+      icon: CurrencyDollar,
+      iconCheck: false,
+    },
+    {
+      title: 'Dress Code:',
+      blurb: {
+        title: 'Cocktail',
+        link: null,
+      },
+      footnote: {
+        title: '',
+        size: 'md',
+        link: null,
+      },
+      colour: '#9e61ff',
+      icon: GiLargeDress,
+      iconCheck: false,
+    },
+    {
+      title: 'Food:',
+      blurb: {
+        title: 'Food from the cocktail menu',
+        link: null,
+      },
+      footnote: {
+        title: 'See the food menu',
+        size: 'sm',
+        link: 'https://drive.google.com/file/d/1rrpp6xKHq8pmoJnSk2FCA-veXmrXYkPN/view?usp=sharing',
+      },
+      colour: '#ff665b',
+      icon: GiMeal,
+      iconCheck: true,
+    },
+    {
+      title: 'Drinks:',
+      blurb: {
+        title: 'Unlimited beer, wine, soft drinks',
+        link: null,
+      },
+      footnote: {
+        title: 'See the drinks menu',
+        size: 'sm',
+        link: 'https://drive.google.com/file/d/1AHT8QX3HcMy8TLBWNp0XsfAUv3R13t2s/view?usp=sharing',
+      },
+      colour: '#5a71e8',
+      icon: BiWine,
+      iconCheck: true,
+    },
+  ];
 
   return (
     <AppShell names={names}>
+      <LoginModalCruise
+        openedCruise={openedCruise}
+        setOpenedCruise={setOpenedCruise}
+      />
+
+      {session ? (
+        <Button
+          rightIcon={<Speedboat />}
+          onClick={() => signOut({ redirect: false })}
+          variant="outline" 
+          color="indigo"
+        >
+          Ticket Logout
+        </Button>
+      ) : (
+        <Button
+          rightIcon={<Speedboat />}
+          onClick={() => setOpenedCruise(true)}
+          variant="outline" 
+          color="indigo"
+        >
+          Ticket Login
+        </Button>
+      )}
       {isLoading && (
         <Box sx={{ display: 'flex' }}>
           <Text
@@ -171,277 +327,72 @@ const Cruise: NextPage<{
           Event Details:
         </Text>
 
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flex: 1,
-          }}
-        >
-          <AspectRatio ratio={1 / 1} sx={{ width: 80, marginRight: '16px' }}>
-            <div
-              style={{
-                background: '#43b2e9',
-                borderRadius: '5px',
-                padding: 5,
-                border: '2px solid black',
-              }}
-            >
-              <Map2 size={50} strokeWidth={2} color={'#fff'} />
-            </div>
-          </AspectRatio>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Text size='lg' weight={600}>
-              Location:
-            </Text>
-            <Text
-              size='md'
-              variant={'link'}
-              component={'a'}
-              href={event.LocationURL}
-            >
-              {event.Location}
-            </Text>
-            <Text size='sm'>{event.Suburb}</Text>
-          </Box>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flex: 1,
-          }}
-        >
-          <AspectRatio ratio={1 / 1} sx={{ width: 80, marginRight: '16px' }}>
-            <div
-              style={{
-                background: '#e5832a',
-                borderRadius: '5px',
-                padding: 5,
-                border: '2px solid black',
-              }}
-            >
-              <Calendar size={50} strokeWidth={2} color={'#fff'} />
-            </div>
-          </AspectRatio>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Text size='lg' weight={600}>
-              Date:
-            </Text>
-
-            <Text size='md'>
-              {eventTime.toLocaleDateString('en-au', {
-                weekday: 'long',
-                month: 'long',
-                day: 'numeric',
-              })}
-            </Text>
-
-            <Text size='sm'>
-              Countdown:
-              {isEventOver
-                ? ` ${days} Days ago`
-                : ` ${days} Days, ${hours} Hours, ${minutes} Minutes`}
-            </Text>
-          </Box>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flex: 1,
-          }}
-        >
-          <AspectRatio ratio={1 / 1} sx={{ width: 80, marginRight: '16px' }}>
-            <div
-              style={{
-                background: '#95c44d',
-                borderRadius: '5px',
-                padding: 5,
-                border: '2px solid black',
-              }}
-            >
-              <Clock size={50} strokeWidth={2} color={'#fff'} />
-            </div>
-          </AspectRatio>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Text size='lg' weight={600}>
-              Time:
-            </Text>
-            <Text size='md'>Start - 6:30pm</Text>
-            <Text size='md'>End - 10:30pm</Text>
-          </Box>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flex: 1,
-          }}
-        >
-          <AspectRatio ratio={1 / 1} sx={{ width: 80, marginRight: '16px' }}>
-            <div
-              style={{
-                background: '#ed3693',
-                borderRadius: '5px',
-                padding: 5,
-                border: '2px solid black',
-              }}
-            >
-              <CurrencyDollar size={50} strokeWidth={2} color={'#fff'} />
-            </div>
-          </AspectRatio>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Text size='lg' weight={600}>
-              Price:
-            </Text>
-            <Text size='md'>$109 for all NSW grads</Text>
-            <Text size='md'>$99 for interstate grads</Text>
-          </Box>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flex: 1,
-          }}
-        >
-          <AspectRatio ratio={1 / 1} sx={{ width: 80, marginRight: '16px' }}>
-            <div
-              style={{
-                background: '#9e61ff',
-                borderRadius: '5px',
-                padding: 5,
-                border: '2px solid black',
-              }}
-            >
-              <GiLargeDress size={50} strokeWidth={2} color={'#fff'} />
-            </div>
-          </AspectRatio>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Text size='lg' weight={600}>
-              Dress Code:
-            </Text>
-            <Text size='md'>Cocktail</Text>
-          </Box>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flex: 1,
-          }}
-        >
-          <AspectRatio ratio={1 / 1} sx={{ width: 80, marginRight: '16px' }}>
-            <div
-              style={{
-                background: '#ff665b',
-                borderRadius: '5px',
-                padding: 5,
-                border: '2px solid black',
-              }}
-            >
-              <GiMeal size={46} color={'#fff'} />
-            </div>
-          </AspectRatio>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Text size='lg' weight={600}>
-              Food:
-            </Text>
-            <Text size='md'>Food from the cocktail menu</Text>
-          </Box>
-        </div>
-
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: '16px',
-            flex: 1,
-          }}
-        >
-          <AspectRatio ratio={1 / 1} sx={{ width: 80, marginRight: '16px' }}>
-            <div
-              style={{
-                background: '#5a71e8',
-                borderRadius: '5px',
-                padding: 5,
-                border: '2px solid black',
-              }}
-            >
-              <BiWine size={46} color={'#fff'} />
-            </div>
-          </AspectRatio>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-            }}
-          >
-            <Text size='lg' weight={600}>
-              Drinks:
-            </Text>
-            <Text size='md'>
-              Unlimited selected beer, wine, and soft drinks
-            </Text>
-            <Text size='sm'>Other drinks can be purchased at the bar</Text>
-          </Box>
-        </div>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+          {detailSegments.map((detail) => {
+            return (
+              <div
+                key={detail.title}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginBottom: '16px',
+                  flexGrow: 0,
+                  width: 320,
+                }}
+              >
+                <AspectRatio
+                  ratio={1 / 1}
+                  sx={{ width: 70, marginRight: '16px' }}
+                >
+                  <div
+                    style={{
+                      background: detail.colour,
+                      borderRadius: '5px',
+                      padding: 5,
+                      border: '2px solid black',
+                    }}
+                  >
+                    <detail.icon
+                      size={50}
+                      strokeWidth={detail.iconCheck ? undefined : 2}
+                      color={'#fff'}
+                    />
+                  </div>
+                </AspectRatio>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'flex-start',
+                  }}
+                >
+                  <Text size='lg' weight={600}>
+                    {detail.title}
+                  </Text>
+                  <Text
+                    size='md'
+                    variant={detail.blurb.link ? 'link' : undefined}
+                    component={detail.blurb.link ? 'a' : 'span'}
+                    href={detail.blurb.link ? event.LocationURL : undefined}
+                  >
+                    {detail.blurb.title}
+                  </Text>
+                  <Text
+                    size={detail.footnote.size ?? undefined}
+                    variant={detail.footnote.link ? 'link' : undefined}
+                    component={detail.footnote.link ? 'a' : 'span'}
+                    href={
+                      detail.footnote.link ? detail.footnote.link : undefined
+                    }
+                  >
+                    {detail.footnote.title}
+                  </Text>
+                </Box>
+              </div>
+            );
+          })}
+        </Box>
       </Card>
     </AppShell>
   );

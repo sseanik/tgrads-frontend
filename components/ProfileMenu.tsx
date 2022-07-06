@@ -6,17 +6,14 @@ import {
   useMantineColorScheme,
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import { signOut, useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   BrightnessHalf,
   Login,
   Logout,
   Settings,
-  Speedboat,
 } from 'tabler-icons-react';
 
-import LoginModalCruise from './LoginModalCruise';
 import LoginModalNSW from './LoginModalNSW';
 
 interface ProfileMenuProps {
@@ -24,12 +21,6 @@ interface ProfileMenuProps {
 }
 
 const ProfileMenu = ({ names }: ProfileMenuProps) => {
-  // Next Auth
-  const { data: session } = useSession();
-  useEffect(() => {
-    if (session == null) return;
-  }, [session]);
-  //
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
   // NSW Login
   const [valueNSW, setValueNSW] = useState<string>('');
@@ -55,10 +46,6 @@ const ProfileMenu = ({ names }: ProfileMenuProps) => {
         setLoggedInNSW={setLoggedInNSW}
         setOpenedNSW={setOpenedNSW}
         setValueNSW={setValueNSW}
-      />
-      <LoginModalCruise
-        openedCruise={openedCruise}
-        setOpenedCruise={setOpenedCruise}
       />
       <Menu
         control={
@@ -103,25 +90,6 @@ const ProfileMenu = ({ names }: ProfileMenuProps) => {
           {colorScheme === 'dark' ? 'Light' : 'Dark'} Mode
         </Menu.Item>
 
-        <Divider />
-
-        {session ? (
-          <Menu.Item
-            color='red'
-            icon={<Speedboat size={14} />}
-            onClick={() => signOut({ redirect: false })}
-          >
-            Cruise Logout
-          </Menu.Item>
-        ) : (
-          <Menu.Item
-            color='Blue'
-            icon={<Speedboat size={14} />}
-            onClick={() => setOpenedCruise(true)}
-          >
-            Cruise Login
-          </Menu.Item>
-        )}
         <Divider />
 
         {loggedInNSW ? (
