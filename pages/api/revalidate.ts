@@ -10,17 +10,27 @@ export default async function handler(
     return res.status(401).json({ message: 'Invalid token' });
   }
 
+  console.log('Revalidating...');
+
   try {
     const parsedBody =
       typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
     if (
-      (parsedBody.event === 'entry.update' ||
-        parsedBody.event === 'entry.create') &&
+      parsedBody.event === 'entry.create' &&
       parsedBody.model === 'photo-tag'
     ) {
-      console.log(`Revalidating Gallery: ${parsedBody.entry.GallerySlug}`);
+      console.log(`Revalidating Gallery: ${parsedBody.entry.GallerySlug} with new Face Boxes`);
       await res.revalidate(`/gallery/${parsedBody.entry.GallerySlug}`);
+    } else if (
+      parsedBody.event === 'entry.update' &&
+      parsedBody.model === 'photo-tag'
+    ) {
+      console.log(`Revalidating Gallery: ${parsedBody.entry.GallerySlug} with updated Face Tags`);
+      await res.revalidate(`/gallery/${parsedBody.entry.GallerySlug}`);
+    } else if (parsedBody.event === 'media.create') {
+      console.log(`Revalidating Gallery: ${parsedBody.media.caption} with new uploaded photos`);
+      await res.revalidate(`/gallery/${parsedBody.media.caption}`);
     }
 
     return res.json({ revalidated: true });

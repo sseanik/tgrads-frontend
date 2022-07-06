@@ -1,6 +1,6 @@
-import { Center, Group, MantineTheme,Text } from '@mantine/core';
+import { Center, Group, MantineTheme, Text } from '@mantine/core';
 import { DropzoneStatus } from '@mantine/dropzone';
-import { Icon as TablerIcon,Photo, Upload, X } from 'tabler-icons-react';
+import { Icon as TablerIcon, Photo, Upload, X } from 'tabler-icons-react';
 
 function getIconColor(status: DropzoneStatus, theme: MantineTheme) {
   return status.accepted
@@ -27,7 +27,13 @@ function ImageUploadIcon({
   return <Photo {...props} />;
 }
 
-const ImageDropzone = (status: DropzoneStatus, theme: MantineTheme) => (
+interface ImageDropzoneProps {
+  status: DropzoneStatus;
+  theme: MantineTheme;
+  imageCount: number;
+}
+
+const ImageDropzone = ({ status, theme, imageCount }: ImageDropzoneProps) => (
   <Group
     position='center'
     spacing='xl'
@@ -39,9 +45,11 @@ const ImageDropzone = (status: DropzoneStatus, theme: MantineTheme) => (
       size={80}
     />
 
-    <Center style={{flexDirection: 'column'}}>
+    <Center style={{ flexDirection: 'column' }}>
       <Text size='xl' inline>
-        Drag images here or click to select files
+        {imageCount > 0
+          ? `${imageCount} photo${imageCount > 1 ? 's' : ''} selected`
+          : 'Drag images here or click to select files'}
       </Text>
       <Text size='sm' color='dimmed' inline mt={7}>
         Attach as many photos you want to upload
