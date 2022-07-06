@@ -34,8 +34,6 @@ const ProfileMenu = ({ names }: ProfileMenuProps) => {
     setLoggedInNSW('');
     setValueNSW('');
   };
-  // Cruise Login
-  const [openedCruise, setOpenedCruise] = useState<boolean>(false);
 
   return (
     <>
