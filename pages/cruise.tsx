@@ -71,7 +71,8 @@ const Cruise: NextPage<{
   const exportablePlusOneTicket = useRef<HTMLDivElement>(null);
   //
   const [isLoading, setIsLoading] = useState(false);
-  const eventTime: Date = new Date(event.Date + ' ' + event.Time);
+
+  const eventTime: Date = new Date(event.Date + 'T18:15');
   const isEventOver: boolean = new Date() > eventTime;
   const { days, hours } = getDaysHoursMinutesRemaining(eventTime);
   // Cruise Modal
@@ -253,7 +254,7 @@ const Cruise: NextPage<{
           variant='outline'
           color='indigo'
         >
-          E Ticket Logout
+          Ticket Logout
         </Button>
       ) : (
         <>
