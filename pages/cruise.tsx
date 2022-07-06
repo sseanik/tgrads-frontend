@@ -396,6 +396,7 @@ const Cruise: NextPage<{
                     variant={detail.blurb.link ? 'link' : undefined}
                     component={detail.blurb.link ? 'a' : 'span'}
                     href={detail.blurb.link ? event.LocationURL : undefined}
+                    target='_blank'
                   >
                     {detail.blurb.title}
                   </Text>
@@ -406,6 +407,7 @@ const Cruise: NextPage<{
                     href={
                       detail.footnote.link ? detail.footnote.link : undefined
                     }
+                    target='_blank'
                   >
                     {detail.footnote.title}
                   </Text>
