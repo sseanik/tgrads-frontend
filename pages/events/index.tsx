@@ -64,8 +64,6 @@ export const getStaticProps: GetStaticProps = async () => {
     query: QUERY_ALL_EVENTS,
   });
 
-  console.log(data)
-
   const {
     data: { grads },
   } = await client.query({

@@ -202,6 +202,7 @@ const Events: NextPage<{
                         variant={event.LocationURL ? 'link' : 'text'}
                         component={event.LocationURL ? 'a' : 'span'}
                         href={event.LocationURL ?? ''}
+                        target='_blank'
                       >
                         {event.Location}
                       </Text>

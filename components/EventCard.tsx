@@ -27,7 +27,6 @@ interface EventCardProps {
 
 const EventCard = ({ event, photos, recap }: EventCardProps) => {
   const theme = useMantineTheme();
-
   const useStyles = createStyles(() => ({
     cardW: {
       width: '340px',

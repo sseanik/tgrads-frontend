@@ -7,12 +7,7 @@ import {
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useState } from 'react';
-import {
-  BrightnessHalf,
-  Login,
-  Logout,
-  Settings,
-} from 'tabler-icons-react';
+import { BrightnessHalf, Login, Logout } from 'tabler-icons-react';
 
 import LoginModalNSW from '../Modal/LoginModalNSW';
 
@@ -78,9 +73,9 @@ const ProfileMenu = ({ names }: ProfileMenuProps) => {
           },
         })}
       >
-        {loggedInNSW && (
+        {/* {loggedInNSW && (
           <Menu.Item icon={<Settings size={14} />}>Account</Menu.Item>
-        )}
+        )} */}
         <Menu.Item
           icon={<BrightnessHalf size={14} />}
           onClick={() => toggleColorScheme()}
