@@ -25,6 +25,7 @@ const Gallery: NextPage<{ galleries: Gallery[]; names: string[] }> = ({
         .map((gallery: Gallery) => {
           return (
             <EventCard
+              recap={gallery.attributes.Recap}
               event={gallery.attributes.Event.data}
               key={gallery.attributes.Event.data?.attributes.Slug}
               photos={gallery.attributes.FeaturedPhotos.data}

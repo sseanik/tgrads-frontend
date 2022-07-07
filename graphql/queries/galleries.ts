@@ -5,6 +5,7 @@ export const QUERY_ALL_GALLERIES = gql`
     galleries {
       data {
         attributes {
+          Recap
           FeaturedPhotos {
             data {
               attributes {

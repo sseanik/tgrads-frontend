@@ -22,9 +22,10 @@ import isUpcomingDate from '../utils/isUpcomingDate';
 interface EventCardProps {
   event: Event;
   photos?: GalleryPhotoReduced[];
+  recap?: string;
 }
 
-const EventCard = ({ event, photos }: EventCardProps) => {
+const EventCard = ({ event, photos, recap }: EventCardProps) => {
   const theme = useMantineTheme();
 
   const useStyles = createStyles(() => ({
@@ -165,7 +166,7 @@ const EventCard = ({ event, photos }: EventCardProps) => {
                       lineHeight: 1.5,
                     }}
                   >
-                    {event?.attributes.Description}
+                    {recap ? recap : event?.attributes.Description}
                   </Text>
                 </Grid.Col>
               </Grid>
