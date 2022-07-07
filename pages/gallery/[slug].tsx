@@ -22,12 +22,14 @@ import client from '../../lib/apollo';
 import { FaceBoxAttributes } from '../../types/FaceBoxes';
 import { Gallery, GalleryAttributes, GalleryPhoto } from '../../types/Gallery';
 import { mapAndSortNames } from '../../utils/mapAndSortNames';
+
 const Events: NextPage<{
   gallery: GalleryAttributes;
   galleryPhotoTags: FaceBoxAttributes[];
   names: string[];
   slug: string;
-}> = ({ gallery, galleryPhotoTags, names, slug }) => {
+  galleryID: string;
+}> = ({ gallery, galleryPhotoTags, names, slug, galleryID }) => {
   const [photosAndTags, setPhotosAndTags] =
     useState<FaceBoxAttributes[]>(galleryPhotoTags);
   const router = useRouter();
@@ -69,6 +71,7 @@ const Events: NextPage<{
         })
         .map((photoAndTag) => photoAndTag.attributes.PhotoID);
     };
+
     const handleFilterPhotos = () => {
       if (filtered) {
         setPhotos(gallery.Photos.data);
@@ -128,7 +131,12 @@ const Events: NextPage<{
       <Box style={{ margin: '0 0 6px 2px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
-      <UploadPhotoModal opened={opened} setOpened={setOpened} slug={slug} />
+      <UploadPhotoModal
+        opened={opened}
+        setOpened={setOpened}
+        slug={slug}
+        galleryID={galleryID}
+      />
       {fabComponent}
       <Card shadow='sm' p='sm'>
         <PhotoGallery
@@ -175,6 +183,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
       galleryPhotoTags: photoTags.data,
       names: names,
       slug: context?.params?.slug,
+      galleryID: data[0].id,
     },
   };
 };

@@ -7,6 +7,7 @@ import {
 } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { showNotification, updateNotification } from '@mantine/notifications';
+import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { AlertCircle, Photo } from 'tabler-icons-react';
 
@@ -16,16 +17,19 @@ interface UploadPhotoModalProps {
   opened: boolean;
   setOpened: Dispatch<SetStateAction<boolean>>;
   slug: string;
+  galleryID: string;
 }
 
 const UploadPhotoModal = ({
   opened,
   setOpened,
   slug,
+  galleryID
 }: UploadPhotoModalProps) => {
   const theme = useMantineTheme();
   const [images, setImages] = useState<File[]>([]);
   const [visible, setVisible] = useState(false);
+  const router = useRouter()
 
   const handleUploadPhotos = () => {
     setVisible(true);
@@ -46,7 +50,7 @@ const UploadPhotoModal = ({
         formData.append('files', image, image.name);
         formData.append('path', slug);
         formData.append('ref', 'api::gallery.gallery');
-        formData.append('refId', '8');
+        formData.append('refId', galleryID);
         formData.append('field', 'Photos');
         formData.append('fileInfo', JSON.stringify({ caption: slug }));
         return fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/upload/`, {
@@ -60,7 +64,7 @@ const UploadPhotoModal = ({
         updateNotification({
           id: 'uploading-photos',
           color: 'green',
-          title: 'Successful',
+          title: 'Successfully uploaded photos',
           message: 'Successfully uploaded photos',
           icon: <Photo />,
           autoClose: 2000,
@@ -68,6 +72,7 @@ const UploadPhotoModal = ({
         setImages([]);
         setVisible(false);
         setOpened(false);
+        router.reload()
       })
       .catch((e) => {
         showNotification({

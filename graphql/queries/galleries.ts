@@ -52,6 +52,7 @@ export const QUERY_SPECIFIC_GALLERY = gql`
   query SpecificGallery($slug: String!) {
     galleries(filters: { Event: { Slug: { eq: $slug } } }) {
       data {
+        id
         attributes {
           Photos(pagination: { limit: 100 }) {
             data {

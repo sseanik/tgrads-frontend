@@ -33,7 +33,7 @@ export default async function handler(
       parsedBody.event === 'media.delete'
     ) {
       console.log(
-        `Revalidating Gallery: ${parsedBody.media.caption} with new uploaded photos`
+        `Revalidating Gallery: ${parsedBody.media.caption} - ${parsedBody.event}`
       );
       await res.revalidate(`/gallery/${parsedBody.media.caption}`);
     }
