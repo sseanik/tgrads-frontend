@@ -112,7 +112,7 @@ const Events: NextPage<{
           {loggedIn !== '' &&
             (filtered ? (
               <Action
-                text='Unfilter Photos'
+                text='Disable Filter'
                 style={{
                   backgroundImage:
                     'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',

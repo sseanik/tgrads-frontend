@@ -48,7 +48,7 @@ export default async function handler(
       console.log(
         `Revalidating Event: ${parsedBody.entry.Slug} - ${parsedBody.event}`
       );
-      await res.revalidate(`/event/${parsedBody.entry.Slug}`);
+      await res.revalidate(`/events/${parsedBody.entry.Slug}`);
     }
     // When an admin publishes, updates or deletes an gallery
     else if (
@@ -69,6 +69,7 @@ export default async function handler(
     return res.json({ revalidated: true });
   } catch (err) {
     console.log('Revalidate Error');
+    console.log(err)
     // If there was an error, Next.js will continue
     // to show the last successfully generated page
     return res.status(500).json({ message: 'Error revalidating' });
