@@ -32,7 +32,7 @@ export const QUERY_ALL_GALLERIES = gql`
 
 export const QUERY_GALLERY_SLUGS = gql`
   query AllGalleries {
-    galleries {
+    galleries(pagination: { limit: 100 }) {
       data {
         attributes {
           Event {

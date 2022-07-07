@@ -6,7 +6,7 @@ import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Action, Fab } from 'react-tiny-fab';
-import { Filter, Plus, Upload } from 'tabler-icons-react';
+import { Filter, FilterOff, Plus, Upload } from 'tabler-icons-react';
 
 import UploadPhotoModal from '../../components/Modal/UploadPhotoModal';
 import AppShell from '../../components/Navigation/AppShell';
@@ -109,18 +109,30 @@ const Events: NextPage<{
           >
             <Upload />
           </Action>
-          {loggedIn !== '' && (
-            <Action
-              text='Filter Photos'
-              style={{
-                backgroundImage:
-                  'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
-              }}
-              onClick={handleFilterPhotos}
-            >
-              <Filter />
-            </Action>
-          )}
+          {loggedIn !== '' &&
+            (filtered ? (
+              <Action
+                text='Unfilter Photos'
+                style={{
+                  backgroundImage:
+                    'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
+                }}
+                onClick={handleFilterPhotos}
+              >
+                <FilterOff />
+              </Action>
+            ) : (
+              <Action
+                text='Filter Photos'
+                style={{
+                  backgroundImage:
+                    'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
+                }}
+                onClick={handleFilterPhotos}
+              >
+                <Filter />
+              </Action>
+            ))}
         </Fab>
       );
     }

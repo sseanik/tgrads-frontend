@@ -30,7 +30,7 @@ export const QUERY_ALL_EVENTS = gql`
 
 export const QUERY_EVENT_SLUGS = gql`
   query AllEvents {
-    events {
+    events(pagination: { limit: 100 }) {
       data {
         attributes {
           Slug
