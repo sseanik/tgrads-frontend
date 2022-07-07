@@ -112,7 +112,6 @@ const UploadPhotoModal = ({
               icon: <AlertCircle />,
             });
           }}
-          maxSize={3 * 1024 ** 2}
           accept={IMAGE_MIME_TYPE}
         >
           {(status) =>
