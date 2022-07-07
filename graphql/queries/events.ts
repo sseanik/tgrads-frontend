@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const QUERY_ALL_EVENTS = gql`
   query AllEvents {
-    events(filters: { TGAEvent: { eq: true } }) {
+    events(filters: { TGAEvent: { eq: true } }, pagination: { limit: 100 }) {
       data {
         attributes {
           Slug

@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 
 export const QUERY_ALL_GALLERIES = gql`
   query Galleries {
-    galleries {
+    galleries(pagination: { limit: 100 }) {
       data {
         attributes {
           Recap
