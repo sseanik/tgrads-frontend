@@ -1,7 +1,7 @@
 export type FaceBoxAttributes = {
   id: string;
   attributes: {
-    FaceBoxes: string;
+    FaceBoxes: string | FaceDetectionBox[];
     PhotoID: string;
   };
 };

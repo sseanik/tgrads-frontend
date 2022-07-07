@@ -1,6 +1,7 @@
 import 'react-tiny-fab/dist/styles.css';
 
 import { Box, Card } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -19,7 +20,7 @@ import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import { QUERY_PHOTO_TAGS } from '../../graphql/queries/photoTags';
 import client from '../../lib/apollo';
 import { FaceBoxAttributes } from '../../types/FaceBoxes';
-import { Gallery, GalleryAttributes } from '../../types/Gallery';
+import { Gallery, GalleryAttributes, GalleryPhoto } from '../../types/Gallery';
 import { mapAndSortNames } from '../../utils/mapAndSortNames';
 const Events: NextPage<{
   gallery: GalleryAttributes;
@@ -31,7 +32,14 @@ const Events: NextPage<{
     useState<FaceBoxAttributes[]>(galleryPhotoTags);
   const router = useRouter();
   const [opened, setOpened] = useState<boolean>(false);
+  const [photos, setPhotos] = useState<GalleryPhoto[]>(gallery.Photos.data);
+  const [filtered, setFiltered] = useState<boolean>(false);
   const [fabComponent, setFabComponent] = useState(<></>);
+  const [loggedIn] = useLocalStorage({
+    key: 'loggedIn',
+    defaultValue: '',
+    getInitialValueInEffect: true,
+  });
 
   const crumbs = [
     { title: 'Photo Gallery', href: '/gallery' },
@@ -42,28 +50,78 @@ const Events: NextPage<{
   ];
 
   useEffect(() => {
+    const photoIDsWithName = (name: string) => {
+      return photosAndTags
+        .filter((photoAndTag) => {
+          if (typeof photoAndTag.attributes.FaceBoxes !== 'string') {
+            return photoAndTag.attributes.FaceBoxes.find(
+              (faceBox) => faceBox.name === name
+            )
+              ? true
+              : false;
+          } else {
+            return JSON.parse(photoAndTag.attributes.FaceBoxes).find(
+              (faceBox) => faceBox.name === name
+            )
+              ? true
+              : false;
+          }
+        })
+        .map((photoAndTag) => photoAndTag.attributes.PhotoID);
+    };
+    const handleFilterPhotos = () => {
+      if (filtered) {
+        setPhotos(gallery.Photos.data);
+        setFiltered(false);
+      } else if (loggedIn !== '') {
+        const photosWithName = photoIDsWithName(loggedIn);
+        setPhotos(photos.filter((photo) => photosWithName.includes(photo.id)));
+        setFiltered(true);
+      }
+    };
+
+    if (loggedIn === '') {
+      setPhotos(gallery.Photos.data);
+      setFiltered(false);
+    }
+
     if (typeof window !== 'undefined') {
       setFabComponent(
         <Fab
           icon={<Plus />}
           event='hover'
           alwaysShowTitle={true}
-          mainButtonStyles={{ backgroundColor: '#666AF3' }}
+          mainButtonStyles={{
+            backgroundImage:
+              'linear-gradient(45deg,  #9546c1 20%, #5a46c1 40%, #5b6cf4 60%)',
+          }}
         >
           <Action
             text='Upload Photo'
-            style={{ backgroundColor: '#9a53e6' }}
+            style={{
+              backgroundImage:
+                'linear-gradient(45deg,  #9873ff 20%, #986aff 40%, #c879ff 60% )',
+            }}
             onClick={() => setOpened(true)}
           >
             <Upload />
           </Action>
-          <Action text='Filter Photos' style={{ backgroundColor: '#9a53e6' }}>
-            <Filter />
-          </Action>
+          {loggedIn !== '' && (
+            <Action
+              text='Filter Photos'
+              style={{
+                backgroundImage:
+                  'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
+              }}
+              onClick={handleFilterPhotos}
+            >
+              <Filter />
+            </Action>
+          )}
         </Fab>
       );
     }
-  }, []);
+  }, [filtered, gallery.Photos.data, loggedIn, photos, photosAndTags]);
 
   return (
     <AppShell names={names}>
@@ -74,7 +132,7 @@ const Events: NextPage<{
       {fabComponent}
       <Card shadow='sm' p='sm'>
         <PhotoGallery
-          photos={gallery.Photos.data}
+          photos={photos}
           photosAndTags={photosAndTags}
           setPhotosAndTags={setPhotosAndTags}
           names={names}

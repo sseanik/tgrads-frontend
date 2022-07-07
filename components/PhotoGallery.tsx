@@ -137,9 +137,12 @@ const PhotoGallery = ({
     );
     // If it exists, use the Tags and save the Photo Tag ID
     if (preExistingFaceBoxes) {
-      const parsedFaceBoxes = JSON.parse(
-        preExistingFaceBoxes.attributes.FaceBoxes
-      );
+      let parsedFaceBoxes;
+      if (typeof preExistingFaceBoxes.attributes.FaceBoxes === 'string') {
+        parsedFaceBoxes = JSON.parse(preExistingFaceBoxes.attributes.FaceBoxes);
+      } else {
+        parsedFaceBoxes = preExistingFaceBoxes.attributes.FaceBoxes;
+      }
       if (!Array.isArray(parsedFaceBoxes)) {
         setNoFacesDetected(true);
       }
