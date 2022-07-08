@@ -21,7 +21,7 @@ const Events: NextPage<{ events: Event[]; names: string[] }> = ({
     return events
       .filter((event: Event) => upcomingDate(event.attributes.Date, upcoming))
       .sort((a: Event, b: Event) =>
-        new Date(a.attributes.Date) <= new Date(b.attributes.Date)
+        new Date(a.attributes.Date) < new Date(b.attributes.Date)
           ? upcoming
             ? -1
             : 1
