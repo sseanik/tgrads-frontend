@@ -1,5 +1,7 @@
 const upcomingDate = (dateStr: string, upcoming = true): boolean => {
-  const check = new Date() <= new Date(dateStr);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const check = today <= new Date(dateStr);
   return upcoming ? check : !check;
 };
 
