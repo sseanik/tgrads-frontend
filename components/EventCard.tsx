@@ -11,6 +11,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import Crossfade from 'react-crossfade-responsive';
 
 import { Event } from '../types/Event';
@@ -26,6 +27,7 @@ interface EventCardProps {
 }
 
 const EventCard = ({ event, photos, recap }: EventCardProps) => {
+  const router = useRouter();
   const theme = useMantineTheme();
   const useStyles = createStyles(() => ({
     cardW: {
@@ -42,9 +44,12 @@ const EventCard = ({ event, photos, recap }: EventCardProps) => {
     },
   }));
   const { classes } = useStyles();
+  const eventType = photos ? 'gallery' : 'events';
 
   return (
-    <Link href={(photos ? 'gallery/' : 'events/') + event?.attributes?.Slug}>
+    <Link
+      href={`/${router.query.state}/${eventType}/${event?.attributes?.Slug}`}
+    >
       <UnstyledButton className={classes.cardW}>
         <Indicator
           inline

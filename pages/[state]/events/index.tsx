@@ -1,14 +1,14 @@
 import { Text } from '@mantine/core';
-import { GetStaticProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
-import EventCard from '../../components/EventCard';
-import AppShell from '../../components/Navigation/AppShell';
-import { QUERY_ALL_EVENTS } from '../../graphql/queries/events';
-import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
-import client from '../../lib/apollo';
-import { Event } from '../../types/Event';
-import upcomingDate from '../../utils/isUpcomingDate';
-import { mapAndSortNames } from '../../utils/mapAndSortNames';
+import EventCard from '../../../components/EventCard';
+import AppShell from '../../../components/Navigation/AppShell';
+import { QUERY_ALL_EVENTS } from '../../../graphql/queries/events';
+import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
+import client from '../../../lib/apollo';
+import { Event } from '../../../types/Event';
+import upcomingDate from '../../../utils/isUpcomingDate';
+import { mapAndSortNames } from '../../../utils/mapAndSortNames';
 
 const Events: NextPage<{ events: Event[]; names: string[] }> = ({
   events,
@@ -70,10 +70,23 @@ export const getStaticProps: GetStaticProps = async () => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads)
+  const names = mapAndSortNames(grads);
 
   return {
     props: { events: data, names: names },
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = ['nsw', 'vic', 'qld', 'act', 'sa', 'wa', 'tas'].map(
+    (state: string) => {
+      return { params: { state } };
+    }
+  );
+
+  return {
+    paths,
+    fallback: false,
   };
 };
 

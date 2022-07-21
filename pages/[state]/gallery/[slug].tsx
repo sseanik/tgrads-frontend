@@ -8,20 +8,20 @@ import { useEffect, useState } from 'react';
 import { Action, Fab } from 'react-tiny-fab';
 import { Filter, FilterOff, Plus, Upload } from 'tabler-icons-react';
 
-import UploadPhotoModal from '../../components/Modal/UploadPhotoModal';
-import AppShell from '../../components/Navigation/AppShell';
-import Breadcrumbs from '../../components/Navigation/Breadcrumbs';
-import PhotoGallery from '../../components/PhotoGallery';
+import UploadPhotoModal from '../../../components/Modal/UploadPhotoModal';
+import AppShell from '../../../components/Navigation/AppShell';
+import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
+import PhotoGallery from '../../../components/PhotoGallery';
 import {
   QUERY_GALLERY_SLUGS,
   QUERY_SPECIFIC_GALLERY,
-} from '../../graphql/queries/galleries';
-import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
-import { QUERY_PHOTO_TAGS } from '../../graphql/queries/photoTags';
-import client from '../../lib/apollo';
-import { FaceBoxAttributes } from '../../types/FaceBoxes';
-import { Gallery, GalleryAttributes, GalleryPhoto } from '../../types/Gallery';
-import { mapAndSortNames } from '../../utils/mapAndSortNames';
+} from '../../../graphql/queries/galleries';
+import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
+import { QUERY_PHOTO_TAGS } from '../../../graphql/queries/photoTags';
+import client from '../../../lib/apollo';
+import { FaceBoxAttributes } from '../../../types/FaceBoxes';
+import { Gallery, GalleryAttributes, GalleryPhoto } from '../../../types/Gallery';
+import { mapAndSortNames } from '../../../utils/mapAndSortNames';
 
 const Events: NextPage<{
   gallery: GalleryAttributes;

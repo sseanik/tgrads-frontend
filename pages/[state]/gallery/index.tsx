@@ -1,12 +1,12 @@
-import { GetStaticProps, NextPage } from 'next';
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
-import EventCard from '../../components/EventCard';
-import AppShell from '../../components/Navigation/AppShell';
-import { QUERY_ALL_GALLERIES } from '../../graphql/queries/galleries';
-import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
-import client from '../../lib/apollo';
-import { Gallery } from '../../types/Gallery';
-import { mapAndSortNames } from '../../utils/mapAndSortNames';
+import EventCard from '../../../components/EventCard';
+import AppShell from '../../../components/Navigation/AppShell';
+import { QUERY_ALL_GALLERIES } from '../../../graphql/queries/galleries';
+import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
+import client from '../../../lib/apollo';
+import { Gallery } from '../../../types/Gallery';
+import { mapAndSortNames } from '../../../utils/mapAndSortNames';
 
 const Gallery: NextPage<{ galleries: Gallery[]; names: string[] }> = ({
   galleries,
@@ -55,6 +55,19 @@ export const getStaticProps: GetStaticProps = async () => {
 
   return {
     props: { galleries: data, names: names },
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const paths = ['nsw', 'vic', 'qld', 'act', 'sa', 'wa', 'tas'].map(
+    (state: string) => {
+      return { params: { state } };
+    }
+  );
+
+  return {
+    paths,
+    fallback: false,
   };
 };
 
