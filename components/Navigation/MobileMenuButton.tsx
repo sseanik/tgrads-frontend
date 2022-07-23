@@ -44,7 +44,7 @@ const MobileMenuButton = (props: MenuButtonProps & MobileMenuButtonProps) => {
         variant='subtle'
         color='indigo'
         size='md'
-        leftIcon={<props.icon />}
+        leftIcon={props.icon && <props.icon />}
       >
         {props.title}
       </Button>

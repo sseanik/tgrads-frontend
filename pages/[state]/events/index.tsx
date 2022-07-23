@@ -1,11 +1,14 @@
-import { Text } from '@mantine/core';
+import { Box, Text } from '@mantine/core';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { useRouter } from 'next/router';
 
 import EventCard from '../../../components/EventCard';
 import AppShell from '../../../components/Navigation/AppShell';
-import { QUERY_ALL_EVENTS } from '../../../graphql/queries/events';
+import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
+import { QUERY_STATE_EVENTS } from '../../../graphql/queries/events';
 import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
+import { navItems } from '../../../lib/navItem';
 import { Event } from '../../../types/Event';
 import upcomingDate from '../../../utils/isUpcomingDate';
 import { mapAndSortNames } from '../../../utils/mapAndSortNames';
@@ -14,6 +17,15 @@ const Events: NextPage<{ events: Event[]; names: string[] }> = ({
   events,
   names,
 }) => {
+  const router = useRouter();
+
+  if (events.length === 0)
+    return (
+      <AppShell names={names} navItems={navItems}>
+        <></>
+      </AppShell>
+    );
+
   const extractSpecificEvents = (
     events: Event[],
     upcoming: boolean
@@ -34,8 +46,18 @@ const Events: NextPage<{ events: Event[]; names: string[] }> = ({
   const upcomingEvents = extractSpecificEvents(events, true);
   const pastEvents = extractSpecificEvents(events, false);
 
+  const state = router.query.state as string;
+
+  const crumbs = [
+    { title: state.toUpperCase(), href: `/${state}` },
+    { title: 'Events', href: `/${state}/events` },
+  ];
+
   return (
-    <AppShell names={names}>
+    <AppShell names={names} navItems={navItems}>
+      <Box style={{ margin: '0 0 10px 10px' }}>
+        <Breadcrumbs crumbs={crumbs} />
+      </Box>
       {upcomingEvents.length > 0 && (
         <Text ml={10} size='xl' weight={700} color='gray'>
           Upcoming Events
@@ -55,13 +77,15 @@ const Events: NextPage<{ events: Event[]; names: string[] }> = ({
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async (context) => {
+  const state = context?.params?.state as string;
   const {
     data: {
       events: { data },
     },
   } = await client.query({
-    query: QUERY_ALL_EVENTS,
+    query: QUERY_STATE_EVENTS,
+    variables: { state: state.toUpperCase() },
   });
 
   const {
@@ -78,7 +102,7 @@ export const getStaticProps: GetStaticProps = async () => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = ['nsw', 'vic', 'qld', 'act', 'sa', 'wa', 'tas'].map(
+  const paths = ['nsw', 'vic', 'qld', 'act', 'sa', 'wa', 'tas', 'nt'].map(
     (state: string) => {
       return { params: { state } };
     }

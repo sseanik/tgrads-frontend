@@ -1,18 +1,17 @@
 import type { GetStaticProps, NextPage } from 'next';
 
 import AppShell from '../components/Navigation/AppShell';
-import Scheduler from '../components/Scheduler';
 import { QUERY_ALL_NAMES } from '../graphql/queries/people';
 import client from '../lib/apollo';
+import { homeNavItems } from '../lib/navItem';
 import { mapAndSortNames } from '../utils/mapAndSortNames';
 
 const Home: NextPage<{
   names: string[];
 }> = ({ names }) => {
-
   return (
-    <AppShell names={names}>
-      <Scheduler />
+    <AppShell names={names} navItems={homeNavItems}>
+      <div></div>
     </AppShell>
   );
 };

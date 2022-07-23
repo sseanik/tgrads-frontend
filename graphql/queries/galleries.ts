@@ -1,8 +1,11 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_ALL_GALLERIES = gql`
-  query Galleries {
-    galleries(pagination: { limit: 100 }) {
+export const QUERY_STATE_GALLERIES = gql`
+  query StateGalleries($state: String!) {
+    galleries(
+      filters: { Event: { State: { eq: $state } } }
+      pagination: { limit: 100 }
+    ) {
       data {
         attributes {
           Recap
@@ -16,6 +19,7 @@ export const QUERY_ALL_GALLERIES = gql`
           Event {
             data {
               attributes {
+                State
                 Date
                 Description
                 Location
@@ -39,6 +43,7 @@ export const QUERY_GALLERY_SLUGS = gql`
             data {
               attributes {
                 Slug
+                State
               }
             }
           }

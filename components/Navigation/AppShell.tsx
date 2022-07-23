@@ -1,12 +1,14 @@
 import { AppShell as AppShellComponent, useMantineTheme } from '@mantine/core';
 import { useState } from 'react';
 
+import { NavMenu } from '../../lib/navItem';
 import Header from './Header';
 import Navbar from './Navbar';
 
 type AppShellProps = {
   children: React.ReactNode;
   names: string[];
+  navItems: NavMenu;
 };
 
 const AppShell = (props: AppShellProps) => {
@@ -26,8 +28,21 @@ const AppShell = (props: AppShellProps) => {
               : theme.colors.gray[0],
         },
       }}
-      navbar={<Navbar opened={opened} setOpened={setOpened} />}
-      header={<Header opened={opened} setOpened={setOpened} names={props.names} />}
+      navbar={
+        <Navbar
+          opened={opened}
+          setOpened={setOpened}
+          navItems={props.navItems}
+        />
+      }
+      header={
+        <Header
+          opened={opened}
+          setOpened={setOpened}
+          navItems={props.navItems}
+          names={props.names}
+        />
+      }
     >
       {props.children}
     </AppShellComponent>

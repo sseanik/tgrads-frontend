@@ -1,9 +1,11 @@
 import { Button, Text, useMantineTheme } from '@mantine/core';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const Logo = () => {
   const theme = useMantineTheme();
-
+  const router = useRouter();
+  const state = router.query.state as string;
   return (
     <Link href='/'>
       <Button
@@ -62,7 +64,7 @@ const Logo = () => {
             animation: 'rainbow-text-simple-animation-rev 0.75s ease forwards',
           }}
         >
-          T Grads
+          {`${state ? state.toUpperCase() : "T"} Grads`}
         </Text>
       </Button>
     </Link>

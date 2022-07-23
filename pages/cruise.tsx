@@ -30,6 +30,7 @@ import Ticket from '../components/Ticket';
 import { QUERY_SPECIFIC_EVENT } from '../graphql/queries/events';
 import { QUERY_ALL_NAMES } from '../graphql/queries/people';
 import client from '../lib/apollo';
+import { homeNavItems } from '../lib/navItem';
 import { EventAttributes } from '../types/Event';
 import getDaysHoursMinutesRemaining from '../utils/getDaysHoursMinutesRemaining';
 import { mapAndSortNames } from '../utils/mapAndSortNames';
@@ -241,7 +242,7 @@ const Cruise: NextPage<{
   ];
 
   return (
-    <AppShell names={names}>
+    <AppShell names={names} navItems={homeNavItems}>
       <LoginModalCruise
         openedCruise={openedCruise}
         setOpenedCruise={setOpenedCruise}
