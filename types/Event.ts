@@ -4,6 +4,7 @@ export interface Event {
 
 export interface EventAttributes {
   Title: string;
+  State: "NSW" | "VIC" | "QLD" | "SA" | "WA" | "TAS" | "ACT" | "NT";
   Description: string;
   Date: string;
   Time: string;

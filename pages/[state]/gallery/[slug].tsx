@@ -8,20 +8,25 @@ import { useEffect, useState } from 'react';
 import { Action, Fab } from 'react-tiny-fab';
 import { Filter, FilterOff, Plus, Upload } from 'tabler-icons-react';
 
-import UploadPhotoModal from '../../components/Modal/UploadPhotoModal';
-import AppShell from '../../components/Navigation/AppShell';
-import Breadcrumbs from '../../components/Navigation/Breadcrumbs';
-import PhotoGallery from '../../components/PhotoGallery';
+import UploadPhotoModal from '../../../components/Modal/UploadPhotoModal';
+import AppShell from '../../../components/Navigation/AppShell';
+import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
+import PhotoGallery from '../../../components/PhotoGallery';
 import {
   QUERY_GALLERY_SLUGS,
   QUERY_SPECIFIC_GALLERY,
-} from '../../graphql/queries/galleries';
-import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
-import { QUERY_PHOTO_TAGS } from '../../graphql/queries/photoTags';
-import client from '../../lib/apollo';
-import { FaceBoxAttributes } from '../../types/FaceBoxes';
-import { Gallery, GalleryAttributes, GalleryPhoto } from '../../types/Gallery';
-import { mapAndSortNames } from '../../utils/mapAndSortNames';
+} from '../../../graphql/queries/galleries';
+import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
+import { QUERY_PHOTO_TAGS } from '../../../graphql/queries/photoTags';
+import client from '../../../lib/apollo';
+import { navItems } from '../../../lib/navItem';
+import { FaceBoxAttributes } from '../../../types/FaceBoxes';
+import {
+  Gallery,
+  GalleryAttributes,
+  GalleryPhoto,
+} from '../../../types/Gallery';
+import { mapAndSortNames } from '../../../utils/mapAndSortNames';
 
 const Events: NextPage<{
   gallery: GalleryAttributes;
@@ -43,12 +48,12 @@ const Events: NextPage<{
     getInitialValueInEffect: true,
   });
 
+  const state = router.query.state as string;
+
   const crumbs = [
-    { title: 'Photo Gallery', href: '/gallery' },
-    {
-      title: gallery.Event.data.attributes.Title,
-      href: router.asPath,
-    },
+    { title: state.toUpperCase(), href: `/${state}` },
+    { title: 'Gallery', href: `/${state}/gallery` },
+    { title: gallery.Event.data.attributes.Title, href: router.asPath },
   ];
 
   useEffect(() => {
@@ -97,6 +102,7 @@ const Events: NextPage<{
           mainButtonStyles={{
             backgroundImage:
               'linear-gradient(45deg,  #9546c1 20%, #5a46c1 40%, #5b6cf4 60%)',
+            border: '2px solid black',
           }}
         >
           <Action
@@ -104,6 +110,7 @@ const Events: NextPage<{
             style={{
               backgroundImage:
                 'linear-gradient(45deg,  #9873ff 20%, #986aff 40%, #c879ff 60% )',
+              border: '2px solid black',
             }}
             onClick={() => setOpened(true)}
           >
@@ -139,7 +146,7 @@ const Events: NextPage<{
   }, [filtered, gallery.Photos.data, loggedIn, photos, photosAndTags]);
 
   return (
-    <AppShell names={names}>
+    <AppShell names={names} navItems={navItems}>
       <Box style={{ margin: '0 0 6px 2px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
@@ -210,7 +217,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
 
   const paths = data.map((gallery: Gallery) => {
-    return { params: { slug: gallery.attributes.Event.data?.attributes.Slug } };
+    return {
+      params: {
+        slug: gallery.attributes.Event.data?.attributes.Slug,
+        state: gallery.attributes.Event.data?.attributes.State.toLowerCase(),
+      },
+    };
   });
 
   return {

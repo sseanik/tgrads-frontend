@@ -1,8 +1,11 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_ALL_EVENTS = gql`
-  query AllEvents {
-    events(filters: { TGAEvent: { eq: true } }, pagination: { limit: 100 }) {
+export const QUERY_STATE_EVENTS = gql`
+  query StateEvents($state: String!) {
+    events(
+      filters: { TGAEvent: { eq: true }, State: { eq: $state } }
+      pagination: { limit: 100 }
+    ) {
       data {
         attributes {
           Slug
@@ -34,6 +37,7 @@ export const QUERY_EVENT_SLUGS = gql`
       data {
         attributes {
           Slug
+          State
         }
       }
     }

@@ -59,8 +59,7 @@ const UploadPhotoModal = ({
         }).then((res) => res.json());
       })
     )
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         updateNotification({
           id: 'uploading-photos',
           color: 'green',

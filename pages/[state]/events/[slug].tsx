@@ -22,18 +22,19 @@ import {
   Map2,
 } from 'tabler-icons-react';
 
-import AppShell from '../../components/Navigation/AppShell';
-import Breadcrumbs from '../../components/Navigation/Breadcrumbs';
+import AppShell from '../../../components/Navigation/AppShell';
+import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
 import {
   QUERY_EVENT_SLUGS,
   QUERY_SPECIFIC_EVENT,
-} from '../../graphql/queries/events';
-import { QUERY_SPECIFIC_GALLERY } from '../../graphql/queries/galleries';
-import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
-import client from '../../lib/apollo';
-import { Event, EventAttributes } from '../../types/Event';
-import getDaysHoursMinutesRemaining from '../../utils/getDaysHoursMinutesRemaining';
-import { mapAndSortNames } from '../../utils/mapAndSortNames';
+} from '../../../graphql/queries/events';
+import { QUERY_SPECIFIC_GALLERY } from '../../../graphql/queries/galleries';
+import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
+import client from '../../../lib/apollo';
+import { navItems } from '../../../lib/navItem';
+import { Event, EventAttributes } from '../../../types/Event';
+import getDaysHoursMinutesRemaining from '../../../utils/getDaysHoursMinutesRemaining';
+import { mapAndSortNames } from '../../../utils/mapAndSortNames';
 
 const Events: NextPage<{
   event: EventAttributes;
@@ -55,13 +56,16 @@ const Events: NextPage<{
         )
       : event.Footnote;
 
+  const state = router.query.state as string;
+
   const crumbs = [
-    { title: 'Events', href: '/events' },
-    { title: event.Title, href: router.query.slug?.toString() ?? '' },
+    { title: state.toUpperCase(), href: `/${state}` },
+    { title: 'Events', href: `/${state}/events` },
+    { title: event.Title, href: router.asPath },
   ];
 
   return (
-    <AppShell names={names}>
+    <AppShell names={names} navItems={navItems}>
       <Box style={{ margin: '0 0 6px 2px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
@@ -425,7 +429,12 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
 
   const paths = data.map((event: Event) => {
-    return { params: { slug: event.attributes.Slug } };
+    return {
+      params: {
+        slug: event.attributes.Slug,
+        state: event.attributes.State.toLowerCase(),
+      },
+    };
   });
 
   return {

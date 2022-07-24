@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Icon } from 'tabler-icons-react';
 
 export interface MenuButtonProps {
-  icon: Icon;
+  icon?: Icon;
   text: string;
   url: string;
   title: string;
@@ -61,7 +61,7 @@ const MenuButton = (props: MenuButtonProps) => {
           variant='subtle'
           color='indigo'
           size='md'
-          leftIcon={<props.icon />}
+          leftIcon={props.icon && <props.icon />}
         >
           {props.text}
         </Button>

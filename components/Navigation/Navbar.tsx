@@ -1,16 +1,17 @@
 import { Navbar as NavbarComponent } from '@mantine/core';
 import { Dispatch, SetStateAction } from 'react';
 
-import navItem from '../../lib/navItem';
+import { NavMenu } from '../../lib/navItem';
 import MobileMenuButton from './MobileMenuButton';
 // import NavbarFooter from './NavbarFooter';
 
 interface NavbarProps {
   opened: boolean;
   setOpened: Dispatch<SetStateAction<boolean>>;
+  navItems: NavMenu;
 }
 
-const Navbar = ({ opened, setOpened }: NavbarProps) => {
+const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
   return (
     <NavbarComponent
       fixed
@@ -25,7 +26,7 @@ const Navbar = ({ opened, setOpened }: NavbarProps) => {
       }}
     >
       <NavbarComponent.Section mt={10}>
-        {navItem.map((item) => {
+        {navItems.common.map((item) => {
           return (
             <MobileMenuButton key={item.url} {...item} setOpened={setOpened} />
           );
