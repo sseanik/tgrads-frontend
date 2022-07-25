@@ -19,7 +19,7 @@ const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
         transition: 'width 500ms ease, min-width 500ms ease',
         overflow: 'hidden',
         width: opened ? 255 : 0,
-        '@media (min-width: 575px)': {
+        '@media (min-width: 735px)': {
           width: 0,
         },
         justifyContent: 'space-between',

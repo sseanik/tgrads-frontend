@@ -34,7 +34,7 @@ const Header = ({ opened, setOpened, navItems, names }: HeaderProps) => {
           height: '100%',
         }}
       >
-        <MediaQuery largerThan='xs' styles={{ display: 'none' }}>
+        <MediaQuery largerThan={734} styles={{ display: 'none' }}>
           <Burger
             opened={opened}
             onClick={() => setOpened((open: boolean) => !open)}
@@ -47,7 +47,7 @@ const Header = ({ opened, setOpened, navItems, names }: HeaderProps) => {
         <Logo />
 
         <div style={{ flex: 1, display: 'flex', height: '100%' }}>
-          <MediaQuery smallerThan={577} styles={{ display: 'none' }}>
+          <MediaQuery smallerThan={735} styles={{ display: 'none' }}>
             <div>
               {state ? (
                 <span>

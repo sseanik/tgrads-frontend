@@ -2,6 +2,7 @@ import { AppShell as AppShellComponent, useMantineTheme } from '@mantine/core';
 import { useState } from 'react';
 
 import { NavMenu } from '../../lib/navItem';
+import Footer from './Footer';
 import Header from './Header';
 import Navbar from './Navbar';
 
@@ -43,6 +44,7 @@ const AppShell = (props: AppShellProps) => {
           names={props.names}
         />
       }
+      footer={<Footer />}
     >
       {props.children}
     </AppShellComponent>

@@ -19,3 +19,12 @@ a {
   font-family: 'Akkurat';
   src: url('../public/Akkurat.ttf') format('ttf');
 }
+
+#crossfade div div {
+  background: inherit;
+}
+
+#crossfade div div img {
+  background: inherit;
+  object-fit: contain;
+}

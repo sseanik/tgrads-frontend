@@ -86,18 +86,23 @@ const StatePost = ({ blurb }: StatePostProps) => {
             })}
           >
             <Box
+              id='crossfade'
               sx={() => ({
-                width: '500px',
+                width: '400px',
                 height: '300px',
+                margin: '0 auto',
                 '@media (max-width: 900px)': {
                   width: '100%',
                 },
+                '#crossfade div:nth-of-type(2) img': {
+                  color: 'red'
+                }
               })}
             >
               <Crossfade
                 images={blurb.Photos.data?.map((photo) => photo.attributes.url)}
-                height='100%'
-                width='min(500px, (100vw - 90px))'
+                height='300px'
+                width='min(400px, (100vw - 90px))'
               />
             </Box>
             <Box
