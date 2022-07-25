@@ -67,7 +67,7 @@ const Events: NextPage<{
 
   return (
     <AppShell names={names} navItems={navItems}>
-      <Box style={{ margin: '0 0 6px 2px' }}>
+      <Box style={{ margin: '0 0 6px 10px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
       <Card shadow='sm' p='lg'>

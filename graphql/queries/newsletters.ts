@@ -9,6 +9,7 @@ export const QUERY_ALL_NEWSLETTERS = gql`
           Slug
           FirstDayOfMonth
           Description
+          Gif
           StateBlurbs {
             State
             Description

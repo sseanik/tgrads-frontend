@@ -123,6 +123,7 @@ const Events: NextPage<{
                 style={{
                   backgroundImage:
                     'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
+                  border: '2px solid black',
                 }}
                 onClick={handleFilterPhotos}
               >
@@ -134,6 +135,7 @@ const Events: NextPage<{
                 style={{
                   backgroundImage:
                     'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
+                  border: '2px solid black',
                 }}
                 onClick={handleFilterPhotos}
               >
@@ -147,7 +149,7 @@ const Events: NextPage<{
 
   return (
     <AppShell names={names} navItems={navItems}>
-      <Box style={{ margin: '0 0 6px 2px' }}>
+      <Box style={{ margin: '0 0 6px 10px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
       <UploadPhotoModal

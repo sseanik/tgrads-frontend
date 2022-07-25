@@ -1,4 +1,5 @@
-import { Accordion, Card, Text } from '@mantine/core';
+import { Accordion, Box, Card, Text } from '@mantine/core';
+import Image from 'next/image';
 
 import { Newsletter } from '../../types/Newsletter';
 import EventPost from './EventPost';
@@ -20,7 +21,36 @@ const NewsletterTab = ({ newsletter }: NewsletterProps) => {
           }}
         >
           <Accordion.Item label={newsletter.attributes.Title} m={0}>
-            <Text>{newsletter.attributes.Description}</Text>
+            <Box
+              sx={() => ({
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                '@media (max-width: 600px)': {
+                  flexDirection: 'column',
+                },
+              })}
+            >
+              <Image
+                src={newsletter.attributes.Gif}
+                alt={`${newsletter.attributes.Title}-gif`}
+                width={200}
+                height={200}
+                objectFit='contain'
+              />
+              <Text
+                sx={() => ({
+                  width: 'calc(100% - 200px)',
+                  paddingLeft: '20px',
+                  '@media (max-width: 600px)': {
+                    paddingLeft: 0,
+                    width: '100%'
+                  },
+                })}
+              >
+                {newsletter.attributes.Description}
+              </Text>
+            </Box>
           </Accordion.Item>
         </Accordion>
       </Card>

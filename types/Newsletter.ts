@@ -7,6 +7,7 @@ export type Newsletter = {
     StateBlurbs: StateBlurb[];
     EventBlurbs: EventBlurb[];
     CalendarTable: CalendarTable;
+    Gif: string;
   }
 }
 
