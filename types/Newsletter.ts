@@ -6,7 +6,7 @@ export type Newsletter = {
     Description: string;
     StateBlurbs: StateBlurb[];
     EventBlurbs: EventBlurb[];
-    CalendarTable: CalendarTable;
+    CalendarTable: CalendarRow[];
     Gif: string;
   }
 }
@@ -27,7 +27,7 @@ export type EventBlurb = {
   }
 }
 
-export interface CalendarTable {
+export interface CalendarRow {
   State: "All" | "NSW" | "QLD" | "SA" | "TAS" | "VIC" | "WA",
   Event: string,
   Date: string,

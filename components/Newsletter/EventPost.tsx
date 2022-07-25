@@ -13,10 +13,10 @@ const EventPost = ({ blurb }: EventPostProps) => {
 
   const parsedDescription: string =
     theme.colorScheme === 'dark'
-      ? blurb.Description.replaceAll('black', '#cecfd0').replaceAll(
-          'rgb(0, 22, 98)',
-          '#7787e4'
-        )
+      ? blurb.Description.replaceAll('black', '#cecfd0')
+          .replaceAll('rgb(0, 22, 98)', '#7787e4')
+          .replaceAll('rgb(36, 36, 36)', '#c9c9c9')
+          .replaceAll('rgb(34, 34, 34)', '#c9c9c9')
       : blurb.Description;
 
   return (

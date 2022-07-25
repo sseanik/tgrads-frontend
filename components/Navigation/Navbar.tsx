@@ -18,7 +18,7 @@ const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
       sx={{
         transition: 'width 500ms ease, min-width 500ms ease',
         overflow: 'hidden',
-        width: opened ? 250 : 0,
+        width: opened ? 255 : 0,
         '@media (min-width: 575px)': {
           width: 0,
         },

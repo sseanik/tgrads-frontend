@@ -19,7 +19,7 @@ const Home: NextPage<{
   const [activeTab, setActiveTab] = useState(0);
   return (
     <AppShell names={names} navItems={homeNavItems}>
-      <Tabs color='indigo' active={activeTab} onTabChange={setActiveTab}>
+      <Tabs color='indigo' active={activeTab} onTabChange={setActiveTab} mt={-10}>
         {newsletters.map((newsletter) => {
           return (
             <Tabs.Tab

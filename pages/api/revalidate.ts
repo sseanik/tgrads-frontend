@@ -15,6 +15,13 @@ export default async function handler(
   try {
     const parsedBody =
       typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    console.log(parsedBody);
+
+    const allOptions =
+      parsedBody.event === 'entry.publish' ||
+      parsedBody.event === 'entry.unpublish' ||
+      parsedBody.event === 'entry.update' ||
+      parsedBody.event === 'entry.delete';
 
     // When the user has clicked on generates or edits photo tags
     if (
@@ -38,29 +45,23 @@ export default async function handler(
       await res.revalidate(`/gallery/${parsedBody.media.caption}`);
     }
     // When an admin publishes, unpublishes, updates or deletes an event
-    else if (
-      (parsedBody.event === 'entry.publish' ||
-        parsedBody.event === 'entry.unpublish' ||
-        parsedBody.event === 'entry.update' ||
-        parsedBody.event === 'entry.delete') &&
-      parsedBody.model === 'event'
-    ) {
+    else if (allOptions && parsedBody.model === 'event') {
       console.log(
         `Revalidating Event: ${parsedBody.entry.Slug} - ${parsedBody.event}`
       );
       await res.revalidate(`/events/${parsedBody.entry.Slug}`);
     }
     // When an admin publishes, updates or deletes an gallery
-    else if (
-      (parsedBody.event === 'entry.publish' ||
-        parsedBody.event === 'entry.update' ||
-        parsedBody.event === 'entry.delete') &&
-      parsedBody.model === 'gallery'
-    ) {
+    else if (allOptions && parsedBody.model === 'gallery') {
       console.log(
         `Revalidating Gallery: ${parsedBody.entry.Slug} - ${parsedBody.event}`
       );
       await res.revalidate(`/gallery/${parsedBody.entry.Event?.Slug}`);
+    } else if (allOptions && parsedBody.model === 'newsletter') {
+      console.log(
+        `Revalidating Homepage Newsletters: ${parsedBody.entry.Title}`
+      );
+      await res.revalidate(`/`);
     } else {
       console.log(parsedBody);
       throw new Error('No valid revalidation statement found');
@@ -69,7 +70,7 @@ export default async function handler(
     return res.json({ revalidated: true });
   } catch (err) {
     console.log('Revalidate Error');
-    console.log(err)
+    console.log(err);
     // If there was an error, Next.js will continue
     // to show the last successfully generated page
     return res.status(500).json({ message: 'Error revalidating' });

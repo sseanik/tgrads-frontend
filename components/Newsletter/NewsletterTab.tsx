@@ -2,6 +2,7 @@ import { Accordion, Box, Card, Text } from '@mantine/core';
 import Image from 'next/image';
 
 import { Newsletter } from '../../types/Newsletter';
+import CalendarTable from './CalendarTable';
 import EventPost from './EventPost';
 import StatePost from './StatePost';
 
@@ -44,7 +45,7 @@ const NewsletterTab = ({ newsletter }: NewsletterProps) => {
                   paddingLeft: '20px',
                   '@media (max-width: 600px)': {
                     paddingLeft: 0,
-                    width: '100%'
+                    width: '100%',
                   },
                 })}
               >
@@ -60,6 +61,7 @@ const NewsletterTab = ({ newsletter }: NewsletterProps) => {
       {newsletter.attributes.EventBlurbs.map((blurb) => {
         return <EventPost key={blurb.Title} blurb={blurb} />;
       })}
+      <CalendarTable table={newsletter.attributes.CalendarTable} />
     </>
   );
 };
