@@ -26,15 +26,15 @@ import {
   GalleryAttributes,
   GalleryPhoto,
 } from '../../../types/Gallery';
-import { mapAndSortNames } from '../../../utils/mapAndSortNames';
+import { Grad } from '../../../types/User';
 
 const Events: NextPage<{
   gallery: GalleryAttributes;
   galleryPhotoTags: FaceBoxAttributes[];
-  names: string[];
+  grads: Grad[];
   slug: string;
   galleryID: string;
-}> = ({ gallery, galleryPhotoTags, names, slug, galleryID }) => {
+}> = ({ gallery, galleryPhotoTags, grads, slug, galleryID }) => {
   const [photosAndTags, setPhotosAndTags] =
     useState<FaceBoxAttributes[]>(galleryPhotoTags);
   const router = useRouter();
@@ -82,7 +82,7 @@ const Events: NextPage<{
         setPhotos(gallery.Photos.data);
         setFiltered(false);
       } else if (loggedIn !== '') {
-        const photosWithName = photoIDsWithName(loggedIn);
+        const photosWithName = photoIDsWithName(JSON.parse(loggedIn).FullName);
         setPhotos(photos.filter((photo) => photosWithName.includes(photo.id)));
         setFiltered(true);
       }
@@ -102,7 +102,7 @@ const Events: NextPage<{
           mainButtonStyles={{
             backgroundImage:
               'linear-gradient(45deg,  #9546c1 20%, #5a46c1 40%, #5b6cf4 60%)',
-            border: '2px solid black',
+            border: '2px solid #000',
           }}
         >
           <Action
@@ -110,7 +110,7 @@ const Events: NextPage<{
             style={{
               backgroundImage:
                 'linear-gradient(45deg,  #9873ff 20%, #986aff 40%, #c879ff 60% )',
-              border: '2px solid black',
+              border: '2px solid #000',
             }}
             onClick={() => setOpened(true)}
           >
@@ -123,7 +123,7 @@ const Events: NextPage<{
                 style={{
                   backgroundImage:
                     'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
-                  border: '2px solid black',
+                  border: '2px solid #000',
                 }}
                 onClick={handleFilterPhotos}
               >
@@ -135,7 +135,7 @@ const Events: NextPage<{
                 style={{
                   backgroundImage:
                     'linear-gradient(45deg,  #8873ea 20%, #9177ff 40%, #b183f7 60% )',
-                  border: '2px solid black',
+                  border: '2px solid #000',
                 }}
                 onClick={handleFilterPhotos}
               >
@@ -148,7 +148,7 @@ const Events: NextPage<{
   }, [filtered, gallery.Photos.data, loggedIn, photos, photosAndTags]);
 
   return (
-    <AppShell names={names} navItems={navItems}>
+    <AppShell grads={grads} navItems={navItems}>
       <Box style={{ margin: '0 0 6px 10px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
@@ -164,7 +164,7 @@ const Events: NextPage<{
           photos={photos}
           photosAndTags={photosAndTags}
           setPhotosAndTags={setPhotosAndTags}
-          names={names}
+          names={grads.map((grad) => grad.attributes.FullName)}
           slug={slug}
         />
       </Card>
@@ -196,13 +196,11 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads);
-
   return {
     props: {
       gallery: data[0].attributes,
       galleryPhotoTags: photoTags.data,
-      names: names,
+      grads: grads.data,
       slug: context?.params?.slug,
       galleryID: data[0].id,
     },

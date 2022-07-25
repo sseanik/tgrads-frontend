@@ -9,16 +9,16 @@ import { QUERY_ALL_NAMES } from '../graphql/queries/people';
 import client from '../lib/apollo';
 import { homeNavItems } from '../lib/navItem';
 import { Newsletter } from '../types/Newsletter';
-import { mapAndSortNames } from '../utils/mapAndSortNames';
+import { Grad } from '../types/User';
 
 const Home: NextPage<{
-  names: string[];
+  grads: Grad[];
   newsletters: Newsletter[];
-}> = ({ names, newsletters }) => {
+}> = ({ grads, newsletters }) => {
 
   const [activeTab, setActiveTab] = useState(0);
   return (
-    <AppShell names={names} navItems={homeNavItems}>
+    <AppShell grads={grads} navItems={homeNavItems}>
       <Tabs color='indigo' active={activeTab} onTabChange={setActiveTab} mt={-10}>
         {newsletters.map((newsletter) => {
           return (
@@ -28,7 +28,7 @@ const Home: NextPage<{
                 newsletter.attributes.FirstDayOfMonth
               ).toLocaleString('default', { month: 'long' })}
             >
-              <NewsletterTab newsletter={newsletter} />
+              <NewsletterTab newsletter={newsletter} grads={grads} />
             </Tabs.Tab>
           );
         })}
@@ -43,8 +43,6 @@ export const getStaticProps: GetStaticProps = async () => {
   } = await client.query({
     query: QUERY_ALL_NAMES,
   });
-
-  const names = mapAndSortNames(grads);
 
   const {
     data: {
@@ -62,7 +60,7 @@ export const getStaticProps: GetStaticProps = async () => {
   });
 
   return {
-    props: { names, newsletters },
+    props: { newsletters, grads: grads.data },
   };
 };
 

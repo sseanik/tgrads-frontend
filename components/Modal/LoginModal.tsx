@@ -2,45 +2,50 @@ import { Autocomplete, Button, Center, Modal, Text } from '@mantine/core';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { MoodHappy, MoodSad } from 'tabler-icons-react';
 
-interface LoginModalNSWProps {
-  valueNSW: string;
-  openedNSW: boolean;
-  names: string[];
-  setLoggedInNSW: (value: string) => void;
-  setOpenedNSW: Dispatch<SetStateAction<boolean>>;
-  setValueNSW: Dispatch<SetStateAction<string>>;
+import { Grad } from '../../types/User';
+
+interface LoginModalProps {
+  value: string;
+  opened: boolean;
+  grads: Grad[];
+  setLoggedIn: (value: string) => void;
+  setOpened: Dispatch<SetStateAction<boolean>>;
+  setValue: Dispatch<SetStateAction<string>>;
 }
 
-const LoginModalNSW = ({
-  names,
-  valueNSW,
-  openedNSW,
-  setLoggedInNSW,
-  setOpenedNSW,
-  setValueNSW,
-}: LoginModalNSWProps) => {
+const LoginModal = ({
+  grads,
+  value,
+  opened,
+  setLoggedIn,
+  setOpened,
+  setValue,
+}: LoginModalProps) => {
   const [error, setError] = useState<boolean>(false);
 
-  const minData: string[] = valueNSW.length >= 1 ? names : [];
+  const names = grads.map((grad) => grad.attributes.FullName);
+  const minData: string[] = value.length >= 1 ? names : [];
 
   const loginClick = (): void => {
-    if (!names.includes(valueNSW)) {
+    if (!names.includes(value)) {
       setError(true);
     } else {
-      setLoggedInNSW(valueNSW);
-      setOpenedNSW(false);
+      setLoggedIn(
+        JSON.stringify(grads.find((grad) => grad.attributes.FullName === value)?.attributes)
+      );
+      setOpened(false);
     }
   };
 
   const changeValue = (name: string): void => {
-    setValueNSW(name);
+    setValue(name);
     setError(false);
   };
 
   return (
     <Modal
-      opened={openedNSW}
-      onClose={() => setOpenedNSW(false)}
+      opened={opened}
+      onClose={() => setOpened(false)}
       title={
         <Text weight={700} size='lg'>
           Login
@@ -53,7 +58,7 @@ const LoginModalNSW = ({
         label='What is your name?'
         required
         data={minData}
-        value={valueNSW}
+        value={value}
         onChange={changeValue}
         size='md'
         radius='md'
@@ -78,4 +83,4 @@ const LoginModalNSW = ({
   );
 };
 
-export default LoginModalNSW;
+export default LoginModal;

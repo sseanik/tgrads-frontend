@@ -14,10 +14,10 @@ const Footer = () => {
     >
       <span style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
         <Code color={'#888e96'} />
-        <Text color='dimmed' size='sm'>
+        <Text color='dimmed' size='sm' component='span'>
           Built by{' '}
         </Text>
-        <Text color='violet'>Sean Smith</Text>
+        <Text color='violet' component='span'>Sean Smith</Text>
       </span>
       <div style={{ display: 'flex', gap: 10 }}>
         <ActionIcon

@@ -1,16 +1,39 @@
 import { Accordion, Box, Card, Text } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import Image from 'next/image';
 
 import { Newsletter } from '../../types/Newsletter';
+import { Grad } from '../../types/User';
+import Birthdays from './Birthdays';
 import CalendarTable from './CalendarTable';
 import EventPost from './EventPost';
 import StatePost from './StatePost';
 
 interface NewsletterProps {
   newsletter: Newsletter;
+  grads: Grad[]
 }
 
-const NewsletterTab = ({ newsletter }: NewsletterProps) => {
+const NewsletterTab = ({ newsletter, grads }: NewsletterProps) => {
+  const [loggedIn] = useLocalStorage({
+    key: 'loggedIn',
+    defaultValue: '',
+    getInitialValueInEffect: true,
+  });
+
+  const sortedStateBlurbs = loggedIn
+    ? newsletter.attributes.StateBlurbs.filter(
+        (blurb) => blurb.State !== JSON.parse(loggedIn).State
+      )
+    : newsletter.attributes.StateBlurbs;
+  if (loggedIn) {
+    const stateMatchedStateBlurb = newsletter.attributes.StateBlurbs.find(
+      (blurb) => blurb.State === JSON.parse(loggedIn).State
+    );
+    if (stateMatchedStateBlurb)
+      sortedStateBlurbs.unshift(stateMatchedStateBlurb);
+  }
+
   return (
     <>
       <Card shadow='sm' p={0} mb={8}>
@@ -55,12 +78,19 @@ const NewsletterTab = ({ newsletter }: NewsletterProps) => {
           </Accordion.Item>
         </Accordion>
       </Card>
-      {newsletter.attributes.StateBlurbs.map((blurb) => {
+      {sortedStateBlurbs.map((blurb) => {
         return <StatePost key={blurb.State} blurb={blurb} />;
       })}
       {newsletter.attributes.EventBlurbs.map((blurb) => {
         return <EventPost key={blurb.Title} blurb={blurb} />;
       })}
+      <Birthdays
+        month={new Date(newsletter.attributes.FirstDayOfMonth).toLocaleString(
+          'default',
+          { month: 'long' }
+        )}
+        grads={grads}
+      />
       <CalendarTable table={newsletter.attributes.CalendarTable} />
     </>
   );

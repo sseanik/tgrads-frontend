@@ -95,8 +95,8 @@ const StatePost = ({ blurb }: StatePostProps) => {
                   width: '100%',
                 },
                 '#crossfade div:nth-of-type(2) img': {
-                  color: 'red'
-                }
+                  color: 'red',
+                },
               })}
             >
               <Crossfade

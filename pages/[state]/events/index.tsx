@@ -10,18 +10,18 @@ import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
 import { navItems } from '../../../lib/navItem';
 import { Event } from '../../../types/Event';
+import { Grad } from '../../../types/User';
 import upcomingDate from '../../../utils/isUpcomingDate';
-import { mapAndSortNames } from '../../../utils/mapAndSortNames';
 
-const Events: NextPage<{ events: Event[]; names: string[] }> = ({
+const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
   events,
-  names,
+  grads,
 }) => {
   const router = useRouter();
 
   if (events.length === 0)
     return (
-      <AppShell names={names} navItems={navItems}>
+      <AppShell grads={grads} navItems={navItems}>
         <></>
       </AppShell>
     );
@@ -54,7 +54,7 @@ const Events: NextPage<{ events: Event[]; names: string[] }> = ({
   ];
 
   return (
-    <AppShell names={names} navItems={navItems}>
+    <AppShell grads={grads} navItems={navItems}>
       <Box
         style={{
           margin: '0 0 10px 10px',
@@ -98,10 +98,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads);
-
   return {
-    props: { events: data, names: names },
+    props: { events: data, grads: grads.data },
   };
 };
 

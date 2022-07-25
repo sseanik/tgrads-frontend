@@ -10,17 +10,17 @@ import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
 import { navItems } from '../../../lib/navItem';
 import { Gallery } from '../../../types/Gallery';
-import { mapAndSortNames } from '../../../utils/mapAndSortNames';
+import { Grad } from '../../../types/User';
 
-const Gallery: NextPage<{ galleries: Gallery[]; names: string[] }> = ({
+const Gallery: NextPage<{ galleries: Gallery[]; grads: Grad[] }> = ({
   galleries,
-  names,
+  grads,
 }) => {
   const router = useRouter();
 
   if (galleries.length === 0)
     return (
-      <AppShell names={names} navItems={navItems}>
+      <AppShell grads={grads} navItems={navItems}>
         <></>
       </AppShell>
     );
@@ -33,7 +33,7 @@ const Gallery: NextPage<{ galleries: Gallery[]; names: string[] }> = ({
   ];
 
   return (
-    <AppShell names={names} navItems={navItems}>
+    <AppShell grads={grads} navItems={navItems}>
       <Box style={{ margin: '0 0 10px 10px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
@@ -76,10 +76,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads);
-
   return {
-    props: { galleries: data, names: names },
+    props: { galleries: data, grads: grads.data },
   };
 };
 

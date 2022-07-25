@@ -4,10 +4,12 @@ import {
   MediaQuery,
   useMantineTheme,
 } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 
 import { NavMenu } from '../../lib/navItem';
+import { Grad } from '../../types/User';
 import Logo from './Logo';
 import MenuButton from './MenuButton';
 import ProfileMenu from './ProfileMenu';
@@ -16,16 +18,32 @@ interface HeaderProps {
   opened: boolean;
   setOpened: Dispatch<SetStateAction<boolean>>;
   navItems: NavMenu;
-  names: string[];
+  grads: Grad[];
 }
 
-const Header = ({ opened, setOpened, navItems, names }: HeaderProps) => {
+const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
   const theme = useMantineTheme();
   const router = useRouter();
   const state = router.query.state as string;
 
+  const [loggedIn] = useLocalStorage({
+    key: 'loggedIn',
+    defaultValue: '',
+    getInitialValueInEffect: true,
+  });
+
+  const sortedNavItems = loggedIn ? navItems.common.filter(
+    (navItem) => navItem.text !== JSON.parse(loggedIn).State
+  ) : navItems.common;
+  if (loggedIn) {
+    const stateMatchedNavItem = navItems.common.find(
+      (navItem) => navItem.text === JSON.parse(loggedIn).State
+    );
+    if (stateMatchedNavItem) sortedNavItems.unshift(stateMatchedNavItem);
+  }
+
   return (
-    <HeaderComponent height={70} p='md' style={{ padding: '0 16px' }}>
+    <HeaderComponent height={70} p='md' style={{ padding: '0 10px' }}>
       <div
         style={{
           display: 'flex',
@@ -51,7 +69,7 @@ const Header = ({ opened, setOpened, navItems, names }: HeaderProps) => {
             <div>
               {state ? (
                 <span>
-                  {navItems.common.map((item) => {
+                  {sortedNavItems.map((item) => {
                     return (
                       <MenuButton
                         key={`${state}/${item.url}`}
@@ -60,12 +78,13 @@ const Header = ({ opened, setOpened, navItems, names }: HeaderProps) => {
                       />
                     );
                   })}
-                  {navItems[state] && navItems[state].map((item) => {
-                    return <MenuButton key={item.url} {...item} />;
-                  })}
+                  {navItems[state] &&
+                    navItems[state].map((item) => {
+                      return <MenuButton key={item.url} {...item} />;
+                    })}
                 </span>
               ) : (
-                navItems.common.map((item) => {
+                sortedNavItems.map((item) => {
                   return <MenuButton key={item.url} {...item} />;
                 })
               )}
@@ -73,7 +92,7 @@ const Header = ({ opened, setOpened, navItems, names }: HeaderProps) => {
           </MediaQuery>
         </div>
 
-        <ProfileMenu names={names} />
+        <ProfileMenu grads={grads} />
       </div>
     </HeaderComponent>
   );

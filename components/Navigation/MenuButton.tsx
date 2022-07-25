@@ -39,6 +39,7 @@ const MenuButton = (props: MenuButtonProps) => {
           <Button
             styles={() => ({
               root: {
+                padding: '0 16px',
                 color: theme.colorScheme === 'dark' ? '#d0cfd4' : '#3c4394',
                 height: '100%',
                 backgroundImage:

@@ -1,6 +1,9 @@
 export type Grad = {
   attributes: {
-    FirstName: string;
-    LastName: string;
+    FullName: string;
+    State: 'NSW' | 'QLD' | 'VIC' | 'SA' | 'WA' | 'ACT' | 'TAS' | 'NT';
+    Role: string;
+    Email: string;
+    StarSign: string;
   };
 };

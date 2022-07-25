@@ -32,8 +32,8 @@ import { QUERY_ALL_NAMES } from '../graphql/queries/people';
 import client from '../lib/apollo';
 import { homeNavItems } from '../lib/navItem';
 import { EventAttributes } from '../types/Event';
+import { Grad } from '../types/User';
 import getDaysHoursMinutesRemaining from '../utils/getDaysHoursMinutesRemaining';
-import { mapAndSortNames } from '../utils/mapAndSortNames';
 
 interface UserDetails {
   codes: string[];
@@ -63,8 +63,8 @@ type EventDetail = {
 
 const Cruise: NextPage<{
   event: EventAttributes;
-  names: string[];
-}> = ({ event, names }) => {
+  grads: Grad[];
+}> = ({ event, grads }) => {
   const { data: session } = useSession();
   const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
   // Tickets
@@ -242,7 +242,7 @@ const Cruise: NextPage<{
   ];
 
   return (
-    <AppShell names={names} navItems={homeNavItems}>
+    <AppShell grads={grads} navItems={homeNavItems}>
       <LoginModalCruise
         openedCruise={openedCruise}
         setOpenedCruise={setOpenedCruise}
@@ -464,10 +464,8 @@ export const getStaticProps: GetStaticProps = async () => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads);
-
   return {
-    props: { event: data[0].attributes, names: names },
+    props: { event: data[0].attributes, grads: grads.data },
   };
 };
 

@@ -1,91 +1,85 @@
 import {
+  ActionIcon,
   Avatar,
   Button,
-  Divider,
   Menu,
   useMantineColorScheme,
 } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { useState } from 'react';
-import { BrightnessHalf, Login, Logout } from 'tabler-icons-react';
+import { MdDarkMode, MdOutlineLightMode } from 'react-icons/md';
+import { Logout } from 'tabler-icons-react';
 
-import LoginModalNSW from '../Modal/LoginModalNSW';
+import { Grad } from '../../types/User';
+import LoginModal from '../Modal/LoginModal';
 
 interface ProfileMenuProps {
-  names: string[];
+  grads: Grad[];
 }
 
-const ProfileMenu = ({ names }: ProfileMenuProps) => {
+const ProfileMenu = ({ grads }: ProfileMenuProps) => {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  // NSW Login
-  const [valueNSW, setValueNSW] = useState<string>('');
-  const [openedNSW, setOpenedNSW] = useState<boolean>(false);
-  const [loggedInNSW, setLoggedInNSW] = useLocalStorage({
+  //  Login
+  const [value, setValue] = useState<string>('');
+  const [opened, setOpened] = useState<boolean>(false);
+  const [loggedIn, setLoggedIn] = useLocalStorage({
     key: 'loggedIn',
     defaultValue: '',
     getInitialValueInEffect: true,
   });
   const logoutClick = (): void => {
-    setLoggedInNSW('');
-    setValueNSW('');
+    setLoggedIn('');
+    setValue('');
   };
 
   return (
     <>
-      <LoginModalNSW
-        names={names}
-        valueNSW={valueNSW}
-        openedNSW={openedNSW}
-        setLoggedInNSW={setLoggedInNSW}
-        setOpenedNSW={setOpenedNSW}
-        setValueNSW={setValueNSW}
+      <LoginModal
+        grads={grads}
+        value={value}
+        opened={opened}
+        setLoggedIn={setLoggedIn}
+        setOpened={setOpened}
+        setValue={setValue}
       />
-      <Menu
-        control={
-          <Button
-            variant={colorScheme === 'dark' ? 'subtle' : 'white'}
-            styles={() => ({
-              root: {
-                color: colorScheme === 'dark' ? '#d0cfd4' : '#3c4394',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-
-                '&:hover': {
-                  backgroundColor: colorScheme === 'dark' ? '#1a1b1e' : '',
-                },
-              },
-            })}
-          >
-            {loggedInNSW ? (
-              <Avatar radius='xl' color='indigo'>
-                {loggedInNSW.replace(/[^A-Z]/g, '')}
-              </Avatar>
-            ) : (
-              <Avatar radius='xl' color='indigo' />
-            )}
-          </Button>
-        }
-        styles={() => ({
-          body: {
-            width: '150px',
-          },
-        })}
+      <ActionIcon
+        onClick={() => toggleColorScheme()}
+        size='xl'
+        mr={loggedIn ? 0 : 10}
       >
-        {/* {loggedInNSW && (
-          <Menu.Item icon={<Settings size={14} />}>Account</Menu.Item>
-        )} */}
-        <Menu.Item
-          icon={<BrightnessHalf size={14} />}
-          onClick={() => toggleColorScheme()}
+        {colorScheme === 'dark' ? <MdOutlineLightMode /> : <MdDarkMode />}
+      </ActionIcon>
+      {loggedIn ? (
+        <Menu
+          control={
+            <Button
+              p={0}
+              variant={colorScheme === 'dark' ? 'subtle' : 'white'}
+              styles={() => ({
+                root: {
+                  color: colorScheme === 'dark' ? '#d0cfd4' : '#3c4394',
+                  height: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+
+                  '&:hover': {
+                    backgroundColor: colorScheme === 'dark' ? '#1a1b1e' : '',
+                  },
+                },
+              })}
+            >
+              <Avatar radius='xl' color='indigo' ml={6} mr={2}>
+                {JSON.parse(loggedIn).FullName.replace(/[^A-Z]/g, '')}
+              </Avatar>
+            </Button>
+          }
+          styles={() => ({
+            body: {
+              width: '150px',
+            },
+          })}
         >
-          {colorScheme === 'dark' ? 'Light' : 'Dark'} Mode
-        </Menu.Item>
-
-        <Divider />
-
-        {loggedInNSW ? (
           <Menu.Item
             color='red'
             icon={<Logout size={14} />}
@@ -93,16 +87,12 @@ const ProfileMenu = ({ names }: ProfileMenuProps) => {
           >
             Sign Out
           </Menu.Item>
-        ) : (
-          <Menu.Item
-            color='green'
-            icon={<Login size={14} />}
-            onClick={() => setOpenedNSW(true)}
-          >
-            NSW Login
-          </Menu.Item>
-        )}
-      </Menu>
+        </Menu>
+      ) : (
+        <Button color='indigo' onClick={() => setOpened(true)}>
+          Login
+        </Button>
+      )}
     </>
   );
 };

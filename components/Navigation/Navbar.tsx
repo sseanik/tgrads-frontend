@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 import { NavMenu } from '../../lib/navItem';
 import MobileMenuButton from './MobileMenuButton';
+import NavbarFooter from './NavbarFooter';
 // import NavbarFooter from './NavbarFooter';
 
 interface NavbarProps {
@@ -32,9 +33,9 @@ const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
           );
         })}
       </NavbarComponent.Section>
-      {/* <NavbarComponent.Section>
+      <NavbarComponent.Section>
         <NavbarFooter />
-      </NavbarComponent.Section> */}
+      </NavbarComponent.Section>
     </NavbarComponent>
   );
 };

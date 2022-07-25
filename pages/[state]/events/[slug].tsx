@@ -34,14 +34,14 @@ import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
 import { navItems } from '../../../lib/navItem';
 import { Event, EventAttributes } from '../../../types/Event';
+import { Grad } from '../../../types/User';
 import getDaysHoursMinutesRemaining from '../../../utils/getDaysHoursMinutesRemaining';
-import { mapAndSortNames } from '../../../utils/mapAndSortNames';
 
 const Events: NextPage<{
   event: EventAttributes;
-  names: string[];
+  grads: Grad[];
   galleryAvailable: boolean;
-}> = ({ event, names, galleryAvailable }) => {
+}> = ({ event, grads, galleryAvailable }) => {
   const theme = useMantineTheme();
   const router = useRouter();
 
@@ -66,7 +66,7 @@ const Events: NextPage<{
   ];
 
   return (
-    <AppShell names={names} navItems={navItems}>
+    <AppShell grads={grads} navItems={navItems}>
       <Box style={{ margin: '0 0 6px 10px' }}>
         <Breadcrumbs crumbs={crumbs} />
       </Box>
@@ -107,27 +107,36 @@ const Events: NextPage<{
               <div style={{ flex: '0 1 auto' }}>
                 {isEventOver
                   ? galleryAvailable && (
-                      <Link href={'/gallery/' + router.query.slug?.toString()}>
-                        <Button
-                          fullWidth
-                          radius='xs'
-                          variant='gradient'
-                          size='lg'
-                          mt={12}
-                          mb={16}
-                          gradient={{
-                            from:
-                              theme.colorScheme === 'dark'
-                                ? '#d699e9'
-                                : '#9f58ad',
-                            to:
-                              theme.colorScheme === 'dark'
-                                ? '#d887fa'
-                                : '#ef61c2',
-                          }}
-                        >
-                          Go to Photo Gallery
-                        </Button>
+                      <Link
+                        href={
+                          '/' +
+                          router.query.state +
+                          '/gallery/' +
+                          router.query.slug?.toString()
+                        }
+                      >
+                        <a>
+                          <Button
+                            fullWidth
+                            radius='xs'
+                            variant='gradient'
+                            size='lg'
+                            mt={12}
+                            mb={16}
+                            gradient={{
+                              from:
+                                theme.colorScheme === 'dark'
+                                  ? '#d699e9'
+                                  : '#9f58ad',
+                              to:
+                                theme.colorScheme === 'dark'
+                                  ? '#d887fa'
+                                  : '#ef61c2',
+                            }}
+                          >
+                            Go to Photo Gallery
+                          </Button>
+                        </a>
                       </Link>
                     )
                   : event.RSVPURL && (
@@ -419,10 +428,8 @@ export const getStaticProps: GetStaticProps = async (context) => {
     query: QUERY_ALL_NAMES,
   });
 
-  const names = mapAndSortNames(grads);
-
   return {
-    props: { event: data[0].attributes, names, galleryAvailable },
+    props: { event: data[0].attributes, grads: grads.data, galleryAvailable },
   };
 };
 

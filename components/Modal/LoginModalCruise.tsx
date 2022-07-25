@@ -14,7 +14,7 @@ import { signIn } from 'next-auth/react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { AlertCircle } from 'tabler-icons-react';
 
-interface LoginModalNSWProps {
+interface LoginModalCruiseProps {
   openedCruise: boolean;
   setOpenedCruise: Dispatch<SetStateAction<boolean>>;
 }
@@ -22,7 +22,7 @@ interface LoginModalNSWProps {
 const LoginModalCruise = ({
   openedCruise,
   setOpenedCruise,
-}: LoginModalNSWProps) => {
+}: LoginModalCruiseProps) => {
   const router = useRouter();
 
   const [visible, setVisible] = useState(false);
