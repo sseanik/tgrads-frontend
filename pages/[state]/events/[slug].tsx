@@ -11,6 +11,7 @@ import {
   Text,
   useMantineTheme,
 } from '@mantine/core';
+import DOMPurify from 'isomorphic-dompurify';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -59,7 +60,7 @@ const Events: NextPage<{
   const state = router.query.state as string;
 
   const crumbs = [
-    { title: state.toUpperCase(), href: `/${state}` },
+    { title: state.toUpperCase(), href: `/${state}/events` },
     { title: 'Events', href: `/${state}/events` },
     { title: event.Title, href: router.asPath },
   ];
@@ -368,12 +369,18 @@ const Events: NextPage<{
                   offsetScrollbars
                 >
                   <div
-                    dangerouslySetInnerHTML={{ __html: parsedFootnoteDark }}
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(parsedFootnoteDark),
+                    }}
                   />
                 </ScrollArea>
               </MediaQuery>
               <MediaQuery largerThan='sm' styles={{ display: 'none' }}>
-                <div dangerouslySetInnerHTML={{ __html: parsedFootnoteDark }} />
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(parsedFootnoteDark),
+                  }}
+                />
               </MediaQuery>
             </Box>
           </Grid.Col>

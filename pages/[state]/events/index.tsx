@@ -49,13 +49,17 @@ const Events: NextPage<{ events: Event[]; names: string[] }> = ({
   const state = router.query.state as string;
 
   const crumbs = [
-    { title: state.toUpperCase(), href: `/${state}` },
+    { title: state.toUpperCase(), href: `/${state}/events` },
     { title: 'Events', href: `/${state}/events` },
   ];
 
   return (
     <AppShell names={names} navItems={navItems}>
-      <Box style={{ margin: '0 0 10px 10px' }}>
+      <Box
+        style={{
+          margin: '0 0 10px 10px',
+        }}
+      >
         <Breadcrumbs crumbs={crumbs} />
       </Box>
       {upcomingEvents.length > 0 && (

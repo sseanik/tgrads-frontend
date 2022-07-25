@@ -51,7 +51,7 @@ const Events: NextPage<{
   const state = router.query.state as string;
 
   const crumbs = [
-    { title: state.toUpperCase(), href: `/${state}` },
+    { title: state.toUpperCase(), href: `/${state}/gallery` },
     { title: 'Gallery', href: `/${state}/gallery` },
     { title: gallery.Event.data.attributes.Title, href: router.asPath },
   ];

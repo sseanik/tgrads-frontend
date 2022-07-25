@@ -28,7 +28,7 @@ const Gallery: NextPage<{ galleries: Gallery[]; names: string[] }> = ({
   const state = router.query.state as string;
 
   const crumbs = [
-    { title: state.toUpperCase(), href: `/${state}` },
+    { title: state.toUpperCase(), href: `/${state}/gallery` },
     { title: 'Gallery', href: `/${state}/gallery` },
   ];
 
