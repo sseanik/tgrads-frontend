@@ -1,3 +1,4 @@
+import { format } from 'date-fns';
 import { MjmlSection, MjmlTable, MjmlText } from 'mjml-react';
 
 const CustomTable = ({ table }) => {
@@ -26,15 +27,21 @@ const CustomTable = ({ table }) => {
               }}
             >
               {Object.keys(table[0]).map((key) => {
-                if (key !== '__typename')
+                if (key !== '__typename' && key !== 'Time')
                   return (
                     <th
                       style={{
                         background: '#e4ebff',
                         borderLeft: '1px solid #000',
                         borderRight: '1px solid #000',
-                        textAlign: key === 'Event' ? 'left' : undefined,
-                        paddingLeft: key === 'Event' ? '10px' : undefined,
+                        textAlign:
+                          key === 'Event' || key === 'Date'
+                            ? 'left'
+                            : undefined,
+                        paddingLeft:
+                          key === 'Event' || key === 'Date'
+                            ? '10px'
+                            : undefined,
                       }}
                       key={key}
                     >
@@ -75,16 +82,13 @@ const CustomTable = ({ table }) => {
                   <td
                     style={{
                       borderRight: '1px solid #000',
+                      textAlign: 'left',
+                      paddingLeft: '10px',
                     }}
                   >
-                    {row.Date}
-                  </td>
-                  <td
-                    style={{
-                      borderRight: '1px solid #000',
-                    }}
-                  >
-                    {row.Time}
+                    {`${format(new Date(row.Date), 'EEEE do MMMM')}${
+                      row.Time ? ` - ${row.Time}` : ''
+                    }`}
                   </td>
                 </tr>
               );

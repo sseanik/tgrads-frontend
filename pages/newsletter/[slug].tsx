@@ -1,3 +1,4 @@
+import { Button, Center } from '@mantine/core';
 import {
   Mjml,
   MjmlAll,
@@ -14,19 +15,42 @@ import {
 } from 'mjml-react';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
+import BirthdaySection from '../../components/Mjml/BirthdaySection';
 import CustomHeading from '../../components/Mjml/CustomHeading';
 import CustomTable from '../../components/Mjml/CustomTable';
+import EventSection from '../../components/Mjml/EventSection';
 import StateSection from '../../components/Mjml/StateSection';
 import {
   QUERY_NEWSLETTER_SLUGS,
   QUERY_SPECIFIC_NEWSLETTER,
 } from '../../graphql/queries/newsletters';
+import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';
 
 const NewsletterHTML: NextPage<{
   html: string;
 }> = ({ html }) => {
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+  const downloadTxtFile = () => {
+    const element = document.createElement('a');
+    const file = new Blob([html], {
+      type: 'text/plain',
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = 'email.txt';
+    document.body.appendChild(element);
+    element.click();
+  };
+
+  return (
+    <>
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+      <Center mb={10}>
+        <Button onClick={downloadTxtFile} variant='subtle'>
+          Download HTML Email
+        </Button>
+      </Center>
+    </>
+  );
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
@@ -35,6 +59,12 @@ export const getStaticProps: GetStaticProps = async (context) => {
   } = await client.query({
     query: QUERY_SPECIFIC_NEWSLETTER,
     variables: { slug: context?.params?.slug },
+  });
+
+  const {
+    data: { grads },
+  } = await client.query({
+    query: QUERY_ALL_NAMES,
   });
 
   const { html } = render(
@@ -63,6 +93,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
           />
           <MjmlSpacer />
           <StateSection blurbs={newsletters.data[0].attributes.StateBlurbs} />
+          <EventSection blurbs={newsletters.data[0].attributes.EventBlurbs} />
+          <BirthdaySection
+            grads={grads.data}
+            month={new Date(
+              newsletters.data[0].attributes.FirstDayOfMonth
+            ).toLocaleString('default', { month: 'long' })}
+          />
           <CustomTable table={newsletters.data[0].attributes.CalendarTable} />
         </MjmlWrapper>
       </MjmlBody>
