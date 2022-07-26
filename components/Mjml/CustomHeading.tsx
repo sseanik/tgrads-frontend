@@ -1,4 +1,4 @@
-import { MjmlColumn, MjmlImage, MjmlSection, MjmlText } from 'mjml-react';
+import { MjmlColumn, MjmlImage, MjmlSection, MjmlSpacer, MjmlText } from 'mjml-react';
 
 const CustomHeading = ({ title, description, gif }) => {
   return (
@@ -13,6 +13,7 @@ const CustomHeading = ({ title, description, gif }) => {
         <MjmlText color='#3d444d' font-size='15px' line-height='1.25'>
           {description}
         </MjmlText>
+        <MjmlSpacer />
       </MjmlColumn>
     </MjmlSection>
   );
