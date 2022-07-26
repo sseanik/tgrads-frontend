@@ -33,10 +33,10 @@ const NewsletterHTML: NextPage<{
   const downloadTxtFile = () => {
     const element = document.createElement('a');
     const file = new Blob([html], {
-      type: 'text/plain',
+      type: 'text/html',
     });
     element.href = URL.createObjectURL(file);
-    element.download = 'email.txt';
+    element.download = 'email.html';
     document.body.appendChild(element);
     element.click();
   };
