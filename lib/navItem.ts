@@ -1,4 +1,9 @@
-import { CalendarEvent, Icon, Photo, Speedboat } from 'tabler-icons-react';
+import {
+  CalendarEvent,
+  Icon,
+  Photo,
+  Speedboat,
+} from 'tabler-icons-react';
 
 export interface NavItems {
   url: string;
@@ -26,6 +31,12 @@ export const navItems = {
       title: 'Events Calendar',
     },
     { url: 'gallery', text: 'Gallery', icon: Photo, title: 'Photo Gallery' },
+    // {
+    //   url: 'office',
+    //   text: 'Office',
+    //   icon: BuildingSkyscraper,
+    //   title: 'Office Tracking',
+    // },
   ],
   nsw: [
     { url: 'cruise', text: 'Cruise', icon: Speedboat, title: 'Cruise Party' },
