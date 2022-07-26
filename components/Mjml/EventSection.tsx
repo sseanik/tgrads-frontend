@@ -39,7 +39,6 @@ const EventSection = ({ blurbs }) => {
                 <MjmlColumn padding='0px'>
                   {blurb.Photos.data.length > 1 ? (
                     <MjmlCarousel
-                      thumbnails='hidden'
                       icon-width='30px'
                       left-icon='/left-arrow.png'
                       right-icon='/right-arrow.png'

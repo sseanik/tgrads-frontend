@@ -27,8 +27,8 @@ const CustomTable = ({ table }) => {
             </MjmlText>
           </MjmlColumn>
         </MjmlSection>
-        <MjmlSection padding='0 20px'>
-          <MjmlColumn>
+        <MjmlSection padding='0px'>
+          <MjmlColumn padding='0px'>
             <MjmlTable>
               <tr
                 style={{
