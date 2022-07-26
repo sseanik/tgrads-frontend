@@ -24,16 +24,16 @@ import {
   Speedboat,
 } from 'tabler-icons-react';
 
-import LoginModalCruise from '../components/Modal/LoginModalCruise';
-import AppShell from '../components/Navigation/AppShell';
-import Ticket from '../components/Ticket';
-import { QUERY_SPECIFIC_EVENT } from '../graphql/queries/events';
-import { QUERY_ALL_NAMES } from '../graphql/queries/people';
-import client from '../lib/apollo';
-import { homeNavItems } from '../lib/navItem';
-import { EventAttributes } from '../types/Event';
-import { Grad } from '../types/User';
-import getDaysHoursMinutesRemaining from '../utils/getDaysHoursMinutesRemaining';
+import LoginModalCruise from '../../components/Modal/LoginModalCruise';
+import AppShell from '../../components/Navigation/AppShell';
+import Ticket from '../../components/Ticket';
+import { QUERY_SPECIFIC_EVENT } from '../../graphql/queries/events';
+import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
+import client from '../../lib/apollo';
+import { homeNavItems } from '../../lib/navItem';
+import { EventAttributes } from '../../types/Event';
+import { Grad } from '../../types/User';
+import getDaysHoursMinutesRemaining from '../../utils/getDaysHoursMinutesRemaining';
 
 interface UserDetails {
   codes: string[];

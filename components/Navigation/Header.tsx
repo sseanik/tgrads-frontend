@@ -78,6 +78,7 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
                       />
                     );
                   })}
+                  {/* Cruise */}
                   {navItems[state] &&
                     navItems[state].map((item) => {
                       return <MenuButton key={item.url} {...item} />;

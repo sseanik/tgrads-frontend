@@ -1,4 +1,6 @@
 import { Navbar as NavbarComponent } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
+import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 
 import { NavMenu } from '../../lib/navItem';
@@ -13,6 +15,27 @@ interface NavbarProps {
 }
 
 const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
+  const router = useRouter();
+  const state = router.query.state as string;
+
+  const [loggedIn] = useLocalStorage({
+    key: 'loggedIn',
+    defaultValue: '',
+    getInitialValueInEffect: true,
+  });
+
+  const sortedNavItems = loggedIn
+    ? navItems.common.filter(
+        (navItem) => navItem.text !== JSON.parse(loggedIn).State
+      )
+    : navItems.common;
+  if (loggedIn) {
+    const stateMatchedNavItem = navItems.common.find(
+      (navItem) => navItem.text === JSON.parse(loggedIn).State
+    );
+    if (stateMatchedNavItem) sortedNavItems.unshift(stateMatchedNavItem);
+  }
+
   return (
     <NavbarComponent
       fixed
@@ -27,11 +50,26 @@ const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
       }}
     >
       <NavbarComponent.Section mt={10}>
-        {navItems.common.map((item) => {
-          return (
-            <MobileMenuButton key={item.url} {...item} setOpened={setOpened} />
-          );
-        })}
+        {state
+          ? sortedNavItems.map((item) => {
+              return (
+                <MobileMenuButton
+                  key={item.url}
+                  {...item}
+                  url={`${state}/${item.url}`}
+                  setOpened={setOpened}
+                />
+              );
+            })
+          : sortedNavItems.map((item) => {
+              return (
+                <MobileMenuButton
+                  key={item.url}
+                  {...item}
+                  setOpened={setOpened}
+                />
+              );
+            })}
       </NavbarComponent.Section>
       <NavbarComponent.Section>
         <NavbarFooter />
