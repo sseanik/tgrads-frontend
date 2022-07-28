@@ -1,9 +1,19 @@
 import { gql } from '@apollo/client';
 
 export const CREATE_PHOTO_TAGS = gql`
-  mutation CreatePhotoTag($id: String!, $slug: String!, $faceBoxes: JSON!) {
+  mutation CreatePhotoTag(
+    $id: String!
+    $slug: String!
+    $faceBoxes: JSON!
+    $State: ENUM_PHOTOTAG_STATE
+  ) {
     createPhotoTag(
-      data: { PhotoID: $id, GallerySlug: $slug, FaceBoxes: $faceBoxes }
+      data: {
+        PhotoID: $id
+        GallerySlug: $slug
+        FaceBoxes: $faceBoxes
+        State: $State
+      }
     ) {
       data {
         id
@@ -11,6 +21,7 @@ export const CREATE_PHOTO_TAGS = gql`
           PhotoID
           GallerySlug
           FaceBoxes
+          State
         }
       }
     }
@@ -23,10 +34,16 @@ export const UPDATE_PHOTO_TAGS = gql`
     $photoID: String!
     $slug: String!
     $faceBoxes: JSON!
+    $state: ENUM_PHOTOTAG_STATE
   ) {
     updatePhotoTag(
       id: $id
-      data: { PhotoID: $photoID, GallerySlug: $slug, FaceBoxes: $faceBoxes }
+      data: {
+        PhotoID: $photoID
+        GallerySlug: $slug
+        FaceBoxes: $faceBoxes
+        State: $state
+      }
     ) {
       data {
         id
@@ -34,6 +51,7 @@ export const UPDATE_PHOTO_TAGS = gql`
           PhotoID
           GallerySlug
           FaceBoxes
+          State
         }
       }
     }

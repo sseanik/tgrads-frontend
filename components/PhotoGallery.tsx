@@ -6,6 +6,7 @@ import { Tooltip } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import Clarifai from 'clarifai';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction, useState } from 'react';
 import PhotoAlbum from 'react-photo-album';
 import {
@@ -76,6 +77,9 @@ const PhotoGallery = ({
   /* --------------------------------- GRAPHQL -------------------------------- */
   // GraphQL mutation to create photo tags
   const [createPhotoTags] = useMutation(CREATE_PHOTO_TAGS);
+
+  const router = useRouter()
+  const state = router.query.state as string;
 
   const parsedPhotos: ParsedPhoto[] = photos.map((photo) => {
     const { trueHeight, trueWidth } = getTrueImageDimensions(
@@ -216,6 +220,7 @@ const PhotoGallery = ({
               id: parsedPhotos[slideIndex].id,
               slug: slug,
               faceBoxes: JSON.stringify(JSON.stringify(responseFaceBoxes)),
+              state: state.toUpperCase()
             },
           }).then((response) => {
             setDetectionLoading(false);
@@ -258,6 +263,7 @@ const PhotoGallery = ({
         id: parsedPhotos[slideIndex].id,
         slug: slug,
         faceBoxes: JSON.stringify(JSON.stringify({ error: true })),
+        state: state.toUpperCase()
       },
     }).then((response) => {
       setCreatedPhotoTagID(response.data.createPhotoTag.data.id);

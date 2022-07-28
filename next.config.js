@@ -5,12 +5,7 @@ const nextConfig = {
     loader: 'default',
     domains: ['res.cloudinary.com', 'image-charts.com', 'media.giphy.com'],
   },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback.fs = false;
-    }
-    return config;
-  },
+  swcMinify: true,
 };
 
 module.exports = nextConfig;

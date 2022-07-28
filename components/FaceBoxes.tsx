@@ -1,6 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { Autocomplete, Menu, Tooltip, UnstyledButton } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
+import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { AlertCircle, FaceId } from 'tabler-icons-react';
 
@@ -27,6 +28,9 @@ let tagIncrement = 0;
 
 const FaceBoxes = (props: FaceBoxesProps) => {
   const [updatePhotoTags, updatedPhotoTags] = useMutation(UPDATE_PHOTO_TAGS);
+
+  const router = useRouter()
+  const state = router.query.state as string;
 
   const updateBoxNameLetters = (name: string, faceBoxIndex: number) => {
     props.setFaceBoxes((prevFaceBoxes) =>
@@ -69,6 +73,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
               )
             )
           ),
+          state: state.toUpperCase()
         },
       }).then((response) => {
         // Update the array of all photos and their tags with edited name

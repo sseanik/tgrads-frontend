@@ -24,12 +24,13 @@ const UploadPhotoModal = ({
   opened,
   setOpened,
   slug,
-  galleryID
+  galleryID,
 }: UploadPhotoModalProps) => {
   const theme = useMantineTheme();
   const [images, setImages] = useState<File[]>([]);
   const [visible, setVisible] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+  const state = router.query.state as string;
 
   const handleUploadPhotos = () => {
     setVisible(true);
@@ -48,11 +49,17 @@ const UploadPhotoModal = ({
       images.map((image) => {
         const formData = new FormData();
         formData.append('files', image, image.name);
-        formData.append('path', slug);
+        formData.append('path', `${state.toUpperCase()}/${slug}`); // Does not work NSW
         formData.append('ref', 'api::gallery.gallery');
         formData.append('refId', galleryID);
         formData.append('field', 'Photos');
-        formData.append('fileInfo', JSON.stringify({ caption: slug }));
+        formData.append(
+          'fileInfo',
+          JSON.stringify({
+            caption: slug,
+            alternativeText: `/${state.toLowerCase()}/gallery/${slug}`,
+          })
+        );
         return fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/upload/`, {
           method: 'POST',
           body: formData,
@@ -71,7 +78,7 @@ const UploadPhotoModal = ({
         setImages([]);
         setVisible(false);
         setOpened(false);
-        router.reload()
+        router.reload();
       })
       .catch((e) => {
         showNotification({
