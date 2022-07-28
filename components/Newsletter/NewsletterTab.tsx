@@ -11,7 +11,7 @@ import StatePost from './StatePost';
 
 interface NewsletterProps {
   newsletter: Newsletter;
-  grads: Grad[]
+  grads: Grad[];
 }
 
 const NewsletterTab = ({ newsletter, grads }: NewsletterProps) => {
@@ -23,12 +23,12 @@ const NewsletterTab = ({ newsletter, grads }: NewsletterProps) => {
 
   const sortedStateBlurbs = loggedIn
     ? newsletter.attributes.StateBlurbs.filter(
-        (blurb) => blurb.State !== JSON.parse(loggedIn).State
+        (blurb) => loggedIn !== '' && blurb.State !== JSON.parse(loggedIn).State
       )
     : newsletter.attributes.StateBlurbs;
   if (loggedIn) {
     const stateMatchedStateBlurb = newsletter.attributes.StateBlurbs.find(
-      (blurb) => blurb.State === JSON.parse(loggedIn).State
+      (blurb) => loggedIn !== '' && blurb.State === JSON.parse(loggedIn).State
     );
     if (stateMatchedStateBlurb)
       sortedStateBlurbs.unshift(stateMatchedStateBlurb);

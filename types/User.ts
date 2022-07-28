@@ -5,5 +5,6 @@ export type Grad = {
     Role: string;
     Email: string;
     StarSign: string;
+    TGA: boolean | null;
   };
 };

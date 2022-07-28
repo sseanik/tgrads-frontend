@@ -26,12 +26,14 @@ const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
 
   const sortedNavItems = loggedIn
     ? navItems.common.filter(
-        (navItem) => navItem.text !== JSON.parse(loggedIn).State
+        (navItem) =>
+          loggedIn !== '' && navItem.text !== JSON.parse(loggedIn).State
       )
     : navItems.common;
   if (loggedIn) {
     const stateMatchedNavItem = navItems.common.find(
-      (navItem) => navItem.text === JSON.parse(loggedIn).State
+      (navItem) =>
+        loggedIn !== '' && navItem.text === JSON.parse(loggedIn).State
     );
     if (stateMatchedNavItem) sortedNavItems.unshift(stateMatchedNavItem);
   }

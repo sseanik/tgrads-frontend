@@ -10,7 +10,7 @@ const NavbarFooter = () => {
     getInitialValueInEffect: true,
   });
 
-  return loggedIn ? (
+  return loggedIn !== "" && loggedIn ? (
     <Box
       sx={{
         borderTop: `1px solid ${

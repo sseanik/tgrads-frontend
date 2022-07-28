@@ -40,15 +40,15 @@ const NewsletterHTML: NextPage<{
   };
 
   const newHTML: string = html.replaceAll('font-size:0;', '');
-  // console.log(html)
+
   return (
     <>
-      <div dangerouslySetInnerHTML={{ __html: newHTML }} />
-      <Center mb={10}>
+      <Center mt={10}>
         <Button onClick={downloadTxtFile} variant='subtle'>
           Download HTML Email
         </Button>
       </Center>
+      <div dangerouslySetInnerHTML={{ __html: newHTML }} />
     </>
   );
 };
@@ -99,7 +99,9 @@ export const getStaticProps: GetStaticProps = async (context) => {
             newsletters.data[0].attributes.FirstDayOfMonth
           ).toLocaleString('default', { month: 'long' })}
         />
-        <CustomTable table={newsletters.data[0].attributes.CalendarTable} />
+        {newsletters.data[0].attributes.CalendarTable.length > 0 && (
+          <CustomTable table={newsletters.data[0].attributes.CalendarTable} />
+        )}
       </MjmlBody>
     </Mjml>,
     {

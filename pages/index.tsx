@@ -1,5 +1,7 @@
-import { Tabs } from '@mantine/core';
+import { Box, Button, Tabs } from '@mantine/core';
+import { useLocalStorage } from '@mantine/hooks';
 import type { GetStaticProps, NextPage } from 'next';
+import Link from 'next/link';
 import { useState } from 'react';
 
 import AppShell from '../components/Navigation/AppShell';
@@ -15,23 +17,54 @@ const Home: NextPage<{
   grads: Grad[];
   newsletters: Newsletter[];
 }> = ({ grads, newsletters }) => {
+  const [loggedIn] = useLocalStorage({
+    key: 'loggedIn',
+    defaultValue: '',
+    getInitialValueInEffect: true,
+  });
 
   const [activeTab, setActiveTab] = useState(0);
+
   return (
     <AppShell grads={grads} navItems={homeNavItems}>
-      <Tabs color='indigo' active={activeTab} onTabChange={setActiveTab} mt={-10}>
+      <Tabs
+        color='indigo'
+        active={activeTab}
+        onTabChange={setActiveTab}
+        mt={-10}
+      >
         {newsletters.map((newsletter) => {
           return (
-            <Tabs.Tab
-              key={newsletter.attributes.Slug}
-              label={new Date(
-                newsletter.attributes.FirstDayOfMonth
-              ).toLocaleString('default', { month: 'long' })}
-            >
-              <NewsletterTab newsletter={newsletter} grads={grads} />
-            </Tabs.Tab>
+            newsletter.attributes.publishedAt && (
+              <Tabs.Tab
+                key={newsletter.attributes.Slug}
+                label={new Date(
+                  newsletter.attributes.FirstDayOfMonth
+                ).toLocaleString('default', { month: 'long' })}
+              >
+                <NewsletterTab newsletter={newsletter} grads={grads} />
+              </Tabs.Tab>
+            )
           );
         })}
+        {loggedIn !== "" && JSON.parse(loggedIn).TGA && (
+          <Tabs.Tab label='ADMIN'>
+            <Box pb={10} style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              {newsletters.map((newsletter) => {
+                return (
+                  <Link
+                    href={`/newsletter/${newsletter.attributes.Slug}`}
+                    key={newsletter.attributes.Slug}
+                  >
+                    <a>
+                      <Button size='xs'>{newsletter.attributes.Slug}</Button>
+                    </a>
+                  </Link>
+                );
+              })}
+            </Box>
+          </Tabs.Tab>
+        )}
       </Tabs>
     </AppShell>
   );

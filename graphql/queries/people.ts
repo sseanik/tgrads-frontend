@@ -8,6 +8,7 @@ export const QUERY_ALL_NAMES = gql`
           FullName
           State
           StarSign
+          TGA
         }
       }
     }

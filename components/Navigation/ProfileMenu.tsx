@@ -49,7 +49,7 @@ const ProfileMenu = ({ grads }: ProfileMenuProps) => {
       >
         {colorScheme === 'dark' ? <MdOutlineLightMode /> : <MdDarkMode />}
       </ActionIcon>
-      {loggedIn ? (
+      {loggedIn !== "" && loggedIn ? (
         <Menu
           control={
             <Button

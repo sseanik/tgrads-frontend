@@ -30,9 +30,16 @@ const LoginModal = ({
     if (!names.includes(value)) {
       setError(true);
     } else {
-      setLoggedIn(
-        JSON.stringify(grads.find((grad) => grad.attributes.FullName === value)?.attributes)
-      );
+      const foundGrad = grads.find(
+        (grad) => grad.attributes.FullName === value
+      )?.attributes;
+      if (!foundGrad) {
+        setError(true);
+        return;
+      }
+      delete foundGrad['__typename'];
+      if (foundGrad.TGA === null) foundGrad.TGA = false;
+      setLoggedIn(JSON.stringify(foundGrad));
       setOpened(false);
     }
   };

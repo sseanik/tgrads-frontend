@@ -2,9 +2,10 @@ import { gql } from '@apollo/client';
 
 export const QUERY_ALL_NEWSLETTERS = gql`
   query AllNewsletters {
-    newsletters {
+    newsletters(publicationState: PREVIEW) {
       data {
         attributes {
+          publishedAt
           Title
           Slug
           FirstDayOfMonth
@@ -56,7 +57,7 @@ export const QUERY_ALL_NEWSLETTERS = gql`
 
 export const QUERY_NEWSLETTER_SLUGS = gql`
   query AllNewslettersSlugs {
-    newsletters {
+    newsletters(publicationState: PREVIEW) {
       data {
         attributes {
           Slug
@@ -68,7 +69,7 @@ export const QUERY_NEWSLETTER_SLUGS = gql`
 
 export const QUERY_SPECIFIC_NEWSLETTER = gql`
   query SpecificNewsletter($slug: String!) {
-    newsletters(filters: { Slug: { eq: $slug } }) {
+    newsletters(filters: { Slug: { eq: $slug } }, publicationState: PREVIEW) {
       data {
         attributes {
           Title

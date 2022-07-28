@@ -8,6 +8,7 @@ export type Newsletter = {
     EventBlurbs: EventBlurb[];
     CalendarTable: CalendarRow[];
     Gif: string;
+    publishedAt: string | null;
   }
 }
 
