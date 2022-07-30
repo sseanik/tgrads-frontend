@@ -5,14 +5,14 @@ export const CREATE_PHOTO_TAGS = gql`
     $id: String!
     $slug: String!
     $faceBoxes: JSON!
-    $State: ENUM_PHOTOTAG_STATE
+    $state: ENUM_PHOTOTAG_STATE
   ) {
     createPhotoTag(
       data: {
         PhotoID: $id
         GallerySlug: $slug
         FaceBoxes: $faceBoxes
-        State: $State
+        State: $state
       }
     ) {
       data {

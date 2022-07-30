@@ -38,7 +38,7 @@
     "react-tiny-fab": "^4.0.4",
     "sharp": "^0.30.7",
     "tabler-icons-react": "^1.54.0",
-    "yet-another-react-lightbox": "^1.10.0"
+    "yet-another-react-lightbox": "^1.11.1"
   },
   "devDependencies": {
     "@types/mjml-react": "^2.0.4",

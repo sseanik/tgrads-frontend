@@ -1,4 +1,4 @@
-import { Tooltip } from '@mantine/core';
+import { ActionIcon, Tooltip } from '@mantine/core';
 import { Dispatch, SetStateAction } from 'react';
 import { Tags, TagsOff } from 'tabler-icons-react';
 
@@ -15,34 +15,33 @@ const DisplayTags = (props: DisplayTagsProps) => {
       key='show_tags'
       label={props.showNameTags ? 'Hide Tags' : 'Show Tags'}
       withArrow
-      zIndex={9999}
-      style={{ margin: '10px 18px 0 0' }}
     >
-      {props.showNameTags ? (
-        <TagsOff
-          size={28}
-          onMouseOver={() => props.setIconHover('TagsOff')}
-          onMouseLeave={() => props.setIconHover('')}
-          onClick={() => props.setShowNameTags((prev) => !prev)}
-          style={{
-            cursor: 'pointer',
-            filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-            color: props.iconHover === 'TagsOff' ? 'white' : '#cfcfcf',
-          }}
-        />
-      ) : (
-        <Tags
-          size={28}
-          onMouseOver={() => props.setIconHover('Tags')}
-          onMouseLeave={() => props.setIconHover('')}
-          onClick={() => props.setShowNameTags((prev) => !prev)}
-          style={{
-            cursor: 'pointer',
-            filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
-            color: props.iconHover === 'Tags' ? 'white' : '#cfcfcf',
-          }}
-        />
-      )}
+      <ActionIcon
+        component='div'
+        variant='transparent'
+        style={{
+          cursor: 'pointer',
+          filter: 'drop-shadow(2px 2px 4px rgb(0 0 0 / 0.65))',
+          color: props.iconHover === 'Tags' ? 'white' : '#cfcfcf',
+          margin: '10px 18px 0 0',
+        }}
+      >
+        {props.showNameTags ? (
+          <TagsOff
+            size={28}
+            onMouseOver={() => props.setIconHover('Tags')}
+            onMouseLeave={() => props.setIconHover('')}
+            onClick={() => props.setShowNameTags((prev) => !prev)}
+          />
+        ) : (
+          <Tags
+            size={28}
+            onMouseOver={() => props.setIconHover('Tags')}
+            onMouseLeave={() => props.setIconHover('')}
+            onClick={() => props.setShowNameTags((prev) => !prev)}
+          />
+        )}
+      </ActionIcon>
     </Tooltip>
   );
 };

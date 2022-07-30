@@ -2,7 +2,7 @@ import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
 
 import { useMutation } from '@apollo/client';
-import { Tooltip } from '@mantine/core';
+import { ActionIcon, Tooltip } from '@mantine/core';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import Clarifai from 'clarifai';
 import Image from 'next/image';
@@ -78,7 +78,7 @@ const PhotoGallery = ({
   // GraphQL mutation to create photo tags
   const [createPhotoTags] = useMutation(CREATE_PHOTO_TAGS);
 
-  const router = useRouter()
+  const router = useRouter();
   const state = router.query.state as string;
 
   const parsedPhotos: ParsedPhoto[] = photos.map((photo) => {
@@ -215,37 +215,45 @@ const PhotoGallery = ({
             autoClose: false,
             disallowClose: true,
           });
+          console.log({
+            id: parsedPhotos[slideIndex].id,
+            slug: slug,
+            faceBoxes: JSON.stringify(JSON.stringify(responseFaceBoxes)),
+            state: state.toUpperCase(),
+          });
           createPhotoTags({
             variables: {
               id: parsedPhotos[slideIndex].id,
               slug: slug,
               faceBoxes: JSON.stringify(JSON.stringify(responseFaceBoxes)),
-              state: state.toUpperCase()
+              state: state.toUpperCase(),
             },
-          }).then((response) => {
-            setDetectionLoading(false);
-            setCreatedPhotoTagID(response.data.createPhotoTag.data.id);
-            // Update the array of all photos and with new photo with empty tags
-            setPhotosAndTags((prevPhotos) => [
-              ...prevPhotos,
-              {
-                id: response.data.createPhotoTag.data.id,
-                attributes: {
-                  FaceBoxes: JSON.stringify(responseFaceBoxes),
-                  PhotoID: parsedPhotos[slideIndex].id,
+          })
+            .then((response) => {
+              setDetectionLoading(false);
+              setCreatedPhotoTagID(response.data.createPhotoTag.data.id);
+              // Update the array of all photos and with new photo with empty tags
+              setPhotosAndTags((prevPhotos) => [
+                ...prevPhotos,
+                {
+                  id: response.data.createPhotoTag.data.id,
+                  attributes: {
+                    FaceBoxes: JSON.stringify(responseFaceBoxes),
+                    PhotoID: parsedPhotos[slideIndex].id,
+                  },
                 },
-              },
-            ]);
-            // revalidateGallery('create', slug);
-            updateNotification({
-              id: 'detecting-faces',
-              color: 'green',
-              title: 'Successful',
-              message: 'Successfully detected faces in photo',
-              icon: <FaceId />,
-              autoClose: 2000,
-            });
-          });
+              ]);
+              // revalidateGallery('create', slug);
+              updateNotification({
+                id: 'detecting-faces',
+                color: 'green',
+                title: 'Successful',
+                message: 'Successfully detected faces in photo',
+                icon: <FaceId />,
+                autoClose: 2000,
+              });
+            })
+            .catch((e) => console.log(e));
         },
         (error: string) => {
           throw new Error(error);
@@ -263,7 +271,7 @@ const PhotoGallery = ({
         id: parsedPhotos[slideIndex].id,
         slug: slug,
         faceBoxes: JSON.stringify(JSON.stringify({ error: true })),
-        state: state.toUpperCase()
+        state: state.toUpperCase(),
       },
     }).then((response) => {
       setCreatedPhotoTagID(response.data.createPhotoTag.data.id);
@@ -357,34 +365,43 @@ const PhotoGallery = ({
           },
           iconZoomIn: () => {
             return (
-              <Tooltip
-                key='zoom_in'
-                label='Zoom In'
-                withArrow
-                zIndex={9999}
-              >
-                <ZoomIn
-                  size={28}
-                  style={{ cursor: 'pointer', margin: '4px 2px 0 0' }}
-                />
+              <Tooltip key='zoom_in' label='Zoom In' withArrow zIndex={9999}>
+                <ActionIcon
+                  component='div'
+                  variant='transparent'
+                  style={{
+                    cursor: 'pointer',
+                    margin: '4px 2px 0 0',
+                    color: iconHover === 'ZoomIn' ? 'white' : '#cfcfcf',
+                  }}
+                >
+                  <ZoomIn
+                    size={28}
+                    onMouseOver={() => setIconHover('ZoomIn')}
+                    onMouseLeave={() => setIconHover('')}
+                  />
+                </ActionIcon>
               </Tooltip>
             );
           },
           iconZoomOut: () => {
             return (
-              <Tooltip
-                key='zoom_out'
-                label='Zoom Out'
-                withArrow
-                zIndex={9999}
-              >
-                <ZoomOut
-                  size={28}
+              <Tooltip key='zoom_out' label='Zoom Out' withArrow zIndex={9999}>
+                <ActionIcon
+                  component='div'
+                  variant='transparent'
                   style={{
                     cursor: 'pointer',
                     margin: `4px ${noFacesDetected ? 0 : '12px'} 0 0`,
+                    color: iconHover === 'ZoomOut' ? 'white' : '#cfcfcf',
                   }}
-                />
+                >
+                  <ZoomOut
+                    size={28}
+                    onMouseOver={() => setIconHover('ZoomOut')}
+                    onMouseLeave={() => setIconHover('')}
+                  />
+                </ActionIcon>
               </Tooltip>
             );
           },
