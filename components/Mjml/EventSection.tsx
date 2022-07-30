@@ -16,7 +16,7 @@ const EventSection = ({ blurbs }) => {
         return (
           <>
             <MjmlWrapper
-              background-color='#fff'
+              background-color='#fcfdff'
               css-class='border-shadow'
               padding='8px 0px'
             >

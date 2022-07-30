@@ -9,7 +9,7 @@ const BirthdaySection = ({ grads, month }) => {
 
   return (
     <>
-      <MjmlWrapper background-color='#fff' css-class='border-shadow' padding='20px 0 0 0'>
+      <MjmlWrapper background-color='#fcfdff' css-class='border-shadow' padding='20px 0 0 0'>
         <MjmlSection padding='0px'>
           <MjmlColumn padding='0px'>
             <MjmlText

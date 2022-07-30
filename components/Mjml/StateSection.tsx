@@ -25,18 +25,19 @@ const StateSection = ({ blurbs }) => {
         return (
           <React.Fragment key={blurb.State}>
             <MjmlWrapper
-              background-color='#fff'
+              background-color='#fcfdff'
               css-class='border-shadow'
-              border-top={`12px solid ${colours[blurb.State]}`}
+              border-top={`8px solid ${colours[blurb.State]}`}
+              border-radius='6px'
             >
               <MjmlSection padding='0px'>
-                <MjmlColumn padding='0px'>
+                <MjmlColumn padding='0px' width='90%'>
                   <MjmlText
                     align='center'
                     color='#212b35'
                     font-weight='bold'
                     font-size='20px'
-                    padding='0px 0px 18px 0px'
+                    padding='0px 0px 16px 0px'
                   >
                     {blurb.State}
                   </MjmlText>

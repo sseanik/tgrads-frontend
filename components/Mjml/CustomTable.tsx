@@ -12,7 +12,7 @@ const CustomTable = ({ table }) => {
   let current = '';
   return (
     <>
-      <MjmlWrapper background-color='#fff' css-class='border-shadow'>
+      <MjmlWrapper background-color='#fcfdff' css-class='border-shadow'>
         <MjmlSection padding='0px'>
           <MjmlColumn padding='0px'>
             <MjmlText
@@ -29,7 +29,7 @@ const CustomTable = ({ table }) => {
         </MjmlSection>
         <MjmlSection padding='0px'>
           <MjmlColumn padding='0px'>
-            <MjmlTable>
+            <MjmlTable padding='0 12px'>
               <tr
                 style={{
                   borderBottom: '1px solid #000',

@@ -40,7 +40,7 @@ const NewsletterHTML: NextPage<{
 
   return (
     <>
-      <Center mt={10}>
+      <Center mt={10} style={{ background: 'white' }}>
         <Button onClick={downloadTxtFile} variant='outline'>
           Download HTML Email
         </Button>
@@ -73,14 +73,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           <MjmlAll font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></MjmlAll>
         </MjmlAttributes>
         <MjmlStyle>
-          {`.border-shadow {
-          -webkit-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
-          -moz-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
-          box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
-        }`}
+          {`
+          .border-shadow {
+            border: 1px solid #eaecf0;
+          }`}
         </MjmlStyle>
       </MjmlHead>
-      <MjmlBody width={640} background-color='#F2F2F2'>
+      <MjmlBody width={640} background-color='#fff'>
         <CustomGap />
         <CustomHeading
           title={newsletters.data[0].attributes.Title}
