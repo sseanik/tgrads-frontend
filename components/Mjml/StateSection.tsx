@@ -61,7 +61,7 @@ const StateSection = ({ blurbs }) => {
                         );
                       })}
                     </MjmlCarousel>
-                  ) : (
+                  ) : blurb.Photos.data.length > 0 && (
                     <MjmlImage
                       src={blurb.Photos.data[0].attributes.url}
                       padding='0px'

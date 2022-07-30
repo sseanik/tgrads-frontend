@@ -10,7 +10,7 @@ import {
   MjmlTitle,
   render,
 } from 'mjml-react';
-import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 
 import BirthdaySection from '../../components/Mjml/BirthdaySection';
 import CustomGap from '../../components/Mjml/CustomGap';
@@ -18,10 +18,7 @@ import CustomHeading from '../../components/Mjml/CustomHeading';
 import CustomTable from '../../components/Mjml/CustomTable';
 import EventSection from '../../components/Mjml/EventSection';
 import StateSection from '../../components/Mjml/StateSection';
-import {
-  QUERY_NEWSLETTER_SLUGS,
-  QUERY_SPECIFIC_NEWSLETTER,
-} from '../../graphql/queries/newsletters';
+import { QUERY_SPECIFIC_NEWSLETTER } from '../../graphql/queries/newsletters';
 import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';
 
@@ -53,7 +50,7 @@ const NewsletterHTML: NextPage<{
   );
 };
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
   const {
     data: { newsletters },
   } = await client.query({
@@ -112,29 +109,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
   return {
     props: { newsletter: newsletters.data[0].attributes, html: html },
-  };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const {
-    data: {
-      newsletters: { data },
-    },
-  } = await client.query({
-    query: QUERY_NEWSLETTER_SLUGS,
-  });
-
-  const paths = data.map((newsletter) => {
-    return {
-      params: {
-        slug: newsletter.attributes.Slug,
-      },
-    };
-  });
-
-  return {
-    paths,
-    fallback: false,
   };
 };
 
