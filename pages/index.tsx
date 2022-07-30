@@ -2,7 +2,6 @@ import { Box, Button, Tabs } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import type { GetStaticProps, NextPage } from 'next';
 import Link from 'next/link';
-import { useState } from 'react';
 
 import AppShell from '../components/Navigation/AppShell';
 import NewsletterTab from '../components/Newsletter/NewsletterTab';
@@ -23,33 +22,40 @@ const Home: NextPage<{
     getInitialValueInEffect: true,
   });
 
-  const [activeTab, setActiveTab] = useState(0);
+  const publishedNewsletters = newsletters.filter(
+    (newsletter) => newsletter.attributes.publishedAt !== null
+  );
 
   return (
     <AppShell grads={grads} navItems={homeNavItems}>
-      <Tabs
-        color='indigo'
-        active={activeTab}
-        onTabChange={setActiveTab}
-        mt={-10}
-      >
-        {newsletters.map((newsletter) => {
-          return (
-            newsletter.attributes.publishedAt && (
-              <Tabs.Tab
-                key={newsletter.attributes.Slug}
-                label={new Date(
-                  newsletter.attributes.FirstDayOfMonth
-                ).toLocaleString('default', { month: 'long' })}
-              >
-                <NewsletterTab newsletter={newsletter} grads={grads} />
+      <Tabs defaultValue='tab-0'>
+        <Tabs.List>
+          {publishedNewsletters.map((newsletter, index) => {
+            return (
+              <Tabs.Tab value={`tab-${index}`} key={newsletter.attributes.Slug}>
+                {new Date(newsletter.attributes.FirstDayOfMonth).toLocaleString(
+                  'default',
+                  { month: 'long' }
+                )}
               </Tabs.Tab>
-            )
+            );
+          })}
+          {loggedIn !== '' && JSON.parse(loggedIn).TGA && (
+            <Tabs.Tab value={'tab-admin'}>ADMIN</Tabs.Tab>
+          )}
+        </Tabs.List>
+        
+        {publishedNewsletters.map((newsletter, index) => {
+          return (
+            <Tabs.Panel key={newsletter.attributes.Slug} value={`tab-${index}`}>
+              <NewsletterTab newsletter={newsletter} grads={grads} />
+            </Tabs.Panel>
           );
         })}
-        {loggedIn !== "" && JSON.parse(loggedIn).TGA && (
-          <Tabs.Tab label='ADMIN'>
-            <Box pb={10} style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+
+        {loggedIn !== '' && JSON.parse(loggedIn).TGA && (
+          <Tabs.Panel value='tab-admin'>
+            <Box mt={10} style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
               {newsletters.map((newsletter) => {
                 return (
                   <Link
@@ -63,7 +69,7 @@ const Home: NextPage<{
                 );
               })}
             </Box>
-          </Tabs.Tab>
+          </Tabs.Panel>
         )}
       </Tabs>
     </AppShell>

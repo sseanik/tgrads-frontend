@@ -63,7 +63,12 @@ const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
         <Breadcrumbs crumbs={crumbs} />
       </Box>
       {upcomingEvents.length > 0 && (
-        <Text ml={10} size='xl' weight={700} color='gray'>
+        <Text
+          ml={10}
+          size='xl'
+          weight={700}
+          color='dimmed'
+        >
           Upcoming Events
         </Text>
       )}
@@ -71,7 +76,7 @@ const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
         return <EventCard event={event} key={event.attributes.Slug} />;
       })}
 
-      <Text ml={10} size='xl' weight={700} color='gray'>
+      <Text ml={10} size='xl' weight={700} color='dimmed'>
         Past Events
       </Text>
       {pastEvents.map((event: Event) => {

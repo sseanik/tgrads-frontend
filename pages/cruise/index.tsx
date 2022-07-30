@@ -297,7 +297,7 @@ const Cruise: NextPage<{
       {userDetails && (
         <Card shadow='sm' p='sm' mt={10}>
           {userDetails && (
-            <Text mb={10} size='xl' weight={700} color='gray'>
+            <Text mb={10} size='xl' weight={700} color='dimmed'>
               {`Your Ticket${userDetails.plusOne ? 's' : ''}:`}
             </Text>
           )}

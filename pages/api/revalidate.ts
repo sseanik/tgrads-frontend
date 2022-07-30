@@ -16,11 +16,9 @@ export default async function handler(
     const parsedBody =
       typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
 
-    console.log(parsedBody); // Temp
+    // console.log(parsedBody); // Temp
 
     const allOptions =
-      parsedBody.event === 'entry.publish' ||
-      parsedBody.event === 'entry.unpublish' ||
       parsedBody.event === 'entry.update' ||
       parsedBody.event === 'entry.delete';
 
@@ -56,39 +54,31 @@ export default async function handler(
     }
 
     /* ---------------------------------- Event --------------------------------- */
-    // When an admin publishes, unpublishes, updates or deletes an event
+    // When an admin updates or deletes an event
     else if (allOptions && parsedBody.model === 'event') {
-      console.log(
-        ` - Revalidating /${parsedBody.entry.State.toLowerCase()}/events/${
-          parsedBody.entry.Slug
-        } ~ ${parsedBody.event}`
-      );
-      await res.revalidate(
-        `/${parsedBody.entry.State.toLowerCase()}/events/${
-          parsedBody.entry.Slug
-        }`
-      );
       console.log(
         ` - Revalidating /${parsedBody.entry.State.toLowerCase()}/events ~ ${
           parsedBody.event
         }`
       );
       await res.revalidate(`/${parsedBody.entry.State.toLowerCase()}/events`);
+      if (parsedBody.event !== 'entry.delete') {
+        console.log(
+          ` - Revalidating /${parsedBody.entry.State.toLowerCase()}/events/${
+            parsedBody.entry.Slug
+          } ~ ${parsedBody.event}`
+        );
+        await res.revalidate(
+          `/${parsedBody.entry.State.toLowerCase()}/events/${
+            parsedBody.entry.Slug
+          }`
+        );
+      }
     }
 
     /* --------------------------------- Gallery -------------------------------- */
-    // When an admin publishes, updates or deletes an gallery
+    // When an admin updates or deletes a gallery
     else if (allOptions && parsedBody.model === 'gallery') {
-      console.log(
-        ` - Revalidating /${parsedBody.entry.Event.State.toLowerCase()}/gallery/${
-          parsedBody.entry.Event.Slug
-        } ~ ${parsedBody.event}`
-      );
-      await res.revalidate(
-        `/${parsedBody.entry.Event.State.toLowerCase()}/gallery/${
-          parsedBody.entry.Event.Slug
-        }`
-      );
       console.log(
         ` - Revalidating /${parsedBody.entry.Event.State.toLowerCase()}/gallery ~ ${
           parsedBody.event
@@ -97,11 +87,23 @@ export default async function handler(
       await res.revalidate(
         `/${parsedBody.entry.Event.State.toLowerCase()}/gallery`
       );
+      if (parsedBody.event !== 'entry.delete') {
+        console.log(
+          ` - Revalidating /${parsedBody.entry.Event.State.toLowerCase()}/gallery/${
+            parsedBody.entry.Event.Slug
+          } ~ ${parsedBody.event}`
+        );
+        await res.revalidate(
+          `/${parsedBody.entry.Event.State.toLowerCase()}/gallery/${
+            parsedBody.entry.Event.Slug
+          }`
+        );
+      }
     }
 
     /* ------------------------------- Newsletter ------------------------------- */
-    // When a newsletter is created or edited
-    else if (allOptions && parsedBody.model === 'newsletter') {
+    // When a newsletter is created, updated or deleted
+    else if (parsedBody.model === 'newsletter') {
       console.log(` - Revalidating / ~ ${parsedBody.event}`);
       await res.revalidate('/');
     }

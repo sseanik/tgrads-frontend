@@ -36,45 +36,47 @@ const NewsletterTab = ({ newsletter, grads }: NewsletterProps) => {
 
   return (
     <>
-      <Card shadow='sm' p={0} mb={8}>
+      <Card shadow='sm' p={0} mt={10} mb={8}>
         <Accordion
-          initialItem={0}
-          iconPosition='right'
+          defaultValue='newsletter-heading-0'
           styles={{
             label: { fontWeight: 700 },
           }}
         >
-          <Accordion.Item label={newsletter.attributes.Title} m={0}>
-            <Box
-              sx={() => ({
-                display: 'flex',
-                justifyContent: 'space-between',
-                width: '100%',
-                '@media (max-width: 600px)': {
-                  flexDirection: 'column',
-                },
-              })}
-            >
-              <Image
-                src={newsletter.attributes.Gif}
-                alt={`${newsletter.attributes.Title}-gif`}
-                width={200}
-                height={200}
-                objectFit='contain'
-              />
-              <Text
+          <Accordion.Item value='newsletter-heading-0' m={0}>
+            <Accordion.Control>{newsletter.attributes.Title}</Accordion.Control>
+            <Accordion.Panel>
+              <Box
                 sx={() => ({
-                  width: 'calc(100% - 200px)',
-                  paddingLeft: '20px',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  width: '100%',
                   '@media (max-width: 600px)': {
-                    paddingLeft: 0,
-                    width: '100%',
+                    flexDirection: 'column',
                   },
                 })}
               >
-                {newsletter.attributes.Description}
-              </Text>
-            </Box>
+                <Image
+                  src={newsletter.attributes.Gif}
+                  alt={`${newsletter.attributes.Title}-gif`}
+                  width={200}
+                  height={200}
+                  objectFit='contain'
+                />
+                <Text
+                  sx={() => ({
+                    width: 'calc(100% - 200px)',
+                    paddingLeft: '20px',
+                    '@media (max-width: 600px)': {
+                      paddingLeft: 0,
+                      width: '100%',
+                    },
+                  })}
+                >
+                  {newsletter.attributes.Description}
+                </Text>
+              </Box>
+            </Accordion.Panel>
           </Accordion.Item>
         </Accordion>
       </Card>

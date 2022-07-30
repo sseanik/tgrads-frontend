@@ -24,15 +24,13 @@ const Birthdays = ({ month, grads }: BirthdaysProps) => {
   return (
     <Card shadow='sm' p={0} mb={8}>
       <Accordion
-        initialItem={0}
-        iconPosition='right'
+        defaultValue='birthdays-0'
         styles={{
           label: { fontWeight: 700 },
         }}
       >
-        <Accordion.Item
-          m={0}
-          label={
+        <Accordion.Item m={0} value='birthdays-0'>
+          <Accordion.Control>
             <Group noWrap>
               <Cake size={22} />
               <div>
@@ -42,51 +40,52 @@ const Birthdays = ({ month, grads }: BirthdaysProps) => {
                 </Text>
               </div>
             </Group>
-          }
-        >
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 10,
-              marginBottom: 12,
-            }}
-          >
-            {birthdayGradsA.map((bday) => {
-              return (
-                <Badge
-                  variant='dot'
-                  color={colours[bday.attributes.State]}
-                  size='lg'
-                  sx={{ padding: 10, marginRight: 4, textTransform: 'none' }}
-                  key={bday.attributes.FullName}
-                >
-                  {bday.attributes.FullName}
-                </Badge>
-              );
-            })}
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: 10,
-            }}
-          >
-            {birthdayGradsB.map((bday) => {
-              return (
-                <Badge
-                  variant='dot'
-                  color={colours[bday.attributes.State]}
-                  size='lg'
-                  sx={{ padding: 10, marginRight: 4, textTransform: 'none' }}
-                  key={bday.attributes.FullName}
-                >
-                  {bday.attributes.FullName}
-                </Badge>
-              );
-            })}
-          </div>
+          </Accordion.Control>
+          <Accordion.Panel>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 10,
+                marginBottom: 12,
+              }}
+            >
+              {birthdayGradsA.map((bday) => {
+                return (
+                  <Badge
+                    variant='dot'
+                    color={colours[bday.attributes.State]}
+                    size='lg'
+                    sx={{ padding: 10, marginRight: 4, textTransform: 'none' }}
+                    key={bday.attributes.FullName}
+                  >
+                    {bday.attributes.FullName}
+                  </Badge>
+                );
+              })}
+            </div>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 10,
+              }}
+            >
+              {birthdayGradsB.map((bday) => {
+                return (
+                  <Badge
+                    variant='dot'
+                    color={colours[bday.attributes.State]}
+                    size='lg'
+                    sx={{ padding: 10, marginRight: 4, textTransform: 'none' }}
+                    key={bday.attributes.FullName}
+                  >
+                    {bday.attributes.FullName}
+                  </Badge>
+                );
+              })}
+            </div>
+          </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
     </Card>

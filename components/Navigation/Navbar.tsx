@@ -60,6 +60,7 @@ const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
                   {...item}
                   url={`${state}/${item.url}`}
                   setOpened={setOpened}
+                  state={state}
                 />
               );
             })
@@ -69,6 +70,7 @@ const Navbar = ({ opened, setOpened, navItems }: NavbarProps) => {
                   key={item.url}
                   {...item}
                   setOpened={setOpened}
+                  state={state}
                 />
               );
             })}

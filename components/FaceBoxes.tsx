@@ -29,7 +29,7 @@ let tagIncrement = 0;
 const FaceBoxes = (props: FaceBoxesProps) => {
   const [updatePhotoTags, updatedPhotoTags] = useMutation(UPDATE_PHOTO_TAGS);
 
-  const router = useRouter()
+  const router = useRouter();
   const state = router.query.state as string;
 
   const updateBoxNameLetters = (name: string, faceBoxIndex: number) => {
@@ -73,7 +73,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
               )
             )
           ),
-          state: state.toUpperCase()
+          state: state.toUpperCase(),
         },
       }).then((response) => {
         // Update the array of all photos and their tags with edited name
@@ -134,36 +134,36 @@ const FaceBoxes = (props: FaceBoxesProps) => {
             {props.editingTags && (
               <Menu
                 position='bottom'
-                placement='center'
                 zIndex={9999}
-                size={150}
                 withArrow
                 transitionDuration={25}
-                control={
+              >
+                <Menu.Target>
                   <UnstyledButton
                     style={{
                       width: (faceBox.right - faceBox.left) * props.width,
                       height: '100%',
                     }}
                   />
-                }
-              >
-                <Autocomplete
-                  zIndex={10000}
-                  placeholder='Tag Person'
-                  required
-                  data={props.names}
-                  value={faceBox.name}
-                  onChange={(value) =>
-                    updateBoxNameLetters(value, faceBoxIndex)
-                  }
-                  size='sm'
-                  radius='sm'
-                  onItemSubmit={(e) => submitFaceTag(e.value, faceBoxIndex)}
-                  filter={(value, item) =>
-                    item.value.toLowerCase().startsWith(value.toLowerCase())
-                  }
-                />
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Autocomplete
+                    zIndex={10000}
+                    placeholder='Tag Person'
+                    required
+                    data={props.names}
+                    value={faceBox.name}
+                    onChange={(value) =>
+                      updateBoxNameLetters(value, faceBoxIndex)
+                    }
+                    size='sm'
+                    radius='sm'
+                    onItemSubmit={(e) => submitFaceTag(e.value, faceBoxIndex)}
+                    filter={(value, item) =>
+                      item.value.toLowerCase().startsWith(value.toLowerCase())
+                    }
+                  />
+                </Menu.Dropdown>
               </Menu>
             )}
           </Tooltip>

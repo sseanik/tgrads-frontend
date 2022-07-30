@@ -6,6 +6,7 @@ import {
   Group,
   Image as MantineImage,
   Indicator,
+  MantineProvider,
   Text,
   UnstyledButton,
   useMantineTheme,
@@ -95,89 +96,101 @@ const EventCard = ({ event, photos, recap }: EventCardProps) => {
                 },
               }}
             >
-              <Card
-                shadow='sm'
-                p='lg'
-                m={10}
-                style={{
-                  height: '100%',
-                }}
-                styles={() => ({
-                  root: {
-                    color: theme.colorScheme === 'dark' ? '#d0cfd4' : '#3c4394',
-                    height: '100%',
-                    '&:hover': {
-                      backgroundColor:
-                        theme.colorScheme === 'dark' ? '#242936' : '#f6f8ff',
+              <MantineProvider
+                inherit
+                theme={{
+                  components: {
+                    Card: {
+                      styles: (theme) => ({
+                        root: {
+                          '&:hover': {
+                            backgroundColor:
+                              theme.colorScheme === 'dark'
+                                ? '#242936'
+                                : '#f6f8ff',
+                          },
+                        },
+                      }),
                     },
                   },
-                })}
+                }}
               >
-                <Card.Section>
-                  {photos ? (
-                    <Crossfade
-                      images={photos?.map((photo) => photo.attributes.url)}
-                      height='180px'
-                      width='100%'
-                    />
-                  ) : (
-                    <MantineImage
-                      src={event.attributes.Image?.data.attributes.url}
-                      height={160}
-                      alt=''
-                    />
-                  )}
-                </Card.Section>
+                <Card shadow='sm' withBorder p='lg' m={10}>
+                  <Card.Section>
+                    {photos ? (
+                      <Crossfade
+                        images={photos?.map((photo) => photo.attributes.url)}
+                        height='180px'
+                        width='100%'
+                      />
+                    ) : (
+                      event.attributes.Image?.data && (
+                        <MantineImage
+                          src={event.attributes.Image?.data.attributes.url}
+                          height={160}
+                          alt=''
+                        />
+                      )
+                    )}
+                  </Card.Section>
 
-                <Grid columns={7}>
-                  <Grid.Col span={1}>
-                    <Center
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        height: '100%',
-                      }}
-                    >
-                      <div
+                  <Grid columns={7}>
+                    <Grid.Col span={1}>
+                      {event?.attributes.Date && (
+                        <Center
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            height: '100%',
+                          }}
+                        >
+                          <div
+                            style={{
+                              color: '#666af3',
+                              fontWeight: 600,
+                              marginBottom: '6px',
+                            }}
+                          >
+                            {convertDateToReadable(
+                              event?.attributes.Date,
+                              true
+                            )}
+                          </div>
+                          <div style={{ fontWeight: 700 }}>
+                            {convertDateToReadable(event?.attributes.Date)}
+                          </div>
+                        </Center>
+                      )}
+                    </Grid.Col>
+                    <Grid.Col span={event?.attributes.Date ? 6 : 7}>
+                      <Group
+                        position='apart'
                         style={{
-                          color: '#666af3',
-                          fontWeight: 600,
-                          marginBottom: '6px',
+                          marginBottom: event?.attributes.Date ? 5 : undefined,
+                          marginTop: event?.attributes.Date
+                            ? theme.spacing.sm
+                            : undefined,
                         }}
                       >
-                        {convertDateToReadable(event?.attributes.Date, true)}
-                      </div>
-                      <div style={{ fontWeight: 700 }}>
-                        {convertDateToReadable(event?.attributes.Date)}
-                      </div>
-                    </Center>
-                  </Grid.Col>
-                  <Grid.Col span={6}>
-                    <Group
-                      position='apart'
-                      style={{
-                        marginBottom: 5,
-                        marginTop: theme.spacing.sm,
-                      }}
-                    >
-                      <Text weight={700}>{event?.attributes.Title}</Text>
-                    </Group>
-                    <Text
-                      lineClamp={4}
-                      size='sm'
-                      style={{
-                        color:
-                          theme.colorScheme === 'dark'
-                            ? theme.colors.dark[1]
-                            : theme.colors.gray[7],
-                        lineHeight: 1.5,
-                      }}
-                    >
-                      {recap ? recap : event?.attributes.Description}
-                    </Text>
-                  </Grid.Col>
-                </Grid>
-              </Card>
+                        <Text weight={700}>{event?.attributes.Title}</Text>
+                      </Group>
+                      <Text
+                        lineClamp={4}
+                        size='sm'
+                        style={{
+                          color:
+                            theme.colorScheme === 'dark'
+                              ? theme.colors.dark[1]
+                              : theme.colors.gray[7],
+                          lineHeight: 1.5,
+                        }}
+                      >
+                        {recap ? recap : event?.attributes.Description}
+                      </Text>
+                    </Grid.Col>
+                  </Grid>
+                </Card>
+              </MantineProvider>
             </Indicator>
           </Indicator>
         </UnstyledButton>

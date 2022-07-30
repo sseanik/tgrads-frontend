@@ -13,7 +13,10 @@ import { SessionProvider } from 'next-auth/react';
 
 import client from '../lib/apollo';
 
-export default function App({ Component, pageProps: { session, ...pageProps } })  {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   const [colorScheme, setColorScheme] = useLocalStorage<ColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',
@@ -46,6 +49,13 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
               /** Put your mantine theme override here */
               fontFamily: 'Akkurat, sans-serif',
               colorScheme: colorScheme,
+              breakpoints: {
+                xs: 550,
+                sm: 735,
+                md: 1000,
+                lg: 1200,
+                xl: 1400,
+              },
             }}
           >
             <NotificationsProvider zIndex={999999} containerWidth={350}>

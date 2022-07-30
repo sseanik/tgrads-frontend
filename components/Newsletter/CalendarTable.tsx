@@ -12,15 +12,13 @@ const CalendarTable = ({ table }: CalendarTableProps) => {
   return (
     <Card shadow='sm' p={0} mb={8}>
       <Accordion
-        initialItem={0}
-        iconPosition='right'
+        defaultValue='calendar-0'
         styles={{
           label: { fontWeight: 700 },
         }}
       >
-        <Accordion.Item
-          m={0}
-          label={
+        <Accordion.Item m={0} value='calendar-0'>
+          <Accordion.Control>
             <Group noWrap>
               <GoCalendar size={22} />
               <div>
@@ -30,30 +28,32 @@ const CalendarTable = ({ table }: CalendarTableProps) => {
                 </Text>
               </div>
             </Group>
-          }
-        >
-          <Table striped highlightOnHover>
-            <thead>
-              <tr>
-                <th>State</th>
-                <th>Event</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {table.map((row) => {
-                return (
-                  <tr key={row.Event}>
-                    <td>{row.State}</td>
-                    <td>{row.Event}</td>
-                    <td>{`${format(new Date(row.Date), 'EEEE do MMMM')}${
-                      row.Time ? ` - ${row.Time}` : ''
-                    }`}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+          </Accordion.Control>
+
+          <Accordion.Panel>
+            <Table striped highlightOnHover>
+              <thead>
+                <tr>
+                  <th>State</th>
+                  <th>Event</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {table.map((row) => {
+                  return (
+                    <tr key={row.Event}>
+                      <td>{row.State}</td>
+                      <td>{row.Event}</td>
+                      <td>{`${format(new Date(row.Date), 'EEEE do MMMM')}${
+                        row.Time ? ` - ${row.Time}` : ''
+                      }`}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Accordion.Panel>
         </Accordion.Item>
       </Accordion>
     </Card>

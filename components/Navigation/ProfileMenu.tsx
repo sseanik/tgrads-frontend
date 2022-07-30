@@ -49,9 +49,9 @@ const ProfileMenu = ({ grads }: ProfileMenuProps) => {
       >
         {colorScheme === 'dark' ? <MdOutlineLightMode /> : <MdDarkMode />}
       </ActionIcon>
-      {loggedIn !== "" && loggedIn ? (
-        <Menu
-          control={
+      {loggedIn !== '' && loggedIn ? (
+        <Menu position='top-end'>
+          <Menu.Target>
             <Button
               p={0}
               variant={colorScheme === 'dark' ? 'subtle' : 'white'}
@@ -73,20 +73,18 @@ const ProfileMenu = ({ grads }: ProfileMenuProps) => {
                 {JSON.parse(loggedIn).FullName.replace(/[^A-Z]/g, '')}
               </Avatar>
             </Button>
-          }
-          styles={() => ({
-            body: {
-              width: '150px',
-            },
-          })}
-        >
-          <Menu.Item
-            color='red'
-            icon={<Logout size={14} />}
-            onClick={logoutClick}
-          >
-            Sign Out
-          </Menu.Item>
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item
+              color='red'
+              icon={<Logout size={14} />}
+              onClick={logoutClick}
+              style={{width: '110px'}}
+            >
+              Sign Out
+            </Menu.Item>
+          </Menu.Dropdown>
         </Menu>
       ) : (
         <Button color='indigo' onClick={() => setOpened(true)}>

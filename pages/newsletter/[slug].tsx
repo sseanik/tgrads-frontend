@@ -44,7 +44,7 @@ const NewsletterHTML: NextPage<{
   return (
     <>
       <Center mt={10}>
-        <Button onClick={downloadTxtFile} variant='subtle'>
+        <Button onClick={downloadTxtFile} variant='outline'>
           Download HTML Email
         </Button>
       </Center>

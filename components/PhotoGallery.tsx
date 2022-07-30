@@ -362,7 +362,6 @@ const PhotoGallery = ({
                 label='Zoom In'
                 withArrow
                 zIndex={9999}
-                gutter={10}
               >
                 <ZoomIn
                   size={28}
@@ -378,7 +377,6 @@ const PhotoGallery = ({
                 label='Zoom Out'
                 withArrow
                 zIndex={9999}
-                gutter={10}
               >
                 <ZoomOut
                   size={28}

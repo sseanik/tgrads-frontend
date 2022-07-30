@@ -47,7 +47,7 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
   }
 
   return (
-    <HeaderComponent height={70} p='md' style={{ padding: '0 10px' }}>
+    <HeaderComponent height={70} p='md' style={{ padding: '0 20px' }}>
       <div
         style={{
           display: 'flex',
@@ -56,7 +56,10 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
           height: '100%',
         }}
       >
-        <MediaQuery largerThan={734} styles={{ display: 'none' }}>
+        <MediaQuery
+          largerThan={!state ? 725 : theme.breakpoints.xs}
+          styles={{ display: 'none' }}
+        >
           <Burger
             opened={opened}
             onClick={() => setOpened((open: boolean) => !open)}
@@ -69,7 +72,10 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
         <Logo />
 
         <div style={{ flex: 1, display: 'flex', height: '100%' }}>
-          <MediaQuery smallerThan={735} styles={{ display: 'none' }}>
+          <MediaQuery
+            smallerThan={!state ? 725 : theme.breakpoints.xs}
+            styles={{ display: 'none' }}
+          >
             <div>
               {state ? (
                 <span>
@@ -79,18 +85,21 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
                         key={`${state}/${item.url}`}
                         {...item}
                         url={`${state}/${item.url}`}
+                        state={state}
                       />
                     );
                   })}
                   {/* Cruise */}
                   {navItems[state] &&
                     navItems[state].map((item) => {
-                      return <MenuButton key={item.url} {...item} />;
+                      return (
+                        <MenuButton key={item.url} {...item} state={state} />
+                      );
                     })}
                 </span>
               ) : (
                 sortedNavItems.map((item) => {
-                  return <MenuButton key={item.url} {...item} />;
+                  return <MenuButton key={item.url} {...item} state={state} />;
                 })
               )}
             </div>

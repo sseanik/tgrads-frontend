@@ -1,10 +1,4 @@
-import {
-  Button,
-  LoadingOverlay,
-  Modal,
-  Text,
-  useMantineTheme,
-} from '@mantine/core';
+import { Button, LoadingOverlay, Modal, Text } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { showNotification, updateNotification } from '@mantine/notifications';
 import { useRouter } from 'next/router';
@@ -26,7 +20,6 @@ const UploadPhotoModal = ({
   slug,
   galleryID,
 }: UploadPhotoModalProps) => {
-  const theme = useMantineTheme();
   const [images, setImages] = useState<File[]>([]);
   const [visible, setVisible] = useState(false);
   const router = useRouter();
@@ -120,9 +113,7 @@ const UploadPhotoModal = ({
           }}
           accept={IMAGE_MIME_TYPE}
         >
-          {(status) =>
-            ImageDropzone({ status, theme, imageCount: images.length })
-          }
+          <ImageDropzone imageCount={images.length} />
         </Dropzone>
         <Button color='indigo' mt={16} fullWidth onClick={handleUploadPhotos}>
           Submit
