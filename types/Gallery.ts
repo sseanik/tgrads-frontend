@@ -31,7 +31,7 @@ export type GalleryPhoto = {
 export interface ParsedPhoto {
   id: string;
   alternativeText: string;
-  caption: string;
+  description?: string;
   height: number;
   width: number;
   name: string;

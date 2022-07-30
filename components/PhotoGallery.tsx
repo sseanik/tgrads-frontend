@@ -1,5 +1,6 @@
 import 'yet-another-react-lightbox/styles.css';
 import 'yet-another-react-lightbox/plugins/thumbnails.css';
+import 'yet-another-react-lightbox/plugins/captions.css';
 
 import { useMutation } from '@apollo/client';
 import { ActionIcon, Tooltip } from '@mantine/core';
@@ -18,6 +19,7 @@ import {
   ZoomOut,
 } from 'tabler-icons-react';
 import Lightbox from 'yet-another-react-lightbox';
+import Captions from 'yet-another-react-lightbox/plugins/captions';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
@@ -33,6 +35,7 @@ import { calcResponsiveDimensions } from '../utils/calcResponsiveDimensions';
 import { getTrueImageDimensions } from '../utils/getTrueImageDimensions';
 import FaceBoxes from './FaceBoxes';
 import DisplayTags from './LightboxToolbar/DisplayTags';
+import EditCaption from './LightboxToolbar/EditCaption';
 import EditTags from './LightboxToolbar/EditTags';
 import FaceDetection from './LightboxToolbar/FaceDetection';
 import NextJsImage from './NextJsImage';
@@ -57,9 +60,11 @@ const PhotoGallery = ({
   /* ----------------------------- PHOTO SELECTION ---------------------------- */
   // Index of selected photo from gallery or lightbox slide action
   const [slideIndex, setSlideIndex] = useState<number>(-1);
+
   /* ------------------------------- FACE BOXES ------------------------------- */
   // Face Boxes state of the current photo
   const [faceBoxes, setFaceBoxes] = useState<FaceDetectionBox[]>([]);
+
   /* ------------------------- ON DETECT FACES ACTION ------------------------- */
   // Boolean to track when face detection action is in progress
   const [detectionLoading, setDetectionLoading] = useState<boolean>(false);
@@ -67,6 +72,7 @@ const PhotoGallery = ({
   const [createdPhotoTagID, setCreatedPhotoTagID] = useState<string>('');
   // Boolean to track when no faces were detected
   const [noFacesDetected, setNoFacesDetected] = useState<boolean>(false);
+
   /* ---------------------------- LIGHTBOX TOOLBOX ---------------------------- */
   // Track when user is editing photo tags
   const [editingTags, setEditingTags] = useState<boolean>(false);
@@ -74,6 +80,7 @@ const PhotoGallery = ({
   const [showNameTags, setShowNameTags] = useState<boolean>(false);
   // Track when toolbox icon is hovered
   const [iconHover, setIconHover] = useState<string>('');
+
   /* --------------------------------- GRAPHQL -------------------------------- */
   // GraphQL mutation to create photo tags
   const [createPhotoTags] = useMutation(CREATE_PHOTO_TAGS);
@@ -92,11 +99,16 @@ const PhotoGallery = ({
       aspectRatio: trueWidth / trueHeight,
       id: photo.id,
       alternativeText: photo.attributes.alternativeText,
-      caption: photo.attributes.caption,
+      ...(photo.attributes.caption !== photo.attributes.name &&
+        photo.attributes.caption !== '' && {
+          description: photo.attributes.caption,
+        }),
       name: photo.attributes.name,
       src: photo.attributes.url,
     };
   });
+
+  const [savedPhotos, setSavedPhotos] = useState<ParsedPhoto[]>(parsedPhotos);
 
   const onSlideAction = (index: number) => {
     setSlideIndex(index);
@@ -112,9 +124,9 @@ const PhotoGallery = ({
       // When user clicks left or right on Light box
       // We need to save a newIndex variable as we cannot rely on useState
       if (slideIndex === 0 && left) {
-        newIndex = parsedPhotos.length - 1;
-        setSlideIndex(parsedPhotos.length - 1);
-      } else if (slideIndex === parsedPhotos.length - 1 && !left) {
+        newIndex = savedPhotos.length - 1;
+        setSlideIndex(savedPhotos.length - 1);
+      } else if (slideIndex === savedPhotos.length - 1 && !left) {
         newIndex = 0;
         setSlideIndex(0);
       } else if (left) {
@@ -137,7 +149,7 @@ const PhotoGallery = ({
     // Each time lightbox slides to a new photo check if Photo Tags exist
     // Combine the existing Face Boxes with the client side created ones
     const preExistingFaceBoxes = photosAndTags.find(
-      (face) => face.attributes.PhotoID === parsedPhotos[index]?.id
+      (face) => face.attributes.PhotoID === savedPhotos[index]?.id
     );
     // If it exists, use the Tags and save the Photo Tag ID
     if (preExistingFaceBoxes) {
@@ -183,7 +195,7 @@ const PhotoGallery = ({
       disallowClose: true,
     });
     faceDetectionApp.models
-      .predict(Clarifai.FACE_DETECT_MODEL, parsedPhotos[slideIndex].src)
+      .predict(Clarifai.FACE_DETECT_MODEL, savedPhotos[slideIndex].src)
       .then(
         (response: FaceDetectionResponse) => {
           if (!('regions' in response.outputs[0].data)) {
@@ -215,15 +227,9 @@ const PhotoGallery = ({
             autoClose: false,
             disallowClose: true,
           });
-          console.log({
-            id: parsedPhotos[slideIndex].id,
-            slug: slug,
-            faceBoxes: JSON.stringify(JSON.stringify(responseFaceBoxes)),
-            state: state.toUpperCase(),
-          });
           createPhotoTags({
             variables: {
-              id: parsedPhotos[slideIndex].id,
+              id: savedPhotos[slideIndex].id,
               slug: slug,
               faceBoxes: JSON.stringify(JSON.stringify(responseFaceBoxes)),
               state: state.toUpperCase(),
@@ -239,7 +245,7 @@ const PhotoGallery = ({
                   id: response.data.createPhotoTag.data.id,
                   attributes: {
                     FaceBoxes: JSON.stringify(responseFaceBoxes),
-                    PhotoID: parsedPhotos[slideIndex].id,
+                    PhotoID: savedPhotos[slideIndex].id,
                   },
                 },
               ]);
@@ -268,7 +274,7 @@ const PhotoGallery = ({
   const onNoFacesDetected = () => {
     createPhotoTags({
       variables: {
-        id: parsedPhotos[slideIndex].id,
+        id: savedPhotos[slideIndex].id,
         slug: slug,
         faceBoxes: JSON.stringify(JSON.stringify({ error: true })),
         state: state.toUpperCase(),
@@ -281,7 +287,7 @@ const PhotoGallery = ({
           id: response.data.createPhotoTag.data.id,
           attributes: {
             FaceBoxes: JSON.stringify({ error: true }),
-            PhotoID: parsedPhotos[slideIndex].id,
+            PhotoID: savedPhotos[slideIndex].id,
           },
         },
       ]);
@@ -302,7 +308,7 @@ const PhotoGallery = ({
     <>
       <PhotoAlbum
         layout='masonry'
-        photos={parsedPhotos}
+        photos={savedPhotos}
         spacing={14}
         renderPhoto={NextJsImage}
         columns={(containerWidth) => Math.floor(containerWidth / 400) + 1}
@@ -310,20 +316,33 @@ const PhotoGallery = ({
         onClick={(event, photo, index) => onLightboxAction(false, true, index)}
       />
       <Lightbox
-        slides={parsedPhotos}
+        slides={savedPhotos}
         open={slideIndex >= 0}
         index={slideIndex}
         close={onLightboxClose}
-        plugins={[Zoom]}
+        plugins={[Zoom, Captions]}
         zoom={{
           maxZoomPixelRatio: 3,
           zoomInMultiplier: 2,
+        }}
+        captions={{
+          descriptionTextAlign: 'center',
+          descriptionMaxLines: 1,
         }}
         on={{
           view: (index: number) => onSlideAction(index),
         }}
         toolbar={{
           buttons: [
+            <EditCaption
+              key='edit_caption'
+              setIconHover={setIconHover}
+              iconHover={iconHover}
+              setSavedPhotos={setSavedPhotos}
+              currentPhoto={savedPhotos.find(
+                (photo, index) => index === slideIndex
+              )}
+            />,
             !noFacesDetected && faceBoxes.length === 0 && (
               <FaceDetection
                 key='face_detection'
@@ -407,8 +426,8 @@ const PhotoGallery = ({
           },
           slide: (image) => {
             const { width, height } = calcResponsiveDimensions(
-              parsedPhotos[slideIndex].width,
-              parsedPhotos[slideIndex].height
+              savedPhotos[slideIndex].width,
+              savedPhotos[slideIndex].height
             );
             return (
               <div
@@ -431,7 +450,7 @@ const PhotoGallery = ({
                   setFaceBoxes={setFaceBoxes}
                   setPhotosAndTags={setPhotosAndTags}
                   slug={slug}
-                  selectedPhoto={parsedPhotos[slideIndex]}
+                  selectedPhoto={savedPhotos[slideIndex]}
                   editingTags={editingTags}
                   showNameTags={showNameTags}
                   names={names}

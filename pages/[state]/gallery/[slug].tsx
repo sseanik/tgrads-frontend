@@ -173,7 +173,6 @@ const Events: NextPage<{
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  console.log('Running getStaticProps...');
   const {
     data: {
       galleries: { data },

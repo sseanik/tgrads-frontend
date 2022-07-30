@@ -42,15 +42,27 @@ export default async function handler(
     }
 
     /* ---------------------------------- Photo --------------------------------- */
-    // When the user uploads a photo or an admin removes a photo
+    // When the user uploads a photo or an admin removes a photo or edits a photo's caption
     else if (
       parsedBody.event === 'media.create' ||
+      parsedBody.event === 'media.update' ||
       parsedBody.event === 'media.delete'
     ) {
       console.log(
-        ` - Revalidating Gallery: ${parsedBody.media.alternativeText} ~ ${parsedBody.event}`
+        ` - Revalidating ${parsedBody.media.alternativeText} ~ ${parsedBody.event}`
       );
       await res.revalidate(parsedBody.media.alternativeText);
+    }
+
+    /* --------------------------------- Caption -------------------------------- */
+    // When the user uploads a photo or an admin removes a photo or edits a photo's caption
+    else if (
+      parsedBody.event === 'entry.update' && parsedBody.model === 'file'
+    ) {
+      console.log(
+        ` - Revalidating ${parsedBody.entry.alternativeText} ~ ${parsedBody.event}`
+      );
+      await res.revalidate(parsedBody.entry.alternativeText);
     }
 
     /* ---------------------------------- Event --------------------------------- */

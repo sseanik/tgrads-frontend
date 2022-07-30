@@ -67,7 +67,6 @@ const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
           ml={10}
           size='xl'
           weight={700}
-          color='dimmed'
         >
           Upcoming Events
         </Text>
@@ -76,7 +75,7 @@ const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
         return <EventCard event={event} key={event.attributes.Slug} />;
       })}
 
-      <Text ml={10} size='xl' weight={700} color='dimmed'>
+      <Text ml={10} size='xl' weight={700}>
         Past Events
       </Text>
       {pastEvents.map((event: Event) => {

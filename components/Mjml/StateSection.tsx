@@ -19,8 +19,6 @@ const StateSection = ({ blurbs }) => {
     ACT: '#80c97a',
   };
 
-  console.log(blurbs[0].Photos.data);
-
   return (
     <>
       {blurbs.map((blurb) => {
@@ -56,7 +54,7 @@ const StateSection = ({ blurbs }) => {
                         photo.attributes.caption !== photo.attributes.name && (
                           <MjmlText
                             color='#3d444d'
-                            font-size='14px'
+                            font-size='12px'
                             line-height='1.2'
                             align='center'
                           >

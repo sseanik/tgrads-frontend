@@ -1,10 +1,14 @@
 import { gql } from '@apollo/client';
 
-export const UPLOAD_PHOTOS = gql`
-  mutation ($file: UploadFileInput!) {
-    createUploadFile(data: $file) {
+export const UPDATE_PHOTO_CAPTION = gql`
+  mutation UpdatePhotoCaption($id: ID!, $caption: String!, $alt: String!) {
+    updateFileInfo(id: $id, info: { caption: $caption, alternativeText: $alt }) {
       data {
         id
+        attributes {
+          caption
+          alternativeText
+        }
       }
     }
   }

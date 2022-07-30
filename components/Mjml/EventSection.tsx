@@ -1,7 +1,5 @@
 import DOMPurify from 'isomorphic-dompurify';
 import {
-  MjmlCarousel,
-  MjmlCarouselImage,
   MjmlColumn,
   MjmlImage,
   MjmlSection,
@@ -35,31 +33,29 @@ const EventSection = ({ blurbs }) => {
                   </MjmlText>
                 </MjmlColumn>
               </MjmlSection>
-              <MjmlSection padding='0px'>
-                <MjmlColumn padding='0px'>
-                  {blurb.Photos.data.length > 1 ? (
-                    <MjmlCarousel
-                      thumbnails='hidden'
-                      icon-width='30px'
-                      left-icon='/left-arrow.png'
-                      right-icon='/right-arrow.png'
-                    >
-                      {blurb.Photos.data.map((photo) => {
-                        return (
-                          <MjmlCarouselImage
-                            key={photo.attributes.name}
-                            src={photo.attributes.url}
-                          />
-                        );
-                      })}
-                    </MjmlCarousel>
-                  ) : (
-                    blurb.Photos.data.length > 0 && (
-                      <MjmlImage src={blurb.Photos.data[0].attributes.url} />
-                    )
-                  )}
-                </MjmlColumn>
-              </MjmlSection>
+              {blurb.Photos.data.map((photo) => {
+                return (
+                  <MjmlSection
+                    padding='0 10px 10px 10px'
+                    key={photo.attributes.name}
+                  >
+                    <MjmlColumn padding='0px'>
+                      <MjmlImage src={photo.attributes.url} padding='0px' />;
+                      {photo.attributes.caption !== '' &&
+                        photo.attributes.caption !== photo.attributes.name && (
+                          <MjmlText
+                            color='#3d444d'
+                            font-size='12px'
+                            line-height='1.2'
+                            align='center'
+                          >
+                            {photo.attributes.caption}
+                          </MjmlText>
+                        )}
+                    </MjmlColumn>
+                  </MjmlSection>
+                );
+              })}
 
               <MjmlSection padding='0px'>
                 <MjmlColumn padding='0px'>
