@@ -12,30 +12,34 @@ import {
 } from 'mjml-react';
 import { GetServerSideProps, NextPage } from 'next';
 
-import BirthdaySection from '../../components/Mjml/BirthdaySection';
-import CustomGap from '../../components/Mjml/CustomGap';
-import CustomHeading from '../../components/Mjml/CustomHeading';
-import CustomTable from '../../components/Mjml/CustomTable';
-import EventSection from '../../components/Mjml/EventSection';
-import StateSection from '../../components/Mjml/StateSection';
+import MjmlBirthdayBlurb from '../../components/Mjml/MjmlBirthdayBlurb';
+import CustomTable from '../../components/Mjml/MjmlCalendarBlurb';
+import MjmlCustomGap from '../../components/Mjml/MjmlCustomGap';
+import MjmlEventBlurb from '../../components/Mjml/MjmlEventBlurb';
+import MjmlHeaderBlurb from '../../components/Mjml/MjmlHeaderBlurb';
+import MjmlStateBlurb from '../../components/Mjml/MjmlStateBlurb';
 import { QUERY_SPECIFIC_NEWSLETTER } from '../../graphql/queries/newsletters';
 import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';
+import { getMonthName } from '../../utils/dateAndTimeUtil';
 
 const NewsletterHTML: NextPage<{
   html: string;
 }> = ({ html }) => {
+  // On button click, send user a HTML file containing the MJML HTML string
   const downloadTxtFile = () => {
     const element = document.createElement('a');
-    const file = new Blob([html], {
-      type: 'text/html',
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = 'email.html';
+    element.href = URL.createObjectURL(
+      new Blob([html], {
+        type: 'text/html', // .html file
+      })
+    );
+    element.download = 'email.html'; // name of file
     document.body.appendChild(element);
     element.click();
   };
 
+  // Remove all font size zero CSS rules
   const newHTML: string = html.replaceAll('font-size:0;', '');
 
   return (
@@ -66,9 +70,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const { html } = render(
     <Mjml>
+      {/* Title and CSS styles in Mjml Head */}
       <MjmlHead>
-        <MjmlTitle>Last Minute Offer</MjmlTitle>
-        <MjmlPreview>Last Minute Offer...</MjmlPreview>
+        <MjmlTitle>{newsletters.data[0].attributes.Title}</MjmlTitle>
+        <MjmlPreview>{newsletters.data[0].attributes.Title}</MjmlPreview>
         <MjmlAttributes>
           <MjmlAll font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></MjmlAll>
         </MjmlAttributes>
@@ -79,22 +84,26 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
           }`}
         </MjmlStyle>
       </MjmlHead>
+      {/* Body of the Mjml email with each blurb section */}
       <MjmlBody width={640} background-color='#fff'>
-        <CustomGap />
-        <CustomHeading
+        <MjmlCustomGap />
+        {/* Newsletter Header */}
+        <MjmlHeaderBlurb
           title={newsletters.data[0].attributes.Title}
           description={newsletters.data[0].attributes.Description}
           gif={newsletters.data[0].attributes.Gif}
         />
-        <CustomGap />
-        <StateSection blurbs={newsletters.data[0].attributes.StateBlurbs} />
-        <EventSection blurbs={newsletters.data[0].attributes.EventBlurbs} />
-        <BirthdaySection
+        <MjmlCustomGap />
+        {/* State Blurbs Section */}
+        <MjmlStateBlurb blurbs={newsletters.data[0].attributes.StateBlurbs} />
+        {/* Event Blurbs Section */}
+        <MjmlEventBlurb blurbs={newsletters.data[0].attributes.EventBlurbs} />
+        {/* Newsletter Birthday/Star Sign Section */}
+        <MjmlBirthdayBlurb
           grads={grads.data}
-          month={new Date(
-            newsletters.data[0].attributes.FirstDayOfMonth
-          ).toLocaleString('default', { month: 'long' })}
+          month={getMonthName(newsletters.data[0].attributes.FirstDayOfMonth)}
         />
+        {/* Calendar Table Blurb Section */}
         {newsletters.data[0].attributes.CalendarTable.length > 0 && (
           <CustomTable table={newsletters.data[0].attributes.CalendarTable} />
         )}
@@ -102,7 +111,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     </Mjml>,
     {
       keepComments: false,
-      validationLevel: 'strict',
+      validationLevel: 'strict', // do not compile unless passes all strict rules
     }
   );
 

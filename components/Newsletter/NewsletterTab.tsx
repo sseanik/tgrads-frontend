@@ -1,13 +1,13 @@
-import { Accordion, Box, Card, Text } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
-import Image from 'next/image';
 
 import { Newsletter } from '../../types/Newsletter';
 import { Grad } from '../../types/User';
-import Birthdays from './Birthdays';
-import CalendarTable from './CalendarTable';
-import EventPost from './EventPost';
-import StatePost from './StatePost';
+import { getMonthName } from '../../utils/dateAndTimeUtil';
+import Birthdays from './BirthdayBlurb';
+import CalendarTable from './CalendarBlurb';
+import EventPost from './EventBlurb';
+import HeaderBlurb from './HeaderBlurb';
+import StatePost from './StateBlurb';
 
 interface NewsletterProps {
   newsletter: Newsletter;
@@ -15,12 +15,14 @@ interface NewsletterProps {
 }
 
 const NewsletterTab = ({ newsletter, grads }: NewsletterProps) => {
+  // Use local storage to determine logged in user's state
   const [loggedIn] = useLocalStorage({
     key: 'loggedIn',
     defaultValue: '',
     getInitialValueInEffect: true,
   });
 
+  // Reorder State Blurbs with logged in state to come first
   const sortedStateBlurbs = loggedIn
     ? newsletter.attributes.StateBlurbs.filter(
         (blurb) => loggedIn !== '' && blurb.State !== JSON.parse(loggedIn).State
@@ -36,63 +38,26 @@ const NewsletterTab = ({ newsletter, grads }: NewsletterProps) => {
 
   return (
     <>
-      <Card shadow='sm' p={0} mt={10} mb={8}>
-        <Accordion
-          defaultValue='newsletter-heading-0'
-          styles={{
-            label: { fontWeight: 700 },
-          }}
-        >
-          <Accordion.Item value='newsletter-heading-0' m={0}>
-            <Accordion.Control>{newsletter.attributes.Title}</Accordion.Control>
-            <Accordion.Panel>
-              <Box
-                sx={() => ({
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  width: '100%',
-                  '@media (max-width: 600px)': {
-                    flexDirection: 'column',
-                  },
-                })}
-              >
-                <Image
-                  src={newsletter.attributes.Gif}
-                  alt={`${newsletter.attributes.Title}-gif`}
-                  width={200}
-                  height={200}
-                  objectFit='contain'
-                />
-                <Text
-                  sx={() => ({
-                    width: 'calc(100% - 200px)',
-                    paddingLeft: '20px',
-                    '@media (max-width: 600px)': {
-                      paddingLeft: 0,
-                      width: '100%',
-                    },
-                  })}
-                >
-                  {newsletter.attributes.Description}
-                </Text>
-              </Box>
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-      </Card>
+      {/* Header Accordion */}
+      <HeaderBlurb
+        title={newsletter.attributes.Title}
+        gif={newsletter.attributes.Gif}
+        description={newsletter.attributes.Description}
+      />
+      {/* State Blurb Accordions minimised */}
       {sortedStateBlurbs.map((blurb) => {
         return <StatePost key={blurb.State} blurb={blurb} />;
       })}
+      {/* Event Blurb Accordions */}
       {newsletter.attributes.EventBlurbs.map((blurb) => {
         return <EventPost key={blurb.Title} blurb={blurb} />;
       })}
+      {/* Birthday Blurb Accordion */}
       <Birthdays
-        month={new Date(newsletter.attributes.FirstDayOfMonth).toLocaleString(
-          'default',
-          { month: 'long' }
-        )}
+        month={getMonthName(newsletter.attributes.FirstDayOfMonth)}
         grads={grads}
       />
+      {/* Calendar Table Blurb Accordion */}
       <CalendarTable table={newsletter.attributes.CalendarTable} />
     </>
   );

@@ -2,15 +2,22 @@ import { Avatar, Box, Text, useMantineTheme } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 
 const NavbarFooter = () => {
+  // Theme to determine color mode and padding attributes
   const theme = useMantineTheme();
 
+  // Local Storage logged in to determine to show navbar footer
   const [loggedIn] = useLocalStorage({
     key: 'loggedIn',
     defaultValue: '',
     getInitialValueInEffect: true,
   });
 
-  return loggedIn !== "" && loggedIn ? (
+  // Return empty if user is not logged in
+  if (loggedIn === '' || !loggedIn) {
+    return <></>;
+  }
+
+  return (
     <Box
       sx={{
         borderTop: `1px solid ${
@@ -47,8 +54,6 @@ const NavbarFooter = () => {
         </Box>
       </Box>
     </Box>
-  ) : (
-    <></>
   );
 };
 

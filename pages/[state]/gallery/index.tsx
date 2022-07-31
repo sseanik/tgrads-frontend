@@ -2,30 +2,34 @@ import { Box } from '@mantine/core';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
+import { navItems } from '../../../assets/navItem';
+import { stateStrings } from '../../../assets/stateStrings';
 import EventCard from '../../../components/EventCard';
 import AppShell from '../../../components/Navigation/AppShell';
 import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
 import { QUERY_STATE_GALLERIES } from '../../../graphql/queries/galleries';
 import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
-import { navItems } from '../../../lib/navItem';
 import { Gallery } from '../../../types/Gallery';
 import { Grad } from '../../../types/User';
 
-const Gallery: NextPage<{ galleries: Gallery[]; grads: Grad[] }> = ({
-  galleries,
-  grads,
-}) => {
-  const router = useRouter();
+interface GalleryProps {
+  galleries: Gallery[];
+  grads: Grad[];
+}
 
+const Gallery: NextPage<GalleryProps> = ({ galleries, grads }) => {
+  // Router to get the state from the url
+  const router = useRouter();
+  const state = router.query.state as string;
+
+  // If there are no galleries, render an empty app shell
   if (galleries.length === 0)
     return (
       <AppShell grads={grads} navItems={navItems}>
         <></>
       </AppShell>
     );
-
-  const state = router.query.state as string;
 
   const crumbs = [
     { title: state.toUpperCase(), href: `/${state}/gallery` },
@@ -82,7 +86,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = ['nsw', 'vic', 'qld', 'act', 'sa', 'wa', 'tas', 'nt'].map(
+  const paths = stateStrings.map(
     (state: string) => {
       return { params: { state } };
     }

@@ -10,7 +10,9 @@ interface MobileMenuButtonProps {
 }
 
 const MobileMenuButton = (props: MenuButtonProps & MobileMenuButtonProps) => {
+  // Theme to track current color mode
   const theme = useMantineTheme();
+  // Router to prevent the page from reloading on current link click
   const router = useRouter();
 
   return (
@@ -18,9 +20,7 @@ const MobileMenuButton = (props: MenuButtonProps & MobileMenuButtonProps) => {
       <a>
         <Button
           onClick={() => {
-            if (router.pathname === '/' + props.url) {
-              props.setOpened(false);
-            }
+            if (router.asPath === '/' + props.url) props.setOpened(false);
           }}
           styles={() => ({
             root: {

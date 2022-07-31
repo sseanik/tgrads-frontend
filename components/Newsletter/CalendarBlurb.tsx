@@ -1,14 +1,10 @@
 import { Accordion, Card, Group, Table, Text } from '@mantine/core';
-import format from 'date-fns/format';
 import { GoCalendar } from 'react-icons/go';
 
 import { CalendarRow } from '../../types/Newsletter';
+import { parseDateAndTime } from '../../utils/dateAndTimeUtil';
 
-interface CalendarTableProps {
-  table: CalendarRow[];
-}
-
-const CalendarTable = ({ table }: CalendarTableProps) => {
+const CalendarTable = ({ table }: { table: CalendarRow[] }) => {
   return (
     <Card shadow='sm' p={0} mb={8}>
       <Accordion
@@ -45,9 +41,7 @@ const CalendarTable = ({ table }: CalendarTableProps) => {
                     <tr key={row.Event}>
                       <td>{row.State}</td>
                       <td>{row.Event}</td>
-                      <td>{`${format(new Date(row.Date), 'EEEE do MMMM')}${
-                        row.Time ? ` - ${row.Time}` : ''
-                      }`}</td>
+                      <td>{parseDateAndTime(row.Date, row.Time)}</td>
                     </tr>
                   );
                 })}

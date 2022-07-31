@@ -7,15 +7,17 @@ import {
   MjmlWrapper,
 } from 'mjml-react';
 
-import CustomGap from './CustomGap';
+import { EventBlurb } from '../../types/Newsletter';
+import CustomGap from './MjmlCustomGap';
 
-const EventSection = ({ blurbs }) => {
+const MjmlEventBlurb = ({ blurbs }: { blurbs: EventBlurb[] }) => {
   return (
     <>
       {blurbs.map((blurb) => {
         return (
           <>
             <MjmlWrapper
+              key={blurb.Title}
               background-color='#fcfdff'
               css-class='border-shadow'
               padding='8px 0px'
@@ -83,4 +85,4 @@ const EventSection = ({ blurbs }) => {
   );
 };
 
-export default EventSection;
+export default MjmlEventBlurb;

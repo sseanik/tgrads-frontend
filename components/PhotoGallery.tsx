@@ -23,7 +23,6 @@ import Captions from 'yet-another-react-lightbox/plugins/captions';
 import Zoom from 'yet-another-react-lightbox/plugins/zoom';
 
 import { CREATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
-// import { revalidateGallery } from '../lib/triggerRevalidate';
 import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
 import {
   FaceDetectionRegion,
@@ -85,9 +84,13 @@ const PhotoGallery = ({
   // GraphQL mutation to create photo tags
   const [createPhotoTags] = useMutation(CREATE_PHOTO_TAGS);
 
+  /* --------------------------------- Router --------------------------------- */
+  // Use router to get the state from the current URL
   const router = useRouter();
   const state = router.query.state as string;
 
+  /* ----------------------------- Current Photos ----------------------------- */
+  // Transform photos into a list of parsed photos for gallery and lightbox
   const parsedPhotos: ParsedPhoto[] = photos.map((photo) => {
     const { trueHeight, trueWidth } = getTrueImageDimensions(
       photo.attributes.height,
@@ -107,9 +110,9 @@ const PhotoGallery = ({
       src: photo.attributes.url,
     };
   });
-
   const [savedPhotos, setSavedPhotos] = useState<ParsedPhoto[]>(parsedPhotos);
 
+  // When the user swipes through photos in the lightbox
   const onSlideAction = (index: number) => {
     setSlideIndex(index);
     setEditingTags(false);
@@ -118,11 +121,11 @@ const PhotoGallery = ({
     setNoFacesDetected(false);
   };
 
+  // When the user clicks left or right in the lightbox
   const onLightboxAction = (left = true, open = false, index = -1) => {
     let newIndex = -1;
     if (!open) {
-      // When user clicks left or right on Light box
-      // We need to save a newIndex variable as we cannot rely on useState
+      // Save a newIndex variable as we cannot rely on useState
       if (slideIndex === 0 && left) {
         newIndex = savedPhotos.length - 1;
         setSlideIndex(savedPhotos.length - 1);
@@ -171,15 +174,17 @@ const PhotoGallery = ({
     }
   };
 
+  // When the Lightbox is closed, reset all client side state
   const onLightboxClose = () => {
-    // When the Lightbox is closed, reset all client side state
     setSlideIndex(-1);
     setFaceBoxes([]);
     setCreatedPhotoTagID('');
     setNoFacesDetected(false);
   };
 
+  // When the user clicks on the face detection icon
   const handleFaceDetection = () => {
+    // Do not initiate clarifai object if one already exists
     if (!faceDetectionApp) {
       faceDetectionApp = new Clarifai.App({
         apiKey: process.env.NEXT_PUBLIC_CLARIFAI_KEY,
@@ -198,10 +203,12 @@ const PhotoGallery = ({
       .predict(Clarifai.FACE_DETECT_MODEL, savedPhotos[slideIndex].src)
       .then(
         (response: FaceDetectionResponse) => {
+          // No Faces are detected
           if (!('regions' in response.outputs[0].data)) {
             onNoFacesDetected();
             throw new Error('No Faces Detected');
           }
+          // Parse the detected photo regions
           const responseFaceBoxes = response.outputs[0].data.regions
             .filter((region: FaceDetectionRegion) => 'region_info' in region)
             .map((region: FaceDetectionRegion) => {
@@ -213,6 +220,7 @@ const PhotoGallery = ({
                 name: '',
               };
             });
+          // No Faces Detected
           if (responseFaceBoxes.length === 0) {
             onNoFacesDetected();
             throw new Error('No Face Regions Detected');
@@ -249,7 +257,6 @@ const PhotoGallery = ({
                   },
                 },
               ]);
-              // revalidateGallery('create', slug);
               updateNotification({
                 id: 'detecting-faces',
                 color: 'green',
@@ -271,7 +278,9 @@ const PhotoGallery = ({
       });
   };
 
+  // Trigger when clarifai does not detect any faces
   const onNoFacesDetected = () => {
+    // Create a photo tag object with an error JSON
     createPhotoTags({
       variables: {
         id: savedPhotos[slideIndex].id,
@@ -291,7 +300,6 @@ const PhotoGallery = ({
           },
         },
       ]);
-      // revalidateGallery('create', slug);
       updateNotification({
         id: 'detecting-faces',
         title: 'Error',

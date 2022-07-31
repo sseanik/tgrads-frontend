@@ -7,18 +7,11 @@ import {
 } from 'mjml-react';
 import React from 'react';
 
-import CustomGap from './CustomGap';
+import { MJML_STATE_COLOURS } from '../../assets/stateColours';
+import { StateBlurb } from '../../types/Newsletter';
+import CustomGap from './MjmlCustomGap';
 
-const StateSection = ({ blurbs }) => {
-  const colours = {
-    NSW: '#8aaafe',
-    QLD: '#e77f7a',
-    VIC: '#b7a0f3',
-    WA: '#f49440',
-    SA: '#f7de81',
-    ACT: '#80c97a',
-  };
-
+const MjmlStateBlurb = ({ blurbs }: {blurbs: StateBlurb[]}) => {
   return (
     <>
       {blurbs.map((blurb) => {
@@ -27,7 +20,7 @@ const StateSection = ({ blurbs }) => {
             <MjmlWrapper
               background-color='#fcfdff'
               css-class='border-shadow'
-              border-top={`8px solid ${colours[blurb.State]}`}
+              border-top={`8px solid ${MJML_STATE_COLOURS[blurb.State]}`}
               border-radius='6px'
             >
               <MjmlSection padding='0px'>
@@ -87,4 +80,4 @@ const StateSection = ({ blurbs }) => {
   );
 };
 
-export default StateSection;
+export default MjmlStateBlurb;

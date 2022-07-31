@@ -3,12 +3,15 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 const Logo = () => {
+  // Theme to determine the current color mode
   const theme = useMantineTheme();
+  // Router to get the state from the current URL
   const router = useRouter();
   const state = router.query.state as string;
+
   return (
     <Link href='/'>
-      <a style={{height: '100%'}}>
+      <a style={{ height: '100%' }}>
         <Button
           styles={() => ({
             root: {

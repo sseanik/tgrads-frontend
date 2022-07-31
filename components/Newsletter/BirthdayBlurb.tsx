@@ -1,8 +1,9 @@
 import { Accordion, Badge, Card, Group, Text } from '@mantine/core';
 import { Cake } from 'tabler-icons-react';
 
+import { STATE_COLOURS } from '../../assets/stateColours';
 import { Grad } from '../../types/User';
-import { filterBirthdays } from '../../utils/filterBirthdays';
+import { filterBirthdaysOnStarSign } from '../../utils/birthdayUtil';
 
 interface BirthdaysProps {
   month: string;
@@ -10,16 +11,12 @@ interface BirthdaysProps {
 }
 
 const Birthdays = ({ month, grads }: BirthdaysProps) => {
-  const colours = {
-    NSW: 'blue',
-    QLD: 'red',
-    ACT: 'green',
-    WA: 'orange',
-    VIC: 'indigo',
-    SA: 'yellow',
-  };
 
-  const { birthdayGradsA, birthdayGradsB } = filterBirthdays(grads, month);
+  // Filter birthdays on month's possible star signs (e.g. 'cancer' & 'gemini')
+  const { birthdayGradsA, birthdayGradsB } = filterBirthdaysOnStarSign(
+    grads,
+    month
+  );
 
   return (
     <Card shadow='sm' p={0} mb={8}>
@@ -50,16 +47,16 @@ const Birthdays = ({ month, grads }: BirthdaysProps) => {
                 marginBottom: 12,
               }}
             >
-              {birthdayGradsA.map((bday) => {
+              {birthdayGradsA.map((gradBirthday) => {
                 return (
                   <Badge
                     variant='dot'
-                    color={colours[bday.attributes.State]}
+                    color={STATE_COLOURS[gradBirthday.attributes.State]}
                     size='lg'
                     sx={{ padding: 10, marginRight: 4, textTransform: 'none' }}
-                    key={bday.attributes.FullName}
+                    key={gradBirthday.attributes.FullName}
                   >
-                    {bday.attributes.FullName}
+                    {gradBirthday.attributes.FullName}
                   </Badge>
                 );
               })}
@@ -71,16 +68,16 @@ const Birthdays = ({ month, grads }: BirthdaysProps) => {
                 gap: 10,
               }}
             >
-              {birthdayGradsB.map((bday) => {
+              {birthdayGradsB.map((gradBirthday) => {
                 return (
                   <Badge
                     variant='dot'
-                    color={colours[bday.attributes.State]}
+                    color={STATE_COLOURS[gradBirthday.attributes.State]}
                     size='lg'
                     sx={{ padding: 10, marginRight: 4, textTransform: 'none' }}
-                    key={bday.attributes.FullName}
+                    key={gradBirthday.attributes.FullName}
                   >
-                    {bday.attributes.FullName}
+                    {gradBirthday.attributes.FullName}
                   </Badge>
                 );
               })}

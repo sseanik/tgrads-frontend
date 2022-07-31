@@ -1,15 +1,33 @@
 import { MjmlColumn, MjmlSection, MjmlText, MjmlWrapper } from 'mjml-react';
 
-import { filterBirthdays, getStarSigns } from '../../utils/filterBirthdays';
-import CustomGap from './CustomGap';
+import { Grad } from '../../types/User';
+import {
+  filterBirthdaysOnStarSign,
+  getStarSigns,
+} from '../../utils/birthdayUtil';
+import CustomGap from './MjmlCustomGap';
 
-const BirthdaySection = ({ grads, month }) => {
-  const { birthdayGradsA, birthdayGradsB } = filterBirthdays(grads, month);
+interface MjmlBirthdayBlurbProps {
+  grads: Grad[];
+  month: string;
+}
+
+const MjmlBirthdayBlurb = ({ grads, month }: MjmlBirthdayBlurbProps) => {
+  // Filter two sets of grad based on their birthday/star signs
+  const { birthdayGradsA, birthdayGradsB } = filterBirthdaysOnStarSign(
+    grads,
+    month
+  );
+  // Get the star signs possible for a month
   const [starSignA, starSignB] = getStarSigns(month);
 
   return (
     <>
-      <MjmlWrapper background-color='#fcfdff' css-class='border-shadow' padding='20px 0 0 0'>
+      <MjmlWrapper
+        background-color='#fcfdff'
+        css-class='border-shadow'
+        padding='20px 0 0 0'
+      >
         <MjmlSection padding='0px'>
           <MjmlColumn padding='0px'>
             <MjmlText
@@ -81,4 +99,4 @@ const BirthdaySection = ({ grads, month }) => {
   );
 };
 
-export default BirthdaySection;
+export default MjmlBirthdayBlurb;

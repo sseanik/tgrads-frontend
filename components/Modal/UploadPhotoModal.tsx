@@ -14,43 +14,43 @@ interface UploadPhotoModalProps {
   galleryID: string;
 }
 
-const UploadPhotoModal = ({
-  opened,
-  setOpened,
-  slug,
-  galleryID,
-}: UploadPhotoModalProps) => {
+const UploadPhotoModal = (props: UploadPhotoModalProps) => {
+  // Image files user would like to upload
   const [images, setImages] = useState<File[]>([]);
-  const [visible, setVisible] = useState(false);
+  // Loading state for when images are uploading
+  const [loading, setLoading] = useState(false);
+  // Use router to get the state from URL
   const router = useRouter();
   const state = router.query.state as string;
 
   const handleUploadPhotos = () => {
-    setVisible(true);
+    setLoading(true);
     showNotification({
       id: `uploading-photos`,
       loading: true,
       title: 'Uploading',
       message: `Uploading ${images.length} photo${
-        images.length > 1 ? 's' : ''
+        images.length > 1 ? 's' : '' // Change string based on number of images
       }`,
       autoClose: false,
       disallowClose: true,
     });
 
+    // Upload each image one by one
     Promise.all(
       images.map((image) => {
+        // Create form data to provide image attributes to the API
         const formData = new FormData();
         formData.append('files', image, image.name);
-        formData.append('path', `${state.toUpperCase()}/${slug}`); // Does not work NSW
+        formData.append('path', `${state.toUpperCase()}/${props.slug}`); // DOES NOT WORK
         formData.append('ref', 'api::gallery.gallery');
-        formData.append('refId', galleryID);
+        formData.append('refId', props.galleryID);
         formData.append('field', 'Photos');
         formData.append(
           'fileInfo',
           JSON.stringify({
-            caption: slug,
-            alternativeText: `/${state.toLowerCase()}/gallery/${slug}`,
+            caption: props.slug,
+            alternativeText: `/${state.toLowerCase()}/gallery/${props.slug}`,
           })
         );
         return fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/upload/`, {
@@ -69,8 +69,8 @@ const UploadPhotoModal = ({
           autoClose: 2000,
         });
         setImages([]);
-        setVisible(false);
-        setOpened(false);
+        setLoading(false);
+        props.setOpened(false);
         router.reload();
       })
       .catch((e) => {
@@ -82,14 +82,14 @@ const UploadPhotoModal = ({
           color: 'red',
           icon: <AlertCircle />,
         });
-        setVisible(false);
+        setLoading(false);
       });
   };
 
   return (
     <Modal
-      opened={opened}
-      onClose={() => setOpened(false)}
+      opened={props.opened}
+      onClose={() => props.setOpened(false)}
       title={
         <Text weight={700} size='lg'>
           Upload Photos
@@ -98,7 +98,7 @@ const UploadPhotoModal = ({
       size='md'
     >
       <div style={{ position: 'relative' }}>
-        <LoadingOverlay visible={visible} />
+        <LoadingOverlay visible={loading} />
         <Dropzone
           onDrop={(files) => setImages(files)}
           onReject={() => {

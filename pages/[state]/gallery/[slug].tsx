@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Action, Fab } from 'react-tiny-fab';
 import { Filter, FilterOff, Plus, Upload } from 'tabler-icons-react';
 
+import { navItems } from '../../../assets/navItem';
 import UploadPhotoModal from '../../../components/Modal/UploadPhotoModal';
 import AppShell from '../../../components/Navigation/AppShell';
 import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
@@ -19,7 +20,6 @@ import {
 import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import { QUERY_PHOTO_TAGS } from '../../../graphql/queries/photoTags';
 import client from '../../../lib/apollo';
-import { navItems } from '../../../lib/navItem';
 import { FaceBoxAttributes } from '../../../types/FaceBoxes';
 import {
   Gallery,
@@ -28,27 +28,41 @@ import {
 } from '../../../types/Gallery';
 import { Grad } from '../../../types/User';
 
-const Events: NextPage<{
+interface EventsProps {
   gallery: GalleryAttributes;
   galleryPhotoTags: FaceBoxAttributes[];
   grads: Grad[];
   slug: string;
   galleryID: string;
-}> = ({ gallery, galleryPhotoTags, grads, slug, galleryID }) => {
+}
+
+const Events: NextPage<EventsProps> = ({
+  gallery,
+  galleryPhotoTags,
+  grads,
+  slug,
+  galleryID,
+}) => {
+  // Router to get the state from the current URL
+  const router = useRouter();
+  const state = router.query.state as string;
+  // Open/close state for upload photo modal
+  const [opened, setOpened] = useState<boolean>(false);
+  // State to store the gallery's photos
+  const [photos, setPhotos] = useState<GalleryPhoto[]>(gallery.Photos.data);
+  // State to store photos only containing the logged in user
+  const [filtered, setFiltered] = useState<boolean>(false);
+  // State to store photos and each photo's face tags
   const [photosAndTags, setPhotosAndTags] =
     useState<FaceBoxAttributes[]>(galleryPhotoTags);
-  const router = useRouter();
-  const [opened, setOpened] = useState<boolean>(false);
-  const [photos, setPhotos] = useState<GalleryPhoto[]>(gallery.Photos.data);
-  const [filtered, setFiltered] = useState<boolean>(false);
+  // Store fab component to behave with SSR
   const [fabComponent, setFabComponent] = useState(<></>);
+  // Logged In local storage item to use for active photo filtering
   const [loggedIn] = useLocalStorage({
     key: 'loggedIn',
     defaultValue: '',
     getInitialValueInEffect: true,
   });
-
-  const state = router.query.state as string;
 
   const crumbs = [
     { title: state.toUpperCase(), href: `/${state}/gallery` },
@@ -57,6 +71,7 @@ const Events: NextPage<{
   ];
 
   useEffect(() => {
+    // Find all photos and tags for the current gallery
     const photoIDsWithName = (name: string) => {
       return photosAndTags
         .filter((photoAndTag) => {
@@ -77,22 +92,26 @@ const Events: NextPage<{
         .map((photoAndTag) => photoAndTag.attributes.PhotoID);
     };
 
+    // When the filter icon is clicked, filter the photos based on the logged in user
     const handleFilterPhotos = () => {
       if (filtered) {
         setPhotos(gallery.Photos.data);
         setFiltered(false);
       } else if (loggedIn !== '') {
+        // If user is not logged in
         const photosWithName = photoIDsWithName(JSON.parse(loggedIn).FullName);
         setPhotos(photos.filter((photo) => photosWithName.includes(photo.id)));
         setFiltered(true);
       }
     };
 
+    // If the user is not logged in
     if (loggedIn === '') {
       setPhotos(gallery.Photos.data);
       setFiltered(false);
     }
 
+    // Set the fab component to be used in SSR
     if (typeof window !== 'undefined') {
       setFabComponent(
         <Fab

@@ -7,13 +7,23 @@ import {
   MjmlText,
 } from 'mjml-react';
 
-const CustomHeading = ({ title, description, gif }) => {
+interface MjmlHeaderBlurbProps {
+  title: string;
+  description: string;
+  gif: string;
+}
+
+const MjmlHeaderBlurb = ({ title, description, gif }: MjmlHeaderBlurbProps) => {
   return (
-    <MjmlSection background-color='#fcfdff' css-class='border-shadow' padding='10px'>
+    <MjmlSection
+      background-color='#fcfdff'
+      css-class='border-shadow'
+      padding='10px'
+    >
       <MjmlColumn padding='0'>
-        <MjmlImage src={gif} padding='0'/>
+        <MjmlImage src={gif} padding='0' />
       </MjmlColumn>
-      <MjmlColumn padding='0'> 
+      <MjmlColumn padding='0'>
         <MjmlText color='#212b35' font-weight='bold' font-size='20px'>
           {title}
         </MjmlText>
@@ -30,4 +40,4 @@ const CustomHeading = ({ title, description, gif }) => {
   );
 };
 
-export default CustomHeading;
+export default MjmlHeaderBlurb;

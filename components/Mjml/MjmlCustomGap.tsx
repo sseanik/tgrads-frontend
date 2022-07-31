@@ -1,6 +1,6 @@
 import { MjmlColumn, MjmlSection, MjmlSpacer } from 'mjml-react';
 
-const CustomGap = () => {
+const MjmlCustomGap = () => {
   return (
     <MjmlSection padding='0px'>
       <MjmlColumn>
@@ -10,4 +10,4 @@ const CustomGap = () => {
   );
 };
 
-export default CustomGap;
+export default MjmlCustomGap;

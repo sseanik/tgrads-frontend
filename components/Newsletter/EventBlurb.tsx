@@ -4,13 +4,12 @@ import Crossfade from 'react-crossfade-responsive';
 
 import { EventBlurb } from '../../types/Newsletter';
 
-interface EventPostProps {
-  blurb: EventBlurb;
-}
+const RESPONSIVE_WIDTH = '@media (max-width: 900px)'
 
-const EventPost = ({ blurb }: EventPostProps) => {
+const EventPost = ({ blurb }: { blurb: EventBlurb }) => {
   const theme = useMantineTheme();
 
+  // Replace all dark colours from HTML string
   const parsedDescription: string =
     theme.colorScheme === 'dark'
       ? blurb.Description.replaceAll('black', '#cecfd0')
@@ -35,7 +34,7 @@ const EventPost = ({ blurb }: EventPostProps) => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 width: '100%',
-                '@media (max-width: 900px)': {
+                [RESPONSIVE_WIDTH]: {
                   flexDirection: 'column',
                 },
               })}
@@ -45,7 +44,7 @@ const EventPost = ({ blurb }: EventPostProps) => {
                   sx={() => ({
                     width: '600px',
                     height: '300px',
-                    '@media (max-width: 900px)': {
+                    [RESPONSIVE_WIDTH]: {
                       width: '100%',
                     },
                   })}
@@ -63,7 +62,7 @@ const EventPost = ({ blurb }: EventPostProps) => {
                 sx={() => ({
                   flex: 1,
                   paddingLeft: blurb.Photos.data.length > 0 ? '20px' : 0,
-                  '@media (max-width: 900px)': {
+                  [RESPONSIVE_WIDTH]: {
                     paddingLeft: 0,
                     paddingTop: '20px',
                   },

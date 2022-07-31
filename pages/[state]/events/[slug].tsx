@@ -23,6 +23,7 @@ import {
   Map2,
 } from 'tabler-icons-react';
 
+import { navItems } from '../../../assets/navItem';
 import AppShell from '../../../components/Navigation/AppShell';
 import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
 import {
@@ -32,23 +33,32 @@ import {
 import { QUERY_SPECIFIC_GALLERY } from '../../../graphql/queries/galleries';
 import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
-import { navItems } from '../../../lib/navItem';
 import { Event, EventAttributes } from '../../../types/Event';
 import { Grad } from '../../../types/User';
-import getDaysHoursMinutesRemaining from '../../../utils/getDaysHoursMinutesRemaining';
+import { getDaysHoursMinutesRemaining } from '../../../utils/dateAndTimeUtil';
 
-const Events: NextPage<{
+interface EventsProps {
   event: EventAttributes;
   grads: Grad[];
   galleryAvailable: boolean;
-}> = ({ event, grads, galleryAvailable }) => {
-  const theme = useMantineTheme();
-  const router = useRouter();
+}
 
+const RESPONSIVE_WIDTH = '@media (max-width: 550px)'
+
+const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
+  // Use theme to check whether them is light or dark
+  const theme = useMantineTheme();
+
+  // Router used to get the state from the current URL
+  const router = useRouter();
+  const state = router.query.state as string;
+
+  // Extract date and time information
   const eventTime: Date = new Date(event.Date + ' ' + event.Time);
   const isEventOver: boolean = new Date() > eventTime;
   const { days, hours, minutes } = getDaysHoursMinutesRemaining(eventTime);
 
+  // Remove all colour references from Footnote HTML string
   const parsedFootnoteDark: string =
     theme.colorScheme === 'dark'
       ? event.Footnote.replaceAll('black', '#cecfd0').replaceAll(
@@ -56,8 +66,6 @@ const Events: NextPage<{
           '#7787e4'
         )
       : event.Footnote;
-
-  const state = router.query.state as string;
 
   const crumbs = [
     { title: state.toUpperCase(), href: `/${state}/events` },
@@ -98,10 +106,6 @@ const Events: NextPage<{
                 display: 'flex',
                 flexFlow: 'column',
                 height: 'calc(100vh - 180px)',
-
-                '@media (max-width: 768px)': {
-                  height: '100%',
-                },
               })}
             >
               <div style={{ flex: '0 1 auto' }}>
@@ -209,7 +213,7 @@ const Events: NextPage<{
                         align='center'
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.md,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.sm,
                           },
                         })}
@@ -223,7 +227,7 @@ const Events: NextPage<{
                       <Text
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.sm,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.xs,
                           },
                         })}
@@ -258,7 +262,7 @@ const Events: NextPage<{
                         align='center'
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.md,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.sm,
                           },
                         })}
@@ -268,7 +272,7 @@ const Events: NextPage<{
                       <Text
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.sm,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.xs,
                           },
                         })}
@@ -302,7 +306,7 @@ const Events: NextPage<{
                         align='center'
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.md,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.sm,
                           },
                         })}
@@ -312,7 +316,7 @@ const Events: NextPage<{
                       <Text
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.sm,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.xs,
                           },
                         })}
@@ -347,7 +351,7 @@ const Events: NextPage<{
                       <Text
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.md,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.sm,
                           },
                         })}
@@ -360,7 +364,7 @@ const Events: NextPage<{
                       <Text
                         sx={(theme) => ({
                           fontSize: theme.fontSizes.sm,
-                          '@media (max-width: 550px)': {
+                          [RESPONSIVE_WIDTH]: {
                             fontSize: theme.fontSizes.xs,
                           },
                         })}

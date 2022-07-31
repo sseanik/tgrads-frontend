@@ -1,9 +1,9 @@
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 
+import { navItems } from '../../../assets/navItem';
 import AppShell from '../../../components/Navigation/AppShell';
 import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
-import { navItems } from '../../../lib/navItem';
 import { Grad } from '../../../types/User';
 
 const Office: NextPage<{

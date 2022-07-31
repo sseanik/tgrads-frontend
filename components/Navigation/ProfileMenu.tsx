@@ -13,34 +13,36 @@ import { Logout } from 'tabler-icons-react';
 import { Grad } from '../../types/User';
 import LoginModal from '../Modal/LoginModal';
 
-interface ProfileMenuProps {
-  grads: Grad[];
-}
-
-const ProfileMenu = ({ grads }: ProfileMenuProps) => {
+const ProfileMenu = ({ grads }: { grads: Grad[] }) => {
+  // Current color scheme and function to toggle light/dark mode
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  //  Login
-  const [value, setValue] = useState<string>('');
-  const [opened, setOpened] = useState<boolean>(false);
+  // Login input name
+  const [loginName, setLoginName] = useState<string>('');
+  // Login Modal opened state and toggle setter
+  const [modalOpened, setModalOpened] = useState<boolean>(false);
+
+  // Local storage item to track and set logged in status
   const [loggedIn, setLoggedIn] = useLocalStorage({
     key: 'loggedIn',
     defaultValue: '',
     getInitialValueInEffect: true,
   });
+
+  // When logout button is clicked reset fields and logout
   const logoutClick = (): void => {
     setLoggedIn('');
-    setValue('');
+    setLoginName('');
   };
 
   return (
     <>
       <LoginModal
         grads={grads}
-        value={value}
-        opened={opened}
+        value={loginName}
+        opened={modalOpened}
         setLoggedIn={setLoggedIn}
-        setOpened={setOpened}
-        setValue={setValue}
+        setOpened={setModalOpened}
+        setValue={setLoginName}
       />
       <ActionIcon
         onClick={() => toggleColorScheme()}
@@ -80,14 +82,14 @@ const ProfileMenu = ({ grads }: ProfileMenuProps) => {
               color='red'
               icon={<Logout size={14} />}
               onClick={logoutClick}
-              style={{width: '110px'}}
+              style={{ width: '110px' }}
             >
               Sign Out
             </Menu.Item>
           </Menu.Dropdown>
         </Menu>
       ) : (
-        <Button color='indigo' onClick={() => setOpened(true)}>
+        <Button color='indigo' onClick={() => setModalOpened(true)}>
           Login
         </Button>
       )}

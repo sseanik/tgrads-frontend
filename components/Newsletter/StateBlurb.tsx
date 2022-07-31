@@ -1,71 +1,30 @@
 import { Accordion, Box, Card, Group, Text, ThemeIcon } from '@mantine/core';
 import React from 'react';
 import Crossfade from 'react-crossfade-responsive';
-import {
-  GiGoat,
-  GiHorseHead,
-  GiLightningStorm,
-  GiPirateFlag,
-  GiSydneyOperaHouse,
-  GiVikingHead,
-} from 'react-icons/gi';
 
+import { stateItems } from '../../assets/stateItem';
 import { StateBlurb } from '../../types/Newsletter';
 
-interface AccordionLabelProps {
-  label: string;
-}
-
-const AccordionLabel = ({ label }: AccordionLabelProps) => {
-  const states = {
-    NSW: {
-      name: 'New South Wales',
-      icon: <GiSydneyOperaHouse size={22} />,
-      colour: 'blue',
-    },
-    QLD: { name: 'Queensland', icon: <GiHorseHead size={22} />, colour: 'red' },
-    SA: {
-      name: 'South Australia',
-      icon: <GiGoat size={22} />,
-      colour: 'yellow',
-    },
-    VIC: {
-      name: 'Victoria',
-      icon: <GiLightningStorm size={22} />,
-      colour: 'indigo',
-    },
-    WA: {
-      name: 'Western Australia',
-      icon: <GiPirateFlag size={22} />,
-      colour: 'orange',
-    },
-    ACT: {
-      name: 'Australian Capital Territory',
-      icon: <GiVikingHead size={22} />,
-      colour: 'green',
-    },
-  };
-
+const StateAccordionLabel = ({ state }: { state: string }) => {
   return (
     <Group noWrap>
-      <ThemeIcon color={states[label].colour} variant='light'>
-        {states[label].icon}
+      <ThemeIcon color={stateItems[state].colour} variant='light'>
+        {stateItems[state].icon}
       </ThemeIcon>
       <div>
-        <Text>{label}</Text>
+        <Text>{state}</Text>
         <Text size='sm' color='dimmed' weight={400}>
-          {states[label].name}
+          {stateItems[state].name}
         </Text>
       </div>
     </Group>
   );
 };
 
-interface StatePostProps {
-  blurb: StateBlurb;
-}
+const RESPONSIVE_WIDTH = '@media (max-width: 900px)';
 
-const StatePost = ({ blurb }: StatePostProps) => {
+const StatePost = ({ blurb }: { blurb: StateBlurb }) => {
+
   return (
     <Card shadow='sm' p={0} mb={8}>
       <Accordion
@@ -74,8 +33,8 @@ const StatePost = ({ blurb }: StatePostProps) => {
         }}
       >
         <Accordion.Item value={`state-post-${blurb.State}`} m={0}>
-          <Accordion.Control >
-            <AccordionLabel label={blurb.State} />
+          <Accordion.Control>
+            <StateAccordionLabel state={blurb.State} />
           </Accordion.Control>
           <Accordion.Panel>
             <Box
@@ -83,7 +42,7 @@ const StatePost = ({ blurb }: StatePostProps) => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 width: '100%',
-                '@media (max-width: 900px)': {
+                [RESPONSIVE_WIDTH]: {
                   flexDirection: 'column',
                 },
               })}
@@ -94,7 +53,7 @@ const StatePost = ({ blurb }: StatePostProps) => {
                   width: '400px',
                   height: '300px',
                   margin: '0 auto',
-                  '@media (max-width: 900px)': {
+                  [RESPONSIVE_WIDTH]: {
                     width: '100%',
                   },
                   '#crossfade div:nth-of-type(2) img': {
@@ -113,7 +72,7 @@ const StatePost = ({ blurb }: StatePostProps) => {
               <Box
                 sx={() => ({
                   paddingLeft: '20px',
-                  '@media (max-width: 900px)': {
+                  [RESPONSIVE_WIDTH]: {
                     paddingLeft: 0,
                     paddingTop: '20px',
                   },

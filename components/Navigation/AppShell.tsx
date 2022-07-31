@@ -1,7 +1,7 @@
 import { AppShell as AppShellComponent, useMantineTheme } from '@mantine/core';
 import { useState } from 'react';
 
-import { NavMenu } from '../../lib/navItem';
+import { NavMenu } from '../../assets/navItem';
 import { Grad } from '../../types/User';
 import Footer from './Footer';
 import Header from './Header';
@@ -14,7 +14,9 @@ type AppShellProps = {
 };
 
 const AppShell = (props: AppShellProps) => {
+  // Theme to find what color mode to use for background
   const theme = useMantineTheme();
+  // Manage when navbar hamburger menu is opened or closes
   const [opened, setOpened] = useState<boolean>(false);
 
   return (
@@ -24,7 +26,7 @@ const AppShell = (props: AppShellProps) => {
       styles={{
         main: {
           transition: 'padding-left 500ms ease',
-          background:
+          background: // background of entire application
             theme.colorScheme === 'dark'
               ? theme.colors.dark[8]
               : theme.colors.gray[0],

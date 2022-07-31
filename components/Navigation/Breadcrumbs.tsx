@@ -4,13 +4,9 @@ import { ChevronsRight } from 'tabler-icons-react';
 
 import { Crumb } from '../../types/Crumbs';
 
-interface BreadcrumbsProps {
-  crumbs: Crumb[];
-}
-
-const Breadcrumbs = ({ crumbs }: BreadcrumbsProps) => {
+const Breadcrumbs = ({ crumbs }: { crumbs: Crumb[] }) => {
   return (
-    <BreadcrumbsComponent separator={<ChevronsRight size={20}/>}>
+    <BreadcrumbsComponent separator={<ChevronsRight size={20} />}>
       {crumbs.map((item: Crumb, index: number) => {
         return (
           <Text

@@ -1,4 +1,3 @@
-import { format } from 'date-fns';
 import {
   MjmlColumn,
   MjmlSection,
@@ -7,7 +6,11 @@ import {
   MjmlWrapper,
 } from 'mjml-react';
 
-const CustomTable = ({ table }) => {
+import { CalendarRow } from '../../types/Newsletter';
+import { parseDateAndTime } from '../../utils/dateAndTimeUtil';
+
+const MjmlCalendarBlurb = ({ table }: { table: CalendarRow[] }) => {
+  // Use variables to track background for odd rows
   let initial = false;
   let current = '';
   return (
@@ -98,9 +101,7 @@ const CustomTable = ({ table }) => {
                         paddingLeft: '10px',
                       }}
                     >
-                      {`${format(new Date(row.Date), 'EEEE do MMMM')}${
-                        row.Time ? ` - ${row.Time}` : ''
-                      }`}
+                      {parseDateAndTime(row.Date, row.Time)}
                     </td>
                   </tr>
                 );
@@ -118,4 +119,4 @@ const CustomTable = ({ table }) => {
   );
 };
 
-export default CustomTable;
+export default MjmlCalendarBlurb;

@@ -8,8 +8,9 @@ import { useLocalStorage } from '@mantine/hooks';
 import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 
-import { NavMenu } from '../../lib/navItem';
+import { NavItems, NavMenu } from '../../assets/navItem';
 import { Grad } from '../../types/User';
+import { getSortedNavItems } from '../../utils/sortNavItems';
 import Logo from './Logo';
 import MenuButton from './MenuButton';
 import ProfileMenu from './ProfileMenu';
@@ -21,30 +22,23 @@ interface HeaderProps {
   grads: Grad[];
 }
 
+const RESPONSIVE_WIDTH = 725;
+
 const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
+  // Theme to use for breakpoints and what color mode is currently selected
   const theme = useMantineTheme();
+  // Router to get state from current URL
   const router = useRouter();
   const state = router.query.state as string;
 
+  // Local Storage item to use for reordering of navbar items
   const [loggedIn] = useLocalStorage({
     key: 'loggedIn',
     defaultValue: '',
     getInitialValueInEffect: true,
   });
-
-  const sortedNavItems = loggedIn
-    ? navItems.common.filter(
-        (navItem) =>
-          loggedIn !== '' && navItem.text !== JSON.parse(loggedIn).State
-      )
-    : navItems.common;
-  if (loggedIn) {
-    const stateMatchedNavItem = navItems.common.find(
-      (navItem) =>
-        loggedIn !== '' && navItem.text === JSON.parse(loggedIn).State
-    );
-    if (stateMatchedNavItem) sortedNavItems.unshift(stateMatchedNavItem);
-  }
+  // If user is logged in, put their state at the front of the nav items
+  const sortedNavItems = getSortedNavItems(loggedIn, navItems);
 
   return (
     <HeaderComponent height={70} p='md' style={{ padding: '0 20px' }}>
@@ -57,7 +51,7 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
         }}
       >
         <MediaQuery
-          largerThan={!state ? 725 : theme.breakpoints.xs}
+          largerThan={!state ? RESPONSIVE_WIDTH : theme.breakpoints.xs}
           styles={{ display: 'none' }}
         >
           <Burger
@@ -73,12 +67,13 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
 
         <div style={{ flex: 1, display: 'flex', height: '100%' }}>
           <MediaQuery
-            smallerThan={!state ? 725 : theme.breakpoints.xs}
+            smallerThan={!state ? RESPONSIVE_WIDTH : theme.breakpoints.xs}
             styles={{ display: 'none' }}
           >
             <div>
               {state ? (
                 <span>
+                  {/* Events, Gallery, etc */}
                   {sortedNavItems.map((item) => {
                     return (
                       <MenuButton
@@ -91,7 +86,7 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
                   })}
                   {/* Cruise */}
                   {navItems[state] &&
-                    navItems[state].map((item) => {
+                    navItems[state].map((item: NavItems) => {
                       return (
                         <MenuButton key={item.url} {...item} state={state} />
                       );
@@ -99,6 +94,7 @@ const Header = ({ opened, setOpened, navItems, grads }: HeaderProps) => {
                 </span>
               ) : (
                 sortedNavItems.map((item) => {
+                  // States, e.g. NSW, VIC, etc
                   return <MenuButton key={item.url} {...item} state={state} />;
                 })
               )}

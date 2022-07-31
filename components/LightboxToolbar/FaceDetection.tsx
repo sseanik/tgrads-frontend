@@ -10,6 +10,7 @@ interface FaceDetectionProps {
 }
 
 const FaceDetection = (props: FaceDetectionProps) => {
+  // Show a animated loader icon if detection is loading
   if (props.detectionLoading) {
     return (
       <Loader

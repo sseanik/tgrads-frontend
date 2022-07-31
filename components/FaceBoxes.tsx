@@ -6,9 +6,9 @@ import { Dispatch, forwardRef, SetStateAction } from 'react';
 import { AlertCircle, FaceId } from 'tabler-icons-react';
 
 import { UPDATE_PHOTO_TAGS } from '../graphql/mutations/photoTags';
-// import { revalidateGallery } from '../lib/triggerRevalidate';
 import { FaceBoxAttributes, FaceDetectionBox } from '../types/FaceBoxes';
 import { ParsedPhoto } from '../types/Gallery';
+import { calculateFaceBoxes } from '../utils/calculateFaceBoxes';
 
 interface FaceBoxesProps {
   faceBoxes: FaceDetectionBox[];
@@ -24,15 +24,17 @@ interface FaceBoxesProps {
   height: number;
 }
 
-let tagIncrement = 0;
+let tagIncrement = 0; // global variable for tag ID
 
 const FaceBoxes = (props: FaceBoxesProps) => {
+  // GraphQL mutation to update the tags of a photo
   const [updatePhotoTags, updatedPhotoTags] = useMutation(UPDATE_PHOTO_TAGS);
-
+  // Router to get state from the URL
   const router = useRouter();
   const state = router.query.state as string;
 
   const submitFaceTag = (name: string, faceBoxIndex: number) => {
+    // If the user has not allowed for a current operation to finish
     if (updatedPhotoTags.loading) {
       showNotification({
         id: 'tag-face-error',
@@ -43,11 +45,13 @@ const FaceBoxes = (props: FaceBoxesProps) => {
         icon: <AlertCircle />,
       });
     } else {
+      // Set the face boxes to the new state
       props.setFaceBoxes((prevFaceBoxes) =>
-      prevFaceBoxes.map((faceBox, idx) =>
-        idx === faceBoxIndex ? { ...faceBox, name: name } : faceBox
-      )
-    );
+        prevFaceBoxes.map((faceBox, idx) =>
+          idx === faceBoxIndex ? { ...faceBox, name: name } : faceBox
+        )
+      );
+      // Use increment variable to track notifications
       const increment = tagIncrement + 1;
       tagIncrement++;
       showNotification({
@@ -82,7 +86,6 @@ const FaceBoxes = (props: FaceBoxesProps) => {
               : photoAndTag;
           })
         );
-        // revalidateGallery('update', props.slug);
         updateNotification({
           id: `updating-face-tag-${increment}`,
           color: 'green',
@@ -95,15 +98,6 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     }
   };
 
-  const calculateFaceBoxes = (faceBox: FaceDetectionBox) => {
-    return {
-      left: faceBox.left * props.width,
-      top: faceBox.top * props.height,
-      right: props.width - faceBox.right * props.width,
-      bottom: props.height - faceBox.bottom * props.height,
-    };
-  };
-
   const EditMenu = forwardRef<
     HTMLDivElement,
     { faceBox: FaceDetectionBox; faceBoxIndex: number }
@@ -111,7 +105,7 @@ const FaceBoxes = (props: FaceBoxesProps) => {
     <div
       ref={ref}
       style={{
-        ...calculateFaceBoxes(faceBox),
+        ...calculateFaceBoxes(faceBox, props.width, props.height),
         position: 'absolute',
         boxShadow: props.editingTags
           ? '0 0 0 3px rgba(255, 255, 255, 0.5) inset'

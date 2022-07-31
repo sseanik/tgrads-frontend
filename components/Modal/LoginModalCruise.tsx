@@ -19,20 +19,17 @@ interface LoginModalCruiseProps {
   setOpenedCruise: Dispatch<SetStateAction<boolean>>;
 }
 
-const LoginModalCruise = ({
-  openedCruise,
-  setOpenedCruise,
-}: LoginModalCruiseProps) => {
+const LoginModalCruise = (props: LoginModalCruiseProps) => {
   const router = useRouter();
-
-  const [visible, setVisible] = useState(false);
+  // Loading overlay state
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     initialValues: {
-      email: "@team.telstra.com",
+      email: '@team.telstra.com',
       password: '',
     },
-
+    // Validate email is valid and password minimum length
     validate: {
       email: (value: string) =>
         /^\S+@\S+$/.test(value) ? null : 'Invalid email',
@@ -41,10 +38,12 @@ const LoginModalCruise = ({
     },
   });
 
-  const onSubmit = async (e) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // If the form's validation is successful
     if (!form.validate().hasErrors) {
-      setVisible(true);
+      setLoading(true);
+      // Attempt to sign in
       const result = await signIn('credentials', {
         redirect: false,
         email: form.values.email,
@@ -52,9 +51,11 @@ const LoginModalCruise = ({
       });
 
       if (result?.ok) {
+        // Sign in successful
         router.replace('/cruise');
-        setOpenedCruise(false);
+        props.setOpenedCruise(false);
       } else {
+        // Sign in failed
         showNotification({
           id: 'login-error',
           title: 'Error',
@@ -68,14 +69,14 @@ const LoginModalCruise = ({
           icon: <AlertCircle />,
         });
       }
-      setVisible(false);
+      setLoading(false);
     }
   };
 
   return (
     <Modal
-      opened={openedCruise}
-      onClose={() => setOpenedCruise(false)}
+      opened={props.openedCruise}
+      onClose={() => props.setOpenedCruise(false)}
       title={
         <Text weight={700} size='lg'>
           Cruise Login
@@ -84,7 +85,7 @@ const LoginModalCruise = ({
       size='md'
     >
       <div style={{ position: 'relative' }}>
-        <LoadingOverlay visible={visible} />
+        <LoadingOverlay visible={loading} />
         <form onSubmit={onSubmit}>
           <TextInput
             required

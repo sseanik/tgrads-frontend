@@ -1,7 +1,6 @@
 import {
   Card,
   Center,
-  createStyles,
   Grid,
   Group,
   Image as MantineImage,
@@ -17,9 +16,11 @@ import Crossfade from 'react-crossfade-responsive';
 
 import { Event } from '../types/Event';
 import { GalleryPhotoReduced } from '../types/Gallery';
-import convertDateToReadable from '../utils/convertDateToReadable';
-import isDateSoon from '../utils/isDateSoon';
-import isUpcomingDate from '../utils/isUpcomingDate';
+import {
+  convertDateToReadable,
+  isDateSoon,
+  isUpcomingDate,
+} from '../utils/dateAndTimeUtil';
 
 interface EventCardProps {
   event: Event;
@@ -27,32 +28,30 @@ interface EventCardProps {
   recap?: string;
 }
 
+const RESPONSIVE_WIDTH = '@media (max-width: 730px)';
+
 const EventCard = ({ event, photos, recap }: EventCardProps) => {
+  // Router to get state from the URL
   const router = useRouter();
+  const state = router.query.state as string;
+  // Theme for detecting current color mode and spacing
   const theme = useMantineTheme();
-  const useStyles = createStyles(() => ({
-    cardW: {
-      width: '340px',
-      '@media (max-width: 730px)': {
-        width: '100%',
-      },
-    },
-    cardH: {
-      height: 120,
-      '@media (max-width: 730px)': {
-        height: 85,
-      },
-    },
-  }));
-  const { classes } = useStyles();
-  const eventType = photos ? 'gallery' : 'events';
 
   return (
     <Link
-      href={`/${router.query.state}/${eventType}/${event?.attributes?.Slug}`}
+      href={`/${state}/${photos ? 'gallery' : 'events'}/${
+        event?.attributes?.Slug
+      }`}
     >
       <a>
-        <UnstyledButton className={classes.cardW}>
+        <UnstyledButton
+          sx={{
+            width: '340px',
+            [RESPONSIVE_WIDTH]: {
+              width: '100%',
+            },
+          }}
+        >
           <Indicator
             inline
             size={

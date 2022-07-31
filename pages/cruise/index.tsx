@@ -1,91 +1,61 @@
-import {
-  AspectRatio,
-  Box,
-  Button,
-  Card,
-  Loader,
-  MantineSize,
-  Text,
-} from '@mantine/core';
+import { AspectRatio, Box, Button, Card, Loader, Text } from '@mantine/core';
 import { toPng } from 'html-to-image';
 import { GetStaticProps, NextPage } from 'next';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { BiWine } from 'react-icons/bi';
-import { GiLargeDress, GiMeal } from 'react-icons/gi';
-import {
-  Calendar,
-  Clock,
-  CurrencyDollar,
-  Login,
-  Logout,
-  Map2,
-  Speedboat,
-} from 'tabler-icons-react';
+import { Login, Logout, Speedboat } from 'tabler-icons-react';
 
+import { getDetailSegments } from '../../assets/getDetailSegments';
+import { homeNavItems } from '../../assets/navItem';
 import LoginModalCruise from '../../components/Modal/LoginModalCruise';
 import AppShell from '../../components/Navigation/AppShell';
 import Ticket from '../../components/Ticket';
 import { QUERY_SPECIFIC_EVENT } from '../../graphql/queries/events';
 import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';
-import { homeNavItems } from '../../lib/navItem';
+import { UserDetails } from '../../types/Cruise';
 import { EventAttributes } from '../../types/Event';
 import { Grad } from '../../types/User';
-import getDaysHoursMinutesRemaining from '../../utils/getDaysHoursMinutesRemaining';
+import { getDaysHoursMinutesRemaining } from '../../utils/dateAndTimeUtil';
 
-interface UserDetails {
-  codes: string[];
-  cohort: string;
-  firstName: string;
-  lastName: string;
-  plusOne: boolean;
-  plusOneFirstName: string;
-  plusOneLastName: string;
-}
-
-type EventDetail = {
-  title: string;
-  blurb: {
-    title: string;
-    link: string | null;
-  };
-  footnote: {
-    title: string;
-    size: MantineSize;
-    link: string | null;
-  };
-  colour: string;
-  icon: typeof Map2;
-  iconCheck: boolean;
-};
-
-const Cruise: NextPage<{
+interface CruiseProps {
   event: EventAttributes;
   grads: Grad[];
-}> = ({ event, grads }) => {
+}
+
+const RESPONSIVE_WIDTH = '@media (max-width: 1100px)'
+
+const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
+  // Check session if user is logged in
   const { data: session } = useSession();
+  // Save the ticket details of the purchaser
   const [userDetails, setUserDetails] = useState<UserDetails | undefined>();
-  // Tickets
+  // Ticket Refs for export purposes
   const exportableTicket = useRef<HTMLDivElement>(null);
   const exportablePlusOneTicket = useRef<HTMLDivElement>(null);
-  //
+  // Loading state when checking for user details
   const [isLoading, setIsLoading] = useState(false);
-
+  // Add the event time onto the event date
   const eventTime: Date = new Date(event.Date + 'T18:15');
+  // Boolean to see if event is over
   const isEventOver: boolean = new Date() > eventTime;
+  // The amount of days and hours until the event starts
   const { days, hours } = getDaysHoursMinutesRemaining(eventTime);
-  // Cruise Modal
+  // The modal state of the login cruise modal
   const [openedCruise, setOpenedCruise] = useState<boolean>(false);
+  // Get the static coloured icon detail segments
+  const detailSegments = getDetailSegments(isEventOver, days, hours);
 
   useEffect(() => {
+    // If user is not logged in
     if (session == null) {
       setUserDetails(undefined);
     } else if (userDetails !== undefined) {
       return;
     } else {
       setIsLoading(true);
+      // Fetch the user details using the saved JWT
       fetch(`${process.env.NEXT_PUBLIC_STRAPI_URL}/api/users/me`, {
         method: 'GET',
         headers: {
@@ -101,6 +71,7 @@ const Cruise: NextPage<{
     }
   }, [session, userDetails]);
 
+  // Function to handle downloading ticket as an image
   const onButtonClick = useCallback(
     (mainTicket = true) => {
       const selectedTicket = mainTicket
@@ -132,122 +103,12 @@ const Cruise: NextPage<{
     [userDetails, exportableTicket, exportablePlusOneTicket]
   );
 
-  const detailSegments: EventDetail[] = [
-    {
-      title: 'Location',
-      blurb: {
-        title: 'King St Wharf 3',
-        link: 'https://www.google.com/maps/place/King+Street+Wharf+3/@-33.8668541,151.2000156,18z/data=!4m5!3m4!1s0x0:0xe3f07a964c511a7d!8m2!3d-33.8668167!4d151.2007484',
-      },
-      footnote: {
-        title: 'Darling Harbour',
-        size: 'sm',
-        link: null,
-      },
-      colour: '#43b2e9',
-      icon: Map2,
-      iconCheck: false,
-    },
-    {
-      title: 'Date',
-      blurb: {
-        title: 'Saturday, 3rd of September',
-        link: null,
-      },
-      footnote: {
-        title: `Countdown:
-        ${isEventOver ? ` ${days} Days ago` : ` ${days} Days, ${hours} Hours`}`,
-        size: 'sm',
-        link: null,
-      },
-      colour: '#e5832a',
-      icon: Calendar,
-      iconCheck: false,
-    },
-    {
-      title: 'Time',
-      blurb: {
-        title: 'Board at 6:15pm',
-        link: null,
-      },
-      footnote: {
-        title: 'Ends at 10:30pm',
-        size: 'md',
-        link: null,
-      },
-      colour: '#95c44d',
-      icon: Clock,
-      iconCheck: false,
-    },
-    {
-      title: 'Price',
-      blurb: {
-        title: '$109 for all NSW Grads',
-        link: null,
-      },
-      footnote: {
-        title: '$99 for interstate Grads',
-        size: 'md',
-        link: null,
-      },
-      colour: '#ed3693',
-      icon: CurrencyDollar,
-      iconCheck: false,
-    },
-    {
-      title: 'Dress Code:',
-      blurb: {
-        title: 'Cocktail',
-        link: null,
-      },
-      footnote: {
-        title: '',
-        size: 'md',
-        link: null,
-      },
-      colour: '#9e61ff',
-      icon: GiLargeDress,
-      iconCheck: false,
-    },
-    {
-      title: 'Food:',
-      blurb: {
-        title: 'Food from the cocktail menu',
-        link: null,
-      },
-      footnote: {
-        title: 'See the food menu',
-        size: 'sm',
-        link: 'https://drive.google.com/file/d/1rrpp6xKHq8pmoJnSk2FCA-veXmrXYkPN/view?usp=sharing',
-      },
-      colour: '#ff665b',
-      icon: GiMeal,
-      iconCheck: true,
-    },
-    {
-      title: 'Drinks:',
-      blurb: {
-        title: 'Unlimited beer, wine, soft drinks',
-        link: null,
-      },
-      footnote: {
-        title: 'See the drinks menu',
-        size: 'sm',
-        link: 'https://drive.google.com/file/d/1AHT8QX3HcMy8TLBWNp0XsfAUv3R13t2s/view?usp=sharing',
-      },
-      colour: '#5a71e8',
-      icon: BiWine,
-      iconCheck: true,
-    },
-  ];
-
   return (
     <AppShell grads={grads} navItems={homeNavItems}>
       <LoginModalCruise
         openedCruise={openedCruise}
         setOpenedCruise={setOpenedCruise}
       />
-
       {session ? (
         <Button
           rightIcon={<Logout />}
@@ -305,7 +166,7 @@ const Cruise: NextPage<{
             sx={{
               display: 'flex',
               maxWidth: 1600,
-              '@media (max-width: 1100px)': {
+              [RESPONSIVE_WIDTH]: {
                 flexDirection: 'column',
               },
             }}
@@ -315,7 +176,7 @@ const Cruise: NextPage<{
                 sx={{
                   flex: '1',
                   marginRight: 20,
-                  '@media (max-width: 1100px)': {
+                  [RESPONSIVE_WIDTH]: {
                     marginRight: 0,
                   },
                 }}
@@ -428,7 +289,7 @@ const Cruise: NextPage<{
                     {detail.blurb.title}
                   </Text>
                   <Text
-                    size={detail.footnote.size ?? undefined}
+                    size={+detail.footnote.size ?? undefined}
                     variant={detail.footnote.link ? 'link' : undefined}
                     component={detail.footnote.link ? 'a' : 'span'}
                     href={

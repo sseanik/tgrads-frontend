@@ -2,23 +2,29 @@ import { Box, Text } from '@mantine/core';
 import { GetStaticPaths, GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 
+import { navItems } from '../../../assets/navItem';
+import { stateStrings } from '../../../assets/stateStrings';
 import EventCard from '../../../components/EventCard';
 import AppShell from '../../../components/Navigation/AppShell';
 import Breadcrumbs from '../../../components/Navigation/Breadcrumbs';
 import { QUERY_STATE_EVENTS } from '../../../graphql/queries/events';
 import { QUERY_ALL_NAMES } from '../../../graphql/queries/people';
 import client from '../../../lib/apollo';
-import { navItems } from '../../../lib/navItem';
 import { Event } from '../../../types/Event';
 import { Grad } from '../../../types/User';
-import upcomingDate from '../../../utils/isUpcomingDate';
+import { isUpcomingDate } from '../../../utils/dateAndTimeUtil';
 
-const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
-  events,
-  grads,
-}) => {
+interface EventsProps {
+  events: Event[];
+  grads: Grad[];
+}
+
+const Events: NextPage<EventsProps> = ({ events, grads }) => {
+  // Router to get the state from the url
   const router = useRouter();
+  const state = router.query.state as string;
 
+  // If there are no events, provide an empty app shell
   if (events.length === 0)
     return (
       <AppShell grads={grads} navItems={navItems}>
@@ -26,12 +32,13 @@ const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
       </AppShell>
     );
 
+  // Split events into upcoming and past events based on their dates
   const extractSpecificEvents = (
     events: Event[],
     upcoming: boolean
   ): Event[] => {
     return events
-      .filter((event: Event) => upcomingDate(event.attributes.Date, upcoming))
+      .filter((event: Event) => isUpcomingDate(event.attributes.Date, upcoming))
       .sort((a: Event, b: Event) =>
         new Date(a.attributes.Date) < new Date(b.attributes.Date)
           ? upcoming
@@ -42,11 +49,8 @@ const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
           : -1
       );
   };
-
   const upcomingEvents = extractSpecificEvents(events, true);
   const pastEvents = extractSpecificEvents(events, false);
-
-  const state = router.query.state as string;
 
   const crumbs = [
     { title: state.toUpperCase(), href: `/${state}/events` },
@@ -63,11 +67,7 @@ const Events: NextPage<{ events: Event[]; grads: Grad[] }> = ({
         <Breadcrumbs crumbs={crumbs} />
       </Box>
       {upcomingEvents.length > 0 && (
-        <Text
-          ml={10}
-          size='xl'
-          weight={700}
-        >
+        <Text ml={10} size='xl' weight={700}>
           Upcoming Events
         </Text>
       )}
@@ -108,7 +108,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 };
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const paths = ['nsw', 'vic', 'qld', 'act', 'sa', 'wa', 'tas', 'nt'].map(
+  const paths = stateStrings.map(
     (state: string) => {
       return { params: { state } };
     }
