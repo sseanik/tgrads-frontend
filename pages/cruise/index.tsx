@@ -4,27 +4,52 @@ import { GetStaticProps, NextPage } from 'next';
 import Link from 'next/link';
 import { signOut, useSession } from 'next-auth/react';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Login, Logout, Speedboat } from 'tabler-icons-react';
+import { BiWine } from 'react-icons/bi';
+import { GiLargeDress, GiMeal } from 'react-icons/gi';
+import {
+  Calendar,
+  Clock,
+  CurrencyDollar,
+  Login,
+  Logout,
+  Map2,
+  Speedboat,
+} from 'tabler-icons-react';
 
-import { getDetailSegments } from '../../assets/getDetailSegments';
 import { homeNavItems } from '../../assets/navItem';
 import LoginModalCruise from '../../components/Modal/LoginModalCruise';
 import AppShell from '../../components/Navigation/AppShell';
 import Ticket from '../../components/Ticket';
-import { QUERY_SPECIFIC_EVENT } from '../../graphql/queries/events';
+import { QUERY_CRUISE_EVENT } from '../../graphql/queries/cruise';
 import { QUERY_ALL_NAMES } from '../../graphql/queries/people';
 import client from '../../lib/apollo';
 import { UserDetails } from '../../types/Cruise';
-import { EventAttributes } from '../../types/Event';
 import { Grad } from '../../types/User';
 import { getDaysHoursMinutesRemaining } from '../../utils/dateAndTimeUtil';
 
+type BlurbSection = {
+  Title: string;
+  BlurbTitle: string;
+  BlurbLink: string;
+  FootnoteTitle: string;
+  FootnoteSize: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  FootnoteLink: string | null;
+  Colour: string;
+  IconCheck: boolean;
+};
+
+type CruiseEvent = {
+  Title: string;
+  EventDetailsURL: string;
+  DateTime: string;
+  Blurb: BlurbSection[];
+};
 interface CruiseProps {
-  event: EventAttributes;
+  event: CruiseEvent;
   grads: Grad[];
 }
 
-const RESPONSIVE_WIDTH = '@media (max-width: 1100px)'
+const RESPONSIVE_WIDTH = '@media (max-width: 1100px)';
 
 const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
   // Check session if user is logged in
@@ -36,16 +61,32 @@ const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
   const exportablePlusOneTicket = useRef<HTMLDivElement>(null);
   // Loading state when checking for user details
   const [isLoading, setIsLoading] = useState(false);
-  // Add the event time onto the event date
-  const eventTime: Date = new Date(event.Date + 'T18:15');
-  // Boolean to see if event is over
-  const isEventOver: boolean = new Date() > eventTime;
-  // The amount of days and hours until the event starts
-  const { days, hours } = getDaysHoursMinutesRemaining(eventTime);
   // The modal state of the login cruise modal
   const [openedCruise, setOpenedCruise] = useState<boolean>(false);
-  // Get the static coloured icon detail segments
-  const detailSegments = getDetailSegments(isEventOver, days, hours);
+  // Convert string datetime into date object
+  const parsedDateTime = new Date(event.DateTime);
+  // The amount of days and hours until the event starts
+  const { days, hours } = getDaysHoursMinutesRemaining(parsedDateTime);
+
+  const iconMatch = (title: string, stroke: number | undefined) => {
+    const iconObj = {
+      Location: <Map2 size={50} color={'#fff'} strokeWidth={stroke} />,
+      Date: <Calendar size={50} color={'#fff'} strokeWidth={stroke} />,
+      Time: <Clock size={50} color={'#fff'} strokeWidth={stroke} />,
+      Price: <CurrencyDollar size={50} color={'#fff'} strokeWidth={stroke} />,
+      'Dress Code': (
+        <GiLargeDress size={50} color={'#fff'} strokeWidth={stroke} />
+      ),
+      Food: <GiMeal size={50} color={'#fff'} strokeWidth={stroke} />,
+      Drinks: <BiWine size={50} color={'#fff'} strokeWidth={stroke} />,
+    };
+    return iconObj[title];
+  };
+
+  const transformCountdownBlurb = (footnote: string) => {
+    if (footnote !== 'Countdown:') return footnote;
+    return `${footnote} ${days} days, ${hours} hours`;
+  };
 
   useEffect(() => {
     // If user is not logged in
@@ -223,7 +264,7 @@ const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
         </Card>
       )}
       <Card shadow='sm' p='sm' mt={10}>
-        <Link href='/events/sydney-cruise-party'>
+        <Link href={event.EventDetailsURL}>
           <Text
             size='xl'
             weight={700}
@@ -237,10 +278,10 @@ const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
         </Link>
 
         <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: 10 }}>
-          {detailSegments.map((detail) => {
+          {event.Blurb.map((blurb) => {
             return (
               <div
-                key={detail.title}
+                key={blurb.Title}
                 style={{
                   display: 'flex',
                   flexDirection: 'row',
@@ -256,17 +297,13 @@ const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
                 >
                   <div
                     style={{
-                      background: detail.colour,
+                      background: blurb.Colour,
                       borderRadius: '5px',
                       padding: 5,
                       border: '2px solid black',
                     }}
                   >
-                    <detail.icon
-                      size={50}
-                      strokeWidth={detail.iconCheck ? undefined : 2}
-                      color={'#fff'}
-                    />
+                    {iconMatch(blurb.Title, blurb.IconCheck ? undefined : 2)}
                   </div>
                 </AspectRatio>
                 <Box
@@ -277,27 +314,25 @@ const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
                   }}
                 >
                   <Text size='lg' weight={600}>
-                    {detail.title}
+                    {blurb.Title}
                   </Text>
                   <Text
                     size='md'
-                    variant={detail.blurb.link ? 'link' : undefined}
-                    component={detail.blurb.link ? 'a' : 'span'}
-                    href={detail.blurb.link ? event.LocationURL : undefined}
+                    variant={blurb.BlurbLink ? 'link' : undefined}
+                    component={blurb.BlurbLink ? 'a' : 'span'}
+                    href={blurb.BlurbLink ? blurb.BlurbLink : undefined}
                     target='_blank'
                   >
-                    {detail.blurb.title}
+                    {blurb.BlurbTitle}
                   </Text>
                   <Text
-                    size={+detail.footnote.size ?? undefined}
-                    variant={detail.footnote.link ? 'link' : undefined}
-                    component={detail.footnote.link ? 'a' : 'span'}
-                    href={
-                      detail.footnote.link ? detail.footnote.link : undefined
-                    }
+                    size={blurb.FootnoteSize ?? undefined}
+                    variant={blurb.FootnoteLink ? 'link' : undefined}
+                    component={blurb.FootnoteLink ? 'a' : 'span'}
+                    href={blurb.FootnoteLink ? blurb.FootnoteLink : undefined}
                     target='_blank'
                   >
-                    {detail.footnote.title}
+                    {transformCountdownBlurb(blurb.FootnoteTitle)}
                   </Text>
                 </Box>
               </div>
@@ -312,12 +347,13 @@ const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
 export const getStaticProps: GetStaticProps = async () => {
   const {
     data: {
-      events: { data },
+      cruise: { data },
     },
   } = await client.query({
-    query: QUERY_SPECIFIC_EVENT,
-    variables: { slug: 'sydney-cruise-party' },
+    query: QUERY_CRUISE_EVENT,
   });
+
+  console.log(data.attributes.Blurb[0]);
 
   const {
     data: { grads },
@@ -326,7 +362,7 @@ export const getStaticProps: GetStaticProps = async () => {
   });
 
   return {
-    props: { event: data[0].attributes, grads: grads.data },
+    props: { event: data.attributes, grads: grads.data },
   };
 };
 
