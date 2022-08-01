@@ -25,6 +25,7 @@ const CaptionModal = (props: CaptionModalProps) => {
   // Router used to get the current URL path
   const router = useRouter();
 
+  // When user clicks the submit button, update the photo's caption
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setUploading(true);

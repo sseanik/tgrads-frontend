@@ -11,7 +11,6 @@ interface BirthdaysProps {
 }
 
 const Birthdays = ({ month, grads }: BirthdaysProps) => {
-
   // Filter birthdays on month's possible star signs (e.g. 'cancer' & 'gemini')
   const { birthdayGradsA, birthdayGradsB } = filterBirthdaysOnStarSign(
     grads,

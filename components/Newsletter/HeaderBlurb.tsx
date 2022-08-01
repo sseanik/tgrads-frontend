@@ -7,8 +7,9 @@ interface HeaderBlurbProps {
   description: string;
 }
 
+const RESPONSIVE_WIDTH = '@media (max-width: 600px)';
+
 const HeaderBlurb = ({ title, gif, description }: HeaderBlurbProps) => {
-  const responsiveWidth = '@media (max-width: 600px)';
 
   return (
     <Card shadow='sm' p={0} mt={10} mb={8}>
@@ -26,7 +27,7 @@ const HeaderBlurb = ({ title, gif, description }: HeaderBlurbProps) => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 width: '100%',
-                [responsiveWidth]: {
+                [RESPONSIVE_WIDTH]: {
                   flexDirection: 'column',
                 },
               })}
@@ -42,7 +43,7 @@ const HeaderBlurb = ({ title, gif, description }: HeaderBlurbProps) => {
                 sx={() => ({
                   width: 'calc(100% - 200px)',
                   paddingLeft: '20px',
-                  [responsiveWidth]: {
+                  [RESPONSIVE_WIDTH]: {
                     paddingLeft: 0,
                     width: '100%',
                   },
