@@ -26,7 +26,7 @@ const LoginModalCruise = (props: LoginModalCruiseProps) => {
 
   const form = useForm({
     initialValues: {
-      email: '@team.telstra.com',
+      email: '',
       password: '',
     },
     // Validate email is valid and password minimum length
