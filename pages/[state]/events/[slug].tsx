@@ -43,7 +43,8 @@ interface EventsProps {
   galleryAvailable: boolean;
 }
 
-const RESPONSIVE_WIDTH = '@media (max-width: 550px)'
+const RESPONSIVE_WIDTH = '@media (max-width: 550px)';
+const RESPONSIVE_WIDTH_TABLET = '@media (max-width: 735px)';
 
 const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
   // Use theme to check whether them is light or dark
@@ -84,7 +85,7 @@ const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
             <Image
               mt={10}
               mb={10}
-              src={event.Image?.data.attributes.url}
+              src={event.Image?.data?.attributes?.url}
               alt=''
             />
             <Text
@@ -106,6 +107,9 @@ const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
                 display: 'flex',
                 flexFlow: 'column',
                 height: 'calc(100vh - 180px)',
+                [RESPONSIVE_WIDTH_TABLET]: {
+                  height: '100%',
+                },
               })}
             >
               <div style={{ flex: '0 1 auto' }}>
@@ -168,14 +172,18 @@ const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
                         RSVP
                       </Button>
                     )}
-                <Text component='span'>
-                  {isEventOver ? 'Event finished ' : 'Event starts in: '}
-                </Text>
-                <Text component='span' size='lg' weight={700}>
-                  {isEventOver
-                    ? `${days} Days ago`
-                    : `${days} Days, ${hours} Hours, ${minutes} Minutes`}
-                </Text>
+                {!isNaN(days) && (
+                  <>
+                    <Text component='span'>
+                      {isEventOver ? 'Event finished ' : 'Event starts in: '}
+                    </Text>
+                    <Text component='span' size='lg' weight={700}>
+                      {isEventOver
+                        ? `${days} Days ago`
+                        : `${days} Days, ${hours} Hours, ${minutes} Minutes`}
+                    </Text>
+                  </>
+                )}
 
                 <Group my={20}>
                   <Grid style={{ width: '100%' }}>
@@ -236,94 +244,102 @@ const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
                         {event.Suburb}
                       </Text>
                     </Grid.Col>
-                    <Grid.Col
-                      span={3}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <AspectRatio ratio={1 / 1} sx={{ width: 60 }}>
-                        <div
-                          style={{
-                            background: '#e5832a',
-                            borderRadius: '5px',
-                            padding: 5,
-                            border: '2px solid black',
-                          }}
+                    {eventTime.toString() === 'Invalid' && (
+                      <Grid.Col
+                        span={3}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <AspectRatio ratio={1 / 1} sx={{ width: 60 }}>
+                          <div
+                            style={{
+                              background: '#e5832a',
+                              borderRadius: '5px',
+                              padding: 5,
+                              border: '2px solid black',
+                            }}
+                          >
+                            <Calendar
+                              size={36}
+                              strokeWidth={2}
+                              color={'#fff'}
+                            />
+                          </div>
+                        </AspectRatio>
+                        <Text
+                          mt={10}
+                          weight={600}
+                          align='center'
+                          sx={(theme) => ({
+                            fontSize: theme.fontSizes.md,
+                            [RESPONSIVE_WIDTH]: {
+                              fontSize: theme.fontSizes.sm,
+                            },
+                          })}
                         >
-                          <Calendar size={36} strokeWidth={2} color={'#fff'} />
-                        </div>
-                      </AspectRatio>
-                      <Text
-                        mt={10}
-                        weight={600}
-                        align='center'
-                        sx={(theme) => ({
-                          fontSize: theme.fontSizes.md,
-                          [RESPONSIVE_WIDTH]: {
+                          {eventTime.toDateString().slice(0, -5)}
+                        </Text>
+                        <Text
+                          sx={(theme) => ({
                             fontSize: theme.fontSizes.sm,
-                          },
-                        })}
-                      >
-                        {eventTime.toDateString().slice(0, -5)}
-                      </Text>
-                      <Text
-                        sx={(theme) => ({
-                          fontSize: theme.fontSizes.sm,
-                          [RESPONSIVE_WIDTH]: {
-                            fontSize: theme.fontSizes.xs,
-                          },
-                        })}
-                      >
-                        Date
-                      </Text>
-                    </Grid.Col>
-                    <Grid.Col
-                      span={3}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <AspectRatio ratio={1 / 1} sx={{ width: 60 }}>
-                        <div
-                          style={{
-                            background: '#95c44d',
-                            borderRadius: '5px',
-                            padding: 5,
-                            border: '2px solid black',
-                          }}
+                            [RESPONSIVE_WIDTH]: {
+                              fontSize: theme.fontSizes.xs,
+                            },
+                          })}
                         >
-                          <Clock size={36} strokeWidth={2} color={'#fff'} />
-                        </div>
-                      </AspectRatio>
-                      <Text
-                        mt={10}
-                        weight={600}
-                        align='center'
-                        sx={(theme) => ({
-                          fontSize: theme.fontSizes.md,
-                          [RESPONSIVE_WIDTH]: {
+                          Date
+                        </Text>
+                      </Grid.Col>
+                    )}
+                    {event.Time && (
+                      <Grid.Col
+                        span={3}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <AspectRatio ratio={1 / 1} sx={{ width: 60 }}>
+                          <div
+                            style={{
+                              background: '#95c44d',
+                              borderRadius: '5px',
+                              padding: 5,
+                              border: '2px solid black',
+                            }}
+                          >
+                            <Clock size={36} strokeWidth={2} color={'#fff'} />
+                          </div>
+                        </AspectRatio>
+                        <Text
+                          mt={10}
+                          weight={600}
+                          align='center'
+                          sx={(theme) => ({
+                            fontSize: theme.fontSizes.md,
+                            [RESPONSIVE_WIDTH]: {
+                              fontSize: theme.fontSizes.sm,
+                            },
+                          })}
+                        >
+                          {event.Time}
+                        </Text>
+                        <Text
+                          sx={(theme) => ({
                             fontSize: theme.fontSizes.sm,
-                          },
-                        })}
-                      >
-                        {event.Time}
-                      </Text>
-                      <Text
-                        sx={(theme) => ({
-                          fontSize: theme.fontSizes.sm,
-                          [RESPONSIVE_WIDTH]: {
-                            fontSize: theme.fontSizes.xs,
-                          },
-                        })}
-                      >
-                        Time
-                      </Text>
-                    </Grid.Col>
+                            [RESPONSIVE_WIDTH]: {
+                              fontSize: theme.fontSizes.xs,
+                            },
+                          })}
+                        >
+                          Time
+                        </Text>
+                      </Grid.Col>
+                    )}
                     <Grid.Col
                       span={3}
                       style={{
@@ -359,7 +375,9 @@ const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
                         weight={600}
                         align='center'
                       >
-                        {event.Cost === '$' ? 'BYO' : event.Cost}
+                        {event.Cost === '$' || !event.Cost
+                          ? 'BYO / None'
+                          : event.Cost}
                       </Text>
                       <Text
                         sx={(theme) => ({
