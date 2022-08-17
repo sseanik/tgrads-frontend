@@ -340,56 +340,56 @@ const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
                         </Text>
                       </Grid.Col>
                     )}
-                    <Grid.Col
-                      span={3}
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <AspectRatio ratio={1 / 1} sx={{ width: 60 }}>
-                        <div
-                          style={{
-                            background: '#ed3693',
-                            borderRadius: '5px',
-                            padding: 5,
-                            border: '2px solid black',
-                          }}
+                    {event.Cost !== '$' && event.Cost && (
+                      <Grid.Col
+                        span={3}
+                        style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <AspectRatio ratio={1 / 1} sx={{ width: 60 }}>
+                          <div
+                            style={{
+                              background: '#ed3693',
+                              borderRadius: '5px',
+                              padding: 5,
+                              border: '2px solid black',
+                            }}
+                          >
+                            <CurrencyDollar
+                              size={36}
+                              strokeWidth={2}
+                              color={'#fff'}
+                            />
+                          </div>
+                        </AspectRatio>
+                        <Text
+                          sx={(theme) => ({
+                            fontSize: theme.fontSizes.md,
+                            [RESPONSIVE_WIDTH]: {
+                              fontSize: theme.fontSizes.sm,
+                            },
+                          })}
+                          mt={10}
+                          weight={600}
+                          align='center'
                         >
-                          <CurrencyDollar
-                            size={36}
-                            strokeWidth={2}
-                            color={'#fff'}
-                          />
-                        </div>
-                      </AspectRatio>
-                      <Text
-                        sx={(theme) => ({
-                          fontSize: theme.fontSizes.md,
-                          [RESPONSIVE_WIDTH]: {
+                          {event.Cost}
+                        </Text>
+                        <Text
+                          sx={(theme) => ({
                             fontSize: theme.fontSizes.sm,
-                          },
-                        })}
-                        mt={10}
-                        weight={600}
-                        align='center'
-                      >
-                        {event.Cost === '$' || !event.Cost
-                          ? 'BYO / None'
-                          : event.Cost}
-                      </Text>
-                      <Text
-                        sx={(theme) => ({
-                          fontSize: theme.fontSizes.sm,
-                          [RESPONSIVE_WIDTH]: {
-                            fontSize: theme.fontSizes.xs,
-                          },
-                        })}
-                      >
-                        Price
-                      </Text>
-                    </Grid.Col>
+                            [RESPONSIVE_WIDTH]: {
+                              fontSize: theme.fontSizes.xs,
+                            },
+                          })}
+                        >
+                          Price
+                        </Text>
+                      </Grid.Col>
+                    )}
                   </Grid>
                 </Group>
               </div>
