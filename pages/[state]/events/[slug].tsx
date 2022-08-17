@@ -244,7 +244,7 @@ const Events: NextPage<EventsProps> = ({ event, grads, galleryAvailable }) => {
                         {event.Suburb}
                       </Text>
                     </Grid.Col>
-                    {eventTime.toString() === 'Invalid' && (
+                    {eventTime.toString() !== 'Invalid' && (
                       <Grid.Col
                         span={3}
                         style={{
