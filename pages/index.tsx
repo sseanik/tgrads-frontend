@@ -6,7 +6,10 @@ import Link from 'next/link';
 import { homeNavItems } from '../assets/navItem';
 import AppShell from '../components/Navigation/AppShell';
 import NewsletterTab from '../components/Newsletter/NewsletterTab';
-import { QUERY_ALL_NEWSLETTERS } from '../graphql/queries/newsletters';
+import {
+  QUERY_NEWSLETTER_SLUGS,
+  QUERY_PUBLISHED_NEWSLETTERS,
+} from '../graphql/queries/newsletters';
 import { QUERY_ALL_NAMES } from '../graphql/queries/people';
 import client from '../lib/apollo';
 import { Newsletter } from '../types/Newsletter';
@@ -15,7 +18,8 @@ import { Grad } from '../types/User';
 const Home: NextPage<{
   grads: Grad[];
   newsletters: Newsletter[];
-}> = ({ grads, newsletters }) => {
+  newsletterSlugs: string[];
+}> = ({ grads, newsletters, newsletterSlugs }) => {
   // Use loggedIn local storage item to determine admin (TGA) view
   const [loggedIn] = useLocalStorage({
     key: 'loggedIn',
@@ -60,14 +64,11 @@ const Home: NextPage<{
         {loggedIn !== '' && JSON.parse(loggedIn).TGA && (
           <Tabs.Panel value='tab-admin'>
             <Box mt={10} style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-              {newsletters.map((newsletter) => {
+              {newsletterSlugs.map((slug) => {
                 return (
-                  <Link
-                    href={`/newsletter/${newsletter.attributes.Slug}`}
-                    key={newsletter.attributes.Slug}
-                  >
+                  <Link href={`/newsletter/${slug}`} key={slug}>
                     <a>
-                      <Button size='xs'>{newsletter.attributes.Slug}</Button>
+                      <Button size='xs'>{slug}</Button>
                     </a>
                   </Link>
                 );
@@ -92,19 +93,35 @@ export const getStaticProps: GetStaticProps = async () => {
       newsletters: { data },
     },
   } = await client.query({
-    query: QUERY_ALL_NEWSLETTERS,
+    query: QUERY_PUBLISHED_NEWSLETTERS,
   });
 
-  // Sort newsletters in decreasing Monthly order
-  const newsletters = data.sort((a: Newsletter, b: Newsletter) => {
+  const {
+    data: { newsletters },
+  } = await client.query({
+    query: QUERY_NEWSLETTER_SLUGS,
+  });
+
+  const newsletterComparator = (a: Newsletter, b: Newsletter) => {
     return (
       new Date(b.attributes.FirstDayOfMonth).valueOf() -
       new Date(a.attributes.FirstDayOfMonth).valueOf()
     );
-  });
+  };
+
+  const newsletterSlugs = newsletters.data
+    .sort(newsletterComparator)
+    .map((newsletter) => newsletter.attributes.Slug);
+
+  // Sort newsletters in decreasing Monthly order
+  const sortedNewsletters = data.sort(newsletterComparator);
 
   return {
-    props: { newsletters, grads: grads.data },
+    props: {
+      newsletters: sortedNewsletters,
+      newsletterSlugs,
+      grads: grads.data,
+    },
   };
 };
 

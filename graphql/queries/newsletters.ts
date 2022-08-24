@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_ALL_NEWSLETTERS = gql`
+export const QUERY_PUBLISHED_NEWSLETTERS = gql`
   query AllNewsletters {
-    newsletters(publicationState: PREVIEW) {
+    newsletters {
       data {
         attributes {
           publishedAt
@@ -61,6 +61,7 @@ export const QUERY_NEWSLETTER_SLUGS = gql`
       data {
         attributes {
           Slug
+          FirstDayOfMonth
         }
       }
     }
