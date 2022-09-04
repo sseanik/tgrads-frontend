@@ -196,7 +196,7 @@ const Cruise: NextPage<CruiseProps> = ({ event, grads }) => {
           </Text>
         </Box>
       )}
-      {userDetails && (
+      {userDetails && userDetails.codes && (
         <Card shadow='sm' p='sm' mt={10}>
           {userDetails && (
             <Text mb={10} size='xl' weight={700}>
