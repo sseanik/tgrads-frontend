@@ -353,8 +353,6 @@ export const getStaticProps: GetStaticProps = async () => {
     query: QUERY_CRUISE_EVENT,
   });
 
-  console.log(data.attributes.Blurb[0]);
-
   const {
     data: { grads },
   } = await client.query({

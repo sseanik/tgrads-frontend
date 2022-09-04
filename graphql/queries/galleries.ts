@@ -59,7 +59,7 @@ export const QUERY_SPECIFIC_GALLERY = gql`
       data {
         id
         attributes {
-          Photos(pagination: { limit: 100 }) {
+          Photos(pagination: { limit: 400 }) {
             data {
               id
               attributes {

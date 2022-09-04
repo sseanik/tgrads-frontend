@@ -43,6 +43,7 @@ const Events: NextPage<EventsProps> = ({
   slug,
   galleryID,
 }) => {
+  console.log(gallery.Photos.data.length);
   // Router to get the state from the current URL
   const router = useRouter();
   const state = router.query.state as string;
