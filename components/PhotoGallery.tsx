@@ -8,7 +8,7 @@ import { showNotification, updateNotification } from '@mantine/notifications';
 import Clarifai from 'clarifai';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import PhotoAlbum from 'react-photo-album';
 import {
   ChevronLeft,
@@ -91,26 +91,30 @@ const PhotoGallery = ({
 
   /* ----------------------------- Current Photos ----------------------------- */
   // Transform photos into a list of parsed photos for gallery and lightbox
-  const parsedPhotos: ParsedPhoto[] = photos.map((photo) => {
-    const { trueHeight, trueWidth } = getTrueImageDimensions(
-      photo.attributes.height,
-      photo.attributes.width
+  useEffect(() => {
+    setSavedPhotos(
+      photos.map((photo) => {
+        const { trueHeight, trueWidth } = getTrueImageDimensions(
+          photo.attributes.height,
+          photo.attributes.width
+        );
+        return {
+          height: trueHeight,
+          width: trueWidth,
+          aspectRatio: trueWidth / trueHeight,
+          id: photo.id,
+          alternativeText: photo.attributes.alternativeText,
+          ...(photo.attributes.caption !== photo.attributes.name &&
+            photo.attributes.caption !== '' && {
+              description: photo.attributes.caption,
+            }),
+          name: photo.attributes.name,
+          src: photo.attributes.url,
+        };
+      })
     );
-    return {
-      height: trueHeight,
-      width: trueWidth,
-      aspectRatio: trueWidth / trueHeight,
-      id: photo.id,
-      alternativeText: photo.attributes.alternativeText,
-      ...(photo.attributes.caption !== photo.attributes.name &&
-        photo.attributes.caption !== '' && {
-          description: photo.attributes.caption,
-        }),
-      name: photo.attributes.name,
-      src: photo.attributes.url,
-    };
-  });
-  const [savedPhotos, setSavedPhotos] = useState<ParsedPhoto[]>(parsedPhotos);
+  }, [photos]);
+  const [savedPhotos, setSavedPhotos] = useState<ParsedPhoto[]>([]);
 
   // When the user swipes through photos in the lightbox
   const onSlideAction = (index: number) => {
